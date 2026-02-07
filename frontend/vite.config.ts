@@ -1,13 +1,13 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc' // SWC 사용 시
+import react from '@vitejs/plugin-react' // swc 제거
 
 export default defineConfig({
     plugins: [react()],
     server: {
-        port: 3000, // 리액트 포트를 3000으로 고정 (선택사항)
+        port: 3000,
         proxy: {
             '/api': {
-                target: 'http://localhost:8080', // Java 백엔드 주소
+                target: 'http://localhost:8282',
                 changeOrigin: true,
                 secure: false,
             }
