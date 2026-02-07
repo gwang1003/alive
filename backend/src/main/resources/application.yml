@@ -1,0 +1,28 @@
+# src/main/resources/application.yml
+
+spring:
+  application:
+    name: alive
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/alive
+    username: ojg
+    password: jbt10223
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # ?? ??? update, ????? validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# JWT ??
+jwt:
+  secret: your-secret-key-must-be-at-least-256-bits-long-for-hs256-algorithm-security
+  expiration: 86400000  # 24?? (???)
+
+server:
+  port: 8282
