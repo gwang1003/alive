@@ -40,3 +40,22 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Swiper 내부 화살표 크기 조절 및 색상 변경 */
+.swiper-button-next, .swiper-button-prev {
+    color: #000 !important;
+    transform: scale(0.5); /* 화살표 작게 */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* 마우스를 올렸을 때만 화살표 노출 */
+.group:hover .swiper-button-next,
+.group:hover .swiper-button-prev {
+    opacity: 1;
+}
+
+/* 페이지네이션 도트 색상 */
+.swiper-pagination-bullet-active {
+    background: #000 !important;
+}
