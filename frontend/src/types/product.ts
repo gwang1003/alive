@@ -17,3 +17,4 @@ export interface Product {
     maxAge?: number;
     thumbnailUrl?: string; // product_images 테이블 연동 시
 }
+
