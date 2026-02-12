@@ -19,45 +19,65 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
-    private Long expiration;
+    @Value("${jwt.access-token-expiration}")
+    private Long accessTokenExpiration;  // 15분 (900000ms)
+
+    @Value("${jwt.refresh-token-expiration}")
+    private Long refreshTokenExpiration; // 7일 (604800000ms)
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // JWT 토큰 생성
-    public String generateToken(String email, String role) {
+    // ========== AccessToken 생성 ==========
+
+    public String generateAccessToken(String email, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
-        return createToken(claims, email);
+        claims.put("type", "access");  // 토큰 타입 구분
+
+        return createToken(claims, email, accessTokenExpiration);
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    // ========== RefreshToken 생성 ==========
+
+    public String generateRefreshToken(String email) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "refresh");  // 토큰 타입 구분
+
+        return createToken(claims, email, refreshTokenExpiration);
+    }
+
+    // ========== 토큰 생성 핵심 로직 ==========
+
+    private String createToken(Map<String, Object> claims, String subject, Long expiration) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
-                .claims(claims)              // 0.12.x: setClaims → claims
-                .subject(subject)            // 0.12.x: setSubject → subject
-                .issuedAt(now)               // 0.12.x: setIssuedAt → issuedAt
-                .expiration(expiryDate)      // 0.12.x: setExpiration → expiration
-                .signWith(getSigningKey())   // 0.12.x: signWith(key)만 사용
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(getSigningKey())
                 .compact();
     }
 
-    // 토큰에서 이메일 추출
+    // ========== 토큰에서 정보 추출 ==========
+
     public String getEmailFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    // 토큰에서 역할 추출
     public String getRoleFromToken(String token) {
         return getClaimFromToken(token, claims -> claims.get("role", String.class));
     }
 
-    // 토큰 만료 시간 추출
+    public String getTokenType(String token) {
+        return getClaimFromToken(token, claims -> claims.get("type", String.class));
+    }
+
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
@@ -67,28 +87,26 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    // ⭐ 핵심 변경: 0.12.x 버전 방식
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())      // setSigningKey → verifyWith
+                .verifyWith(getSigningKey())
                 .build()
-                .parseSignedClaims(token)         // parseClaimsJws → parseSignedClaims
-                .getPayload();                    // getBody → getPayload
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
-    // 토큰 만료 확인
+    // ========== 토큰 검증 ==========
+
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
 
-    // 토큰 유효성 검증 (이메일 포함)
     public Boolean validateToken(String token, String email) {
         final String tokenEmail = getEmailFromToken(token);
         return (tokenEmail.equals(email) && !isTokenExpired(token));
     }
 
-    // 토큰 유효성 검증 (간단 버전)
     public Boolean validateToken(String token) {
         try {
             Jwts.parser()
@@ -96,6 +114,34 @@ public class JwtUtil {
                     .build()
                     .parseSignedClaims(token);
             return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // ========== AccessToken 검증 (타입 체크 포함) ==========
+
+    public Boolean validateAccessToken(String token) {
+        try {
+            if (!validateToken(token)) {
+                return false;
+            }
+            String type = getTokenType(token);
+            return "access".equals(type);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // ========== RefreshToken 검증 (타입 체크 포함) ==========
+
+    public Boolean validateRefreshToken(String token) {
+        try {
+            if (!validateToken(token)) {
+                return false;
+            }
+            String type = getTokenType(token);
+            return "refresh".equals(type);
         } catch (Exception e) {
             return false;
         }

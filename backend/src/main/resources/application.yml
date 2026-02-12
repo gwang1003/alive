@@ -21,8 +21,9 @@ spring:
 
 # JWT ??
 jwt:
-  secret: your-secret-key-must-be-at-least-256-bits-long-for-hs256-algorithm-security
-  expiration: 86400000  # 24?? (???)
+  secret: your-secret-key-must-be-at-least-256-bits-long-for-hs256-algorithm-please-change-this
+  access-token-expiration: 900000      # 15분 (15 * 60 * 1000)
+  refresh-token-expiration: 604800000  # 7일 (7 * 24 * 60 * 60 * 1000)
 
 server:
   port: 8282
