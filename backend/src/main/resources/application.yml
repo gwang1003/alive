@@ -22,7 +22,8 @@ spring:
 # JWT ??
 jwt:
   secret: ***REMOVED***
-  expiration: 86400000  # 24?? (???)
+  access-token-expiration: 900000      # 15분 (15 * 60 * 1000)
+  refresh-token-expiration: 604800000  # 7일 (7 * 24 * 60 * 60 * 1000)
 
 server:
   port: 8282

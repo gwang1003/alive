@@ -1,4 +1,5 @@
 package com.alive.domain.user.service;
+
 import com.alive.domain.user.dto.LoginRequest;
 import com.alive.domain.user.dto.LoginResponse;
 import com.alive.domain.user.dto.RegisterRequest;
@@ -7,6 +8,7 @@ import com.alive.domain.user.entity.User;
 import com.alive.domain.user.entity.UserRole;
 import com.alive.domain.user.repository.UserRepository;
 import com.alive.security.JwtUtil;
+import com.alive.security.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,19 +22,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;  // 추가
 
     // 회원가입
     @Transactional
     public UserResponse register(RegisterRequest request) {
-        // 1. 이메일 중복 체크
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("이미 사용 중인 이메일입니다");
         }
 
-        // 2. 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
-        // 3. 사용자 엔티티 생성
         User user = User.builder()
                 .email(request.getEmail())
                 .password(encodedPassword)
@@ -41,30 +41,30 @@ public class UserService {
                 .role(UserRole.USER)
                 .build();
 
-        // 4. 저장
         User savedUser = userRepository.save(user);
 
-        // 5. DTO로 변환하여 반환
         return UserResponse.fromEntity(savedUser);
     }
 
-    // 로그인
+    // 로그인 (AccessToken + RefreshToken 발급)
+    @Transactional
     public LoginResponse login(LoginRequest request) {
-        // 1. 이메일로 사용자 찾기
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("이메일 또는 비밀번호가 일치하지 않습니다"));
 
-        // 2. 비밀번호 확인
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("이메일 또는 비밀번호가 일치하지 않습니다");
         }
 
-        // 3. JWT 토큰 생성
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+        // AccessToken 생성 (15분)
+        String accessToken = jwtUtil.generateAccessToken(user.getEmail(), user.getRole().name());
 
-        // 4. LoginResponse 생성 및 반환
+        // RefreshToken 생성 및 저장 (7일)
+        String refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+
         return LoginResponse.builder()
-                .token(token)
+                .accessToken(accessToken)      // AccessToken 추가
+                .refreshToken(refreshToken)    // RefreshToken 추가
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole().name())
@@ -88,7 +88,7 @@ public class UserService {
         return UserResponse.fromEntity(user);
     }
 
-    // 이메일 존재 여부 확인 (추가)
+    // 이메일 존재 여부 확인
     public boolean isEmailExists(String email) {
         return userRepository.existsByEmail(email);
     }
