@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { Search, User, ShoppingBag } from 'lucide-react';
 import logo from '../assets/logo.png';
 
 const Header: React.FC = () => {
+    const navigate = useNavigate();
     const categories = [
         { name: 'NEW', path: '/new' },
         { name: 'BEST', path: '/best' },
@@ -49,7 +50,9 @@ const Header: React.FC = () => {
             {/* 오른쪽: 유틸리티 아이콘 */}
             <div className="flex items-center gap-6 text-gray-400">
                 <Search className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors" />
-                <User className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors" />
+                <button onClick={() => navigate('/login')}>
+                    <User className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors"/>
+                </button>
                 <Link to="/cart" className="relative group text-gray-400 hover:text-gray-900">
                     <ShoppingBag className="w-5 h-5 stroke-[1.5px] transition-colors" />
                     <span className="absolute -top-1 -right-1.5 bg-gray-900 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold border border-white">
