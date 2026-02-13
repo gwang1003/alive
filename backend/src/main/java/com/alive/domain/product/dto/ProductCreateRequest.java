@@ -16,49 +16,96 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductCreateRequest {
 
-    @NotNull(message = "카테고리는 필수입니다")
-    private Long categoryId;
-
     @NotBlank(message = "상품명은 필수입니다")
     @Size(min = 2, max = 200, message = "상품명은 2자 이상 200자 이하여야 합니다")
     private String name;
 
-    @NotBlank(message = "상품 설명은 필수입니다")
-    private String description;
+    @NotBlank(message = "메인 설명은 필수입니다")
+    private String mainDescription;
 
     @NotNull(message = "가격은 필수입니다")
     @DecimalMin(value = "0.0", inclusive = false, message = "가격은 0보다 커야 합니다")
     private BigDecimal price;
 
-    @Min(value = 0, message = "할인율은 0 이상이어야 합니다")
-    @Max(value = 100, message = "할인율은 100 이하여야 합니다")
-    private Integer discountRate = 0;
+    @NotNull(message = "카테고리는 필수입니다")
+    private Long categoryId;
 
+    @NotNull(message = "성별은 필수입니다")
     private Gender gender;
 
-    @Min(value = 0, message = "최소 연령은 0 이상이어야 합니다")
-    private Integer minAge;
+    @NotNull(message = "모델 정보는 필수입니다")
+    private ModelInfoDto modelInfo;
 
-    @Min(value = 0, message = "최대 연령은 0 이상이어야 합니다")
-    private Integer maxAge;
+    @NotNull(message = "옵션은 필수입니다")
+    private ProductOptionDto options;
 
-    private String material;
+    @NotEmpty(message = "재고 정보는 필수입니다")
+    private List<StockItemDto> stocks;
 
-    @NotEmpty(message = "최소 1개 이상의 사이즈가 필요합니다")
-    private List<ProductSizeRequest> sizes;
+    @NotEmpty(message = "상세 블록은 필수입니다")
+    private List<DetailBlockDto> detailBlocks;
 
-    // 내부 클래스: 사이즈 정보
+    // ========== 내부 DTO 클래스 ==========
+
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProductSizeRequest {
+    public static class ModelInfoDto {
+        @NotBlank(message = "모델명은 필수입니다")
+        private String modelName;
 
-        @NotBlank(message = "사이즈명은 필수입니다")
-        private String sizeName;
+        @Min(value = 0, message = "키는 0 이상이어야 합니다")
+        private Integer height;
 
-        @NotNull(message = "재고 수량은 필수입니다")
-        @Min(value = 0, message = "재고는 0 이상이어야 합니다")
-        private Integer stockQuantity;
+        @Min(value = 0, message = "몸무게는 0 이상이어야 합니다")
+        private Integer weight;
+
+        @NotBlank(message = "착용 컬러는 필수입니다")
+        private String wearingColor;
+
+        @Min(value = 0, message = "착용 사이즈는 0 이상이어야 합니다")
+        private Integer wearingSize;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProductOptionDto {
+        @NotEmpty(message = "색상 옵션은 필수입니다")
+        private List<String> colors;
+
+        @NotEmpty(message = "사이즈 옵션은 필수입니다")
+        private List<String> sizes;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StockItemDto {
+        @NotBlank(message = "색상은 필수입니다")
+        private String color;
+
+        @NotBlank(message = "사이즈는 필수입니다")
+        private String size;
+
+        @Min(value = 0, message = "수량은 0 이상이어야 합니다")
+        private Integer quantity;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DetailBlockDto {
+        @NotBlank(message = "블록 타입은 필수입니다")
+        private String type; // "IMAGE" or "TEXT"
+
+        private String value; // TEXT일 때 내용
+
+        @NotNull(message = "표시 순서는 필수입니다")
+        private Integer displayOrder;
     }
 }

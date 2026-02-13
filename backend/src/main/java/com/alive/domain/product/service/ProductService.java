@@ -1,5 +1,6 @@
 package com.alive.domain.product.service;
 
+import com.alive.common.service.FileStorageService;
 import com.alive.domain.product.dto.*;
 import com.alive.domain.product.entity.*;
 import com.alive.domain.product.repository.*;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,8 +24,13 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
-    private final ProductSizeRepository productSizeRepository;
     private final ProductImageRepository productImageRepository;
+    private final ModelInfoRepository modelInfoRepository;
+    private final ProductStockRepository productStockRepository;
+    private final ProductDetailRepository productDetailRepository;
+    private final FileStorageService fileStorageService;
+    private final ProductSizeRepository productSizeRepository;
+
 
     // ========== 상품 조회 (일반 사용자) ==========
 
@@ -124,48 +131,122 @@ public class ProductService {
 
     // ========== 상품 관리 (관리자) ==========
 
+
     /**
-     * 상품 등록
+     * 상품 등록 (멀티파트 + JSON)
      */
     @Transactional
-    public ProductResponse createProduct(ProductCreateRequest request) {
-        // 카테고리 확인
+    public ProductResponse createProduct(
+            ProductCreateRequest request,
+            MultipartFile mainImage,
+            List<MultipartFile> thumbnails,
+            List<MultipartFile> detailFiles
+    ) {
+        // 1. 카테고리 확인
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("카테고리를 찾을 수 없습니다"));
 
-        // 상품 엔티티 생성
+        // 2. 상품 엔티티 생성
         Product product = Product.builder()
                 .category(category)
                 .name(request.getName())
-                .description(request.getDescription())
+                .description(request.getMainDescription())
                 .price(request.getPrice())
-                .discountRate(request.getDiscountRate())
                 .gender(request.getGender())
-                .minAge(request.getMinAge())
-                .maxAge(request.getMaxAge())
-                .material(request.getMaterial())
-                .stockQuantity(0) // 초기값, 사이즈별 재고 합산 후 업데이트
+                .stockQuantity(0) // 초기값, 재고 합산 후 업데이트
                 .isActive(true)
                 .build();
 
-        // 상품 저장
         Product savedProduct = productRepository.save(product);
 
-        // 사이즈 등록
-        int totalStock = 0;
-        for (ProductCreateRequest.ProductSizeRequest sizeRequest : request.getSizes()) {
-            ProductSize size = ProductSize.builder()
+        // 3. 메인 이미지 저장
+        if (mainImage != null && !mainImage.isEmpty()) {
+            String mainImageUrl = fileStorageService.storeFile(mainImage, "products");
+
+            ProductImage mainImg = ProductImage.builder()
                     .product(savedProduct)
-                    .sizeName(sizeRequest.getSizeName())
-                    .stockQuantity(sizeRequest.getStockQuantity())
+                    .imageUrl(mainImageUrl)
+                    .isThumbnail(true)
+                    .displayOrder(0)
                     .build();
 
-            productSizeRepository.save(size);
-            totalStock += sizeRequest.getStockQuantity();
+            productImageRepository.save(mainImg);
+        }
+
+        // 4. 썸네일 이미지 저장
+        if (thumbnails != null && !thumbnails.isEmpty()) {
+            for (int i = 0; i < thumbnails.size(); i++) {
+                MultipartFile thumbnail = thumbnails.get(i);
+                String thumbnailUrl = fileStorageService.storeFile(thumbnail, "products/thumbnails");
+
+                ProductImage thumbImg = ProductImage.builder()
+                        .product(savedProduct)
+                        .imageUrl(thumbnailUrl)
+                        .isThumbnail(false)
+                        .displayOrder(i + 1)
+                        .build();
+
+                productImageRepository.save(thumbImg);
+            }
+        }
+
+        // 5. 모델 정보 저장
+        ModelInfo modelInfo = ModelInfo.builder()
+                .product(savedProduct)
+                .modelName(request.getModelInfo().getModelName())
+                .height(request.getModelInfo().getHeight())
+                .weight(request.getModelInfo().getWeight())
+                .wearingColor(request.getModelInfo().getWearingColor())
+                .wearingSize(request.getModelInfo().getWearingSize())
+                .build();
+
+        modelInfoRepository.save(modelInfo);
+
+        // 6. 재고 정보 저장 (색상 + 사이즈 조합)
+        int totalStock = 0;
+        for (ProductCreateRequest.StockItemDto stockDto : request.getStocks()) {
+            ProductStock stock = ProductStock.builder()
+                    .product(savedProduct)
+                    .color(stockDto.getColor())
+                    .size(stockDto.getSize())
+                    .quantity(stockDto.getQuantity())
+                    .build();
+
+            productStockRepository.save(stock);
+            totalStock += stockDto.getQuantity();
         }
 
         // 전체 재고 업데이트
-        savedProduct.updateProduct(null, null, null, null, null);
+        savedProduct.updateStockQuantity(totalStock);
+
+        // 7. 상세 블록 저장 (TEXT + IMAGE)
+        int imageFileIndex = 0;
+        for (ProductCreateRequest.DetailBlockDto blockDto : request.getDetailBlocks()) {
+            String content;
+
+            if ("IMAGE".equals(blockDto.getType())) {
+                // IMAGE 블록이면 detailFiles에서 순서대로 가져와서 저장
+                if (detailFiles != null && imageFileIndex < detailFiles.size()) {
+                    MultipartFile detailFile = detailFiles.get(imageFileIndex);
+                    content = fileStorageService.storeFile(detailFile, "products/details");
+                    imageFileIndex++;
+                } else {
+                    throw new RuntimeException("상세 이미지 파일이 부족합니다");
+                }
+            } else {
+                // TEXT 블록이면 value 그대로 저장
+                content = blockDto.getValue();
+            }
+
+            ProductDetail detail = ProductDetail.builder()
+                    .product(savedProduct)
+                    .type(blockDto.getType())
+                    .content(content)
+                    .displayOrder(blockDto.getDisplayOrder())
+                    .build();
+
+            productDetailRepository.save(detail);
+        }
 
         return ProductResponse.builder()
                 .productId(savedProduct.getProductId())
@@ -176,6 +257,8 @@ public class ProductService {
                 .message("상품이 등록되었습니다")
                 .build();
     }
+
+
 
     /**
      * 상품 수정
@@ -228,6 +311,7 @@ public class ProductService {
      */
     @Transactional
     public ProductSizeResponse updateStock(Long productId, Long sizeId, StockUpdateRequest request) {
+
         ProductSize size = productSizeRepository.findById(sizeId)
                 .orElseThrow(() -> new RuntimeException("사이즈를 찾을 수 없습니다"));
 
