@@ -1,8 +1,14 @@
 # src/main/resources/application.yml
 
+# 파일 업로드 설정
 spring:
   application:
     name: alive
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 50MB
 
   datasource:
     url: jdbc:postgresql://localhost:5432/alive
@@ -27,3 +33,7 @@ jwt:
 
 server:
   port: 8282
+
+  # 파일 저장 경로
+file:
+  upload-dir: uploads

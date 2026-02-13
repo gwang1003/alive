@@ -113,4 +113,8 @@ public class Product {
         if (discountRate != null) this.discountRate = discountRate;
         if (isActive != null) this.isActive = isActive;
     }
+
+    public void updateStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
 }
