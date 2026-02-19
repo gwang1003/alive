@@ -190,7 +190,7 @@ const ProductForm: React.FC = () => {
         }));
 
         try {
-            const response = await axios.post('/api/admin/products', formData, {
+            const response = await axios.post('/admin/products', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             alert('상품 등록 성공!');

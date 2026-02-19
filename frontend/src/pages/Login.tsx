@@ -23,7 +23,7 @@ const Login: React.FC = () => {
             const response = await axios.post('/auth/login', formData);
 
             // 1. 데이터 추출 (백엔드 응답 구조 확인 필수!)
-            const accessToken = response.data.token;
+            const accessToken = response.data.accessToken;
 
             // 2. Zustand 상태 업데이트
             login(accessToken, response.data);
