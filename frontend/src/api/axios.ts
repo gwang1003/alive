@@ -11,7 +11,10 @@ const api = axios.create({
 
 // api 호출 시 인터셉트하여 토큰 검증해서 넣어주는 부분
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('accessToken');
+    // const token = localStorage.getItem('accessToken');
+    const token = useAuthStore.getState().accessToken;
+    console.log(useAuthStore)
+    console.log(token)
     if(token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
