@@ -4,11 +4,12 @@ import com.alive.common.service.FileStorageService;
 import com.alive.domain.product.dto.*;
 import com.alive.domain.product.entity.*;
 import com.alive.domain.product.repository.*;
+import java.io.File;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,9 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ProductService {
 
+    @Value("${file.upload-dir}")
+    private String fileDir;
+
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
@@ -29,7 +33,6 @@ public class ProductService {
     private final ProductStockRepository productStockRepository;
     private final ProductDetailRepository productDetailRepository;
     private final FileStorageService fileStorageService;
-    private final ProductSizeRepository productSizeRepository;
 
 
     // ========== 상품 조회 (일반 사용자) ==========
@@ -307,45 +310,6 @@ public class ProductService {
     }
 
     /**
-     * 상품 사이즈 재고 수정
-     */
-    @Transactional
-    public ProductSizeResponse updateStock(Long productId, Long sizeId, StockUpdateRequest request) {
-
-        ProductSize size = productSizeRepository.findById(sizeId)
-                .orElseThrow(() -> new RuntimeException("사이즈를 찾을 수 없습니다"));
-
-        // 상품 ID 일치 확인
-        if (!size.getProduct().getProductId().equals(productId)) {
-            throw new RuntimeException("해당 상품의 사이즈가 아닙니다");
-        }
-
-        // 재고 업데이트
-        size.updateStock(request.getStockQuantity());
-
-        // 전체 재고 다시 계산
-        Integer totalStock = productSizeRepository.getTotalStockByProductId(productId);
-        Product product = size.getProduct();
-        // totalStock을 product에 반영하는 로직 필요
-
-        return ProductSizeResponse.builder()
-                .sizeId(size.getSizeId())
-                .sizeName(size.getSizeName())
-                .stockQuantity(size.getStockQuantity())
-                .build();
-    }
-
-    /**
-     * 특정 상품의 사이즈 목록 조회
-     */
-    public List<ProductSizeResponse> getProductSizes(Long productId) {
-        List<ProductSize> sizes = productSizeRepository.findByProductProductId(productId);
-        return sizes.stream()
-                .map(ProductSizeResponse::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * 특정 상품의 이미지 목록 조회
      */
     public List<ProductImageResponse> getProductImages(Long productId) {
@@ -354,5 +318,15 @@ public class ProductService {
         return images.stream()
                 .map(ProductImageResponse::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public String getImageUrl(String imageUrl) {
+        String fileUrl = fileDir + File.separator + "products" + File.separator + imageUrl;
+        return fileUrl;
+    }
+
+    public String getThumbnailsImageUrl(String imageUrl) {
+        String fileUrl = fileDir + File.separator + "products" + File.separator + "thumbnails" + File.separator + imageUrl;
+        return fileUrl;
     }
 }

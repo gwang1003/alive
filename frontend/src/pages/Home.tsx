@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
@@ -21,6 +21,7 @@ import pe3 from '../assets/products/e/14bc1f53815634312a63fe3c8428d3ad.jpg';
 import pf1 from '../assets/products/f/8c947dcdb44de07d36c0c6da689591f5.jpg';
 import pf2 from '../assets/products/f/fa6076b75d4a90126471c3edc5353c66.jpg';
 import pf3 from '../assets/products/f/43051c1d6f70afd76a24cd53a08d55f2.jpg';
+import axios from "../api/axios.ts";
 
 const NEW_PRODUCTS = [
     {
@@ -189,6 +190,20 @@ const BEST_PRODUCTS = [
 ];
 
 const Home: React.FC = () => {
+    const [products, setProducts] = useState([]);
+    useEffect(() => {
+        const init = async () => {
+            try {
+                const response = await axios.get('/products');
+                setProducts(response.data.content);
+                console.log(response)
+            } catch (error) {
+                console.error('등록 실패:', error);
+            }
+        }
+        init()
+
+    }, []);
     return (
         <div className="bg-white">
             {/* 1. Hero Section: 꽉 찬 이미지와 여백의 조화 */}
@@ -221,7 +236,7 @@ const Home: React.FC = () => {
             <div className="mx-auto px-12 py-20">
                 <h2 className="text-2xl font-black mb-12 tracking-tight">New Arrivals.</h2>
                 <div className="grid grid-cols-4 gap-x-8 gap-y-16">
-                    {NEW_PRODUCTS.map((product) => (
+                    {products.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>

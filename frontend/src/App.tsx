@@ -38,7 +38,7 @@ const App: React.FC = () => {
                     {/* 메인 페이지: 신상품 목록 표시 */}
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/product/detail" element={<ProductDetail />} />
+                    <Route path="/product/detail/:productId" element={<ProductDetail />} />
                     <Route path="/new" element={<ProductForm />} />
                     {/* 나중에 추가할 경로들 예시 */}
                     {/* <Route path="/login" element={<Login />} /> */}

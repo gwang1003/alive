@@ -75,11 +75,15 @@ public class Product {
     // 연관관계 매핑
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<ProductSize> sizes = new ArrayList<>();
+    private List<ProductStock> stocks = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ProductImage> images = new ArrayList<>();
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private ModelInfo modelInfo = new ModelInfo();
 
     // 비즈니스 메서드
 

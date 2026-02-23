@@ -2,6 +2,9 @@ package com.alive.domain.product.dto;
 
 import com.alive.domain.product.entity.Gender;
 import com.alive.domain.product.entity.Product;
+import com.alive.domain.product.entity.ProductImage;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +23,7 @@ public class ProductListResponse {
     private BigDecimal price;
     private Integer discountRate;
     private BigDecimal finalPrice;
-    private String thumbnailImage;
+    private List<String> images;
     private Gender gender;
     private Integer minAge;
     private Integer maxAge;
@@ -31,11 +34,7 @@ public class ProductListResponse {
     // Entity → DTO 변환 (목록용 - 간단한 정보만)
     public static ProductListResponse fromEntity(Product product) {
         // 썸네일 이미지 찾기
-        String thumbnail = product.getImages().stream()
-                .filter(img -> img.getIsThumbnail() != null && img.getIsThumbnail())
-                .findFirst()
-                .map(img -> img.getImageUrl())
-                .orElse(null);
+
 
         return ProductListResponse.builder()
                 .productId(product.getProductId())
@@ -43,7 +42,7 @@ public class ProductListResponse {
                 .price(product.getPrice())
                 .discountRate(product.getDiscountRate())
                 .finalPrice(product.getFinalPrice())
-                .thumbnailImage(thumbnail)
+                .images(product.getImages().stream().map(img -> img.getImageUrl()).toList())
                 .gender(product.getGender())
                 .minAge(product.getMinAge())
                 .maxAge(product.getMaxAge())

@@ -36,4 +36,4 @@ server:
 
   # 파일 저장 경로
 file:
-  upload-dir: uploads
+  upload-dir: D:/alive/uploads
