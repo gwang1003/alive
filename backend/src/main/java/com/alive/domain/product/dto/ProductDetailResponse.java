@@ -34,7 +34,8 @@ public class ProductDetailResponse {
     private Long categoryId;
     private String categoryName;
     private List<ProductImageResponse> images;
-    private List<ProductSizeResponse> sizes;
+    private List<ProductStockResponse> sizes;
+    private ProductModelInfoResponse modelInfo;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -46,9 +47,11 @@ public class ProductDetailResponse {
                 .collect(Collectors.toList());
 
         // 사이즈 목록 변환
-        List<ProductSizeResponse> sizes = product.getSizes().stream()
-                .map(ProductSizeResponse::fromEntity)
+        List<ProductStockResponse> sizes = product.getStocks().stream()
+                .map(ProductStockResponse::fromEntity)
                 .collect(Collectors.toList());
+
+        ProductModelInfoResponse modelInfo = ProductModelInfoResponse.fromEntity(product.getModelInfo());
 
         return ProductDetailResponse.builder()
                 .productId(product.getProductId())
@@ -70,6 +73,7 @@ public class ProductDetailResponse {
                         product.getCategory().getName() : null)
                 .images(images)
                 .sizes(sizes)
+                .modelInfo(modelInfo)
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();

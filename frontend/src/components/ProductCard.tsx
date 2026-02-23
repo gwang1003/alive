@@ -10,7 +10,7 @@ import 'swiper/css/navigation';
 
 interface ProductProps {
     product: {
-        id: number;
+        productId: number;
         name: string;
         price: number;
         discountRate: number;
@@ -22,7 +22,7 @@ interface ProductProps {
 const ProductCard: React.FC<ProductProps> = ({ product }) => {
     const navigate = useNavigate();
     const productDetail = () => {
-        navigate('/product/detail');
+        navigate(`/product/detail/${product.productId}`);
     }
     return (
         <div className="group flex flex-col gap-4" onClick={productDetail}>
@@ -37,7 +37,7 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
                     {product.images.map((img, index) => (
                         <SwiperSlide key={index}>
                             <img
-                                src={img}
+                                src={`/api`+img}
                                 alt={`${product.name}-${index}`}
                                 className="w-full h-full object-cover"
                             />
@@ -56,7 +56,7 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
             </div>
 
             {/* 텍스트 영역 */}
-            <Link to={`/products/${product.id}`} className="flex flex-col gap-1">
+            <Link to={`/products/detail/${product.productId}`} className="flex flex-col gap-1">
                 <h3 className="text-[14px] font-bold text-gray-800 tracking-tight">{product.name}</h3>
                 <div className="flex items-center gap-2 mt-1">
           <span className="text-[15px] font-black text-gray-900">

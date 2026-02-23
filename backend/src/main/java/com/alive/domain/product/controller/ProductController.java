@@ -83,7 +83,7 @@ public class ProductController {
      * 상품 상세 조회
      * GET /api/products/{productId}
      */
-    @GetMapping("/{productId}")
+    @GetMapping("/{productId:\\d+}")
     public ResponseEntity<ProductDetailResponse> getProductDetail(@PathVariable Long productId) {
         ProductDetailResponse product = productService.getProductDetail(productId);
         return ResponseEntity.ok(product);
@@ -147,4 +147,6 @@ public class ProductController {
         Page<ProductListResponse> products = productService.getDiscountedProducts(pageable);
         return ResponseEntity.ok(products);
     }
+
+
 }
