@@ -1,19 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 import { Plus, Trash2, Image as ImageIcon, Type, User, Upload, X } from 'lucide-react';
 import axios from "../../api/axios.ts";
-
-const tempCategories = [
-    { id: 1, name: 'Outer' },
-    { id: 2, name: 'Top' },
-    { id: 3, name: 'Pants' },
-    { id: 4, name: 'Acc' }
-];
-
-enum gender {
-    'MAIL' = 'MAIL',
-    'FEMAIL' = 'FEMAIL',
-    'UNISEX' = 'UNISEX'
-}
+import { Category } from "../../types/category.ts";
 
 interface DetailBlock {
     id: string;
@@ -50,12 +38,27 @@ interface ProductState {
     mainDescription: string; // 메인 긴 설명
     price: number;
     categoryId: number;
-    gender: 'MALE' | 'FAMALE' | 'UNISEX' | '';
+    gender: 'MALE' | 'FEMALE' | 'UNISEX' | '';
     modelInfo: ModelInfo;
     // ... 나머지
 }
 
 const ProductForm: React.FC = () => {
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [submitError, setSubmitError] = useState('');
+
+    useEffect(() => {
+        const loadCategories = async () => {
+            try {
+                const response = await axios.get('/categories');
+                setCategories(response.data);
+            } catch (error) {
+                console.error('카테고리 조회 실패:', error);
+            }
+        };
+        loadCategories();
+    }, []);
+
     const [mainImage, setMainImage] = useState<{file: File, preview: string} | null>(null);
     const [thumbnails, setThumbnails] = useState<{id: string, file: File, preview: string}[]>([]);
     const [detailBlocks, setDetailBlocks] = useState<DetailBlock[]>([]);
@@ -165,7 +168,11 @@ const ProductForm: React.FC = () => {
         });
 
         // 3. 디테일 뷰 파일들 (순서 보장을 위해 별도 리스트로 관리)
-        detailBlocks.forEach(block => {
+        // 파일이 아직 안 붙은 IMAGE 블록은 detailFiles와 detailBlocks 양쪽에서 함께 제외해야
+        // 백엔드가 파일을 순서대로 소비할 때 밀리지 않음
+        const validBlocks = detailBlocks.filter(block => block.type !== 'IMAGE' || block.file);
+
+        validBlocks.forEach(block => {
             if (block.type === 'IMAGE' && block.file) {
                 formData.append('detailFiles', block.file);
             }
@@ -177,7 +184,7 @@ const ProductForm: React.FC = () => {
             modelInfo,
             options,
             stocks,
-            detailBlocks: detailBlocks.map((block, index) => ({
+            detailBlocks: validBlocks.map((block, index) => ({
                 type: block.type,
                 value: block.value || '', // TEXT면 내용, IMAGE면 나중에 서버에서 채움
                 displayOrder: index
@@ -189,13 +196,15 @@ const ProductForm: React.FC = () => {
             type: 'application/json'
         }));
 
+        setSubmitError('');
         try {
-            const response = await axios.post('/admin/products', formData, {
+            await axios.post('/admin/products', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             alert('상품 등록 성공!');
-        } catch (error) {
+        } catch (error: any) {
             console.error('등록 실패:', error);
+            setSubmitError(error.response?.data?.message ?? '상품 등록 중 오류가 발생했습니다.');
         }
     };
 
@@ -203,9 +212,14 @@ const ProductForm: React.FC = () => {
         <div className="min-h-screen bg-gray-50 pb-20">
             <header className="bg-white border-b sticky top-0 z-50 px-12 py-6 flex justify-between items-center">
                 <h1 className="text-xl font-black italic uppercase">Admin : Product Enrollment</h1>
-                <button onClick={handleSubmit} className="bg-black text-white px-10 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all">
-                    Save Product
-                </button>
+                <div className="flex items-center gap-4">
+                    {submitError && (
+                        <p className="text-xs font-bold text-red-500">{submitError}</p>
+                    )}
+                    <button onClick={handleSubmit} className="bg-black text-white px-10 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all">
+                        Save Product
+                    </button>
+                </div>
             </header>
 
             <main className="max-w-6xl mx-auto mt-12 grid grid-cols-[1fr_400px] gap-12 px-6">
@@ -468,8 +482,8 @@ const ProductForm: React.FC = () => {
                                     onChange={(e) => setProduct({...product, categoryId: Number(e.target.value)})}
                                 >
                                     <option value="">카테고리 선택</option>
-                                    {tempCategories.map(cat => (
-                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    {categories.map(cat => (
+                                        <option key={cat.categoryId} value={cat.categoryId}>{cat.name}</option>
                                     ))}
                                 </select>
                             </div>
@@ -539,13 +553,13 @@ const ProductForm: React.FC = () => {
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Height</label>
-                                        <input type="text" placeholder="ex) 110cm" className="w-full border-b py-1 text-sm font-bold outline-none focus:border-black"
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Height (cm)</label>
+                                        <input type="number" placeholder="ex) 110" className="w-full border-b py-1 text-sm font-bold outline-none focus:border-black"
                                                onChange={(e) => setModelInfo({...modelInfo, height: Number(e.target.value)})}/>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Weight</label>
-                                        <input type="text" placeholder="ex) 19kg" className="w-full border-b py-1 text-sm font-bold outline-none focus:border-black"
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Weight (kg)</label>
+                                        <input type="number" placeholder="ex) 19" className="w-full border-b py-1 text-sm font-bold outline-none focus:border-black"
                                                onChange={(e) => setModelInfo({...modelInfo, weight: Number(e.target.value)})}/>
                                     </div>
                                 </div>
@@ -556,7 +570,7 @@ const ProductForm: React.FC = () => {
                         <div className="space-y-6 pt-6 border-t border-gray-50">
                             <h3 className="text-[11px] font-black text-gray-900 uppercase tracking-widest">Pricing</h3>
                             <input type="number" placeholder="판매가 (₩)" className="w-full border-b py-2 text-sm font-bold outline-none focus:border-black"
-                                   onChange={(e) => setProduct({...product, price: e.target.value})}/>
+                                   onChange={(e) => setProduct({...product, price: Number(e.target.value)})}/>
                         </div>
                     </div>
                 </aside>
