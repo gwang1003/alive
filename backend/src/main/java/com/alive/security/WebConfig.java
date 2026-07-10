@@ -1,5 +1,6 @@
 package com.alive.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -7,6 +8,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
@@ -18,8 +23,10 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addResourceHandlers (ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/api/products/**").addResourceLocations("file:///D:/alive/uploads/products/");
-        registry.addResourceHandler("/api/products/thumbnails/**").addResourceLocations("file:///D:/alive/uploads/products/thumbnails/");
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // FileStorageService가 "/products", "/products/thumbnails", "/products/details" 하위로 저장하므로
+        // 이 하나의 매핑으로 전부 커버됨. 실제 저장 위치는 application.yml의 file.upload-dir 설정을 그대로 따름.
+        registry.addResourceHandler("/api/products/**")
+                .addResourceLocations("file:///" + uploadDir + "/products/");
     }
 }

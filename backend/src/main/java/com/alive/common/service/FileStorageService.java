@@ -9,10 +9,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
 public class FileStorageService {
+
+    private static final List<String> ALLOWED_EXTENSIONS = List.of("jpg", "jpeg", "png", "webp", "gif");
+    private static final List<String> ALLOWED_CONTENT_TYPES = List.of(
+            "image/jpeg", "image/png", "image/webp", "image/gif"
+    );
 
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
@@ -22,12 +29,21 @@ public class FileStorageService {
      */
     public String storeFile(MultipartFile file, String subDir) {
         try {
-            // 파일명 생성 (UUID + 원본 확장자)
             String originalFilename = file.getOriginalFilename();
             String extension = originalFilename != null && originalFilename.contains(".")
-                    ? originalFilename.substring(originalFilename.lastIndexOf("."))
+                    ? originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase(Locale.ROOT)
                     : "";
-            String fileName = UUID.randomUUID().toString() + extension;
+
+            if (!ALLOWED_EXTENSIONS.contains(extension)) {
+                throw new IllegalArgumentException("허용되지 않는 파일 확장자입니다: ." + extension);
+            }
+            String contentType = file.getContentType();
+            if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType.toLowerCase(Locale.ROOT))) {
+                throw new IllegalArgumentException("허용되지 않는 파일 형식입니다: " + contentType);
+            }
+
+            // 파일명 생성 (UUID + 원본 확장자)
+            String fileName = UUID.randomUUID() + "." + extension;
 
             // 저장 경로 생성
             Path uploadPath = Paths.get(uploadDir, subDir);
