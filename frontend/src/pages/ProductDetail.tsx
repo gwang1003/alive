@@ -2,8 +2,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Heart, Share2, ShoppingBag, ShoppingCart} from 'lucide-react';
 import bottomSize from '../assets/products/common/bottomSize.jpg';
 import topSize from '../assets/products/common/topSize.jpg';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "../api/axios.ts";
+import useCartStore from "../store/cartStore";
+import useAuthStore from "../assets/authStore.tsx";
 
 const ProductDetail: React.FC = () => {
     // 스크롤 이동을 위한 레퍼런스 생성 (Java의 참조 변수와 비슷합니다)
@@ -13,10 +15,19 @@ const ProductDetail: React.FC = () => {
     const qnaRef = useRef<HTMLDivElement>(null);
     const realatedRef = useRef<HTMLDivElement>(null);
 
+    const navigate = useNavigate();
+    const accessToken = useAuthStore((state) => state.accessToken);
+    const addToCart = useCartStore((state) => state.addToCart);
+
     const [mainImage, setMainImage] = useState("");
     const { productId } = useParams();
     const [thumbnails, setThumbnails] = useState<string[]>([]);
     const [productData, setProductData] = useState();
+
+    const [selectedColor, setSelectedColor] = useState('');
+    const [selectedSize, setSelectedSize] = useState('');
+    const [cartQuantity, setCartQuantity] = useState(1);
+    const [cartError, setCartError] = useState('');
 
     useEffect(() => {
         const init = async() => {
@@ -25,6 +36,10 @@ const ProductDetail: React.FC = () => {
             setMainImage(response.data.images[0].imageUrl)
             setThumbnails(response.data.images.filter((img) => img.isThumbnail == false))
             setProductData(response.data)
+            setSelectedColor('');
+            setSelectedSize('');
+            setCartQuantity(1);
+            setCartError('');
             console.log(thumbnails)
         }
         init();
@@ -79,6 +94,31 @@ const ProductDetail: React.FC = () => {
     if(productData == null) {
         return (<div></div>)
     }
+
+    const stocks = productData.sizes || [];
+    const availableColors = [...new Set(stocks.map((s) => s.color))];
+    const availableSizes = [...new Set(stocks.map((s) => s.size))];
+    const selectedStock = stocks.find((s) => s.color === selectedColor && s.size === selectedSize);
+
+    const handleAddToCart = async () => {
+        setCartError('');
+
+        if (!selectedStock) {
+            setCartError('색상과 사이즈를 선택해주세요');
+            return;
+        }
+        if (!accessToken) {
+            navigate('/login');
+            return;
+        }
+
+        try {
+            await addToCart(selectedStock.stockId, cartQuantity);
+            alert('장바구니에 담았습니다');
+        } catch (error: any) {
+            setCartError(error.response?.data?.message ?? '장바구니 담기에 실패했습니다');
+        }
+    };
 
     return   (<div className="bg-white min-h-screen">
         {/* 이미지 영역 강조 레이아웃 (7:3 비율에 가깝게 조정) */}
@@ -135,20 +175,46 @@ const ProductDetail: React.FC = () => {
                 <div className="space-y-6 mb-12">
                     <div className="group">
                         <label className="block text-[11px] font-black text-gray-400 mb-2 tracking-widest group-focus-within:text-gray-900 transition-colors uppercase">Color</label>
-                        <select className="w-full border-b-2 border-gray-100 py-3 text-sm font-bold outline-none focus:border-gray-900 transition-all bg-transparent cursor-pointer">
-                            <option>색상을 선택해주세요</option>
-                            <option>멜란지 그레이</option>
-                            <option>네이비</option>
+                        <select
+                            className="w-full border-b-2 border-gray-100 py-3 text-sm font-bold outline-none focus:border-gray-900 transition-all bg-transparent cursor-pointer"
+                            value={selectedColor}
+                            onChange={(e) => setSelectedColor(e.target.value)}
+                        >
+                            <option value="">색상을 선택해주세요</option>
+                            {availableColors.map((color) => (
+                                <option key={color} value={color}>{color}</option>
+                            ))}
                         </select>
                     </div>
                     <div className="group">
                         <label className="block text-[11px] font-black text-gray-400 mb-2 tracking-widest group-focus-within:text-gray-900 transition-colors uppercase">Size</label>
-                        <select className="w-full border-b-2 border-gray-100 py-3 text-sm font-bold outline-none focus:border-gray-900 transition-all bg-transparent cursor-pointer">
-                            <option>사이즈를 선택해주세요</option>
-                            <option>100 (3-4세)</option>
-                            <option>110 (4-5세)</option>
+                        <select
+                            className="w-full border-b-2 border-gray-100 py-3 text-sm font-bold outline-none focus:border-gray-900 transition-all bg-transparent cursor-pointer"
+                            value={selectedSize}
+                            onChange={(e) => setSelectedSize(e.target.value)}
+                        >
+                            <option value="">사이즈를 선택해주세요</option>
+                            {availableSizes.map((size) => (
+                                <option key={size} value={size}>{size}</option>
+                            ))}
                         </select>
                     </div>
+                    {selectedStock && (
+                        <div className="group">
+                            <label className="block text-[11px] font-black text-gray-400 mb-2 tracking-widest uppercase">Quantity ({selectedStock.quantity}개 남음)</label>
+                            <input
+                                type="number"
+                                min={1}
+                                max={selectedStock.quantity}
+                                value={cartQuantity}
+                                onChange={(e) => setCartQuantity(Math.max(1, Math.min(selectedStock.quantity, Number(e.target.value))))}
+                                className="w-24 border-b-2 border-gray-100 py-3 text-sm font-bold outline-none focus:border-gray-900 transition-all bg-transparent"
+                            />
+                        </div>
+                    )}
+                    {cartError && (
+                        <p className="text-xs font-bold text-red-500">{cartError}</p>
+                    )}
                 </div>
 
                 {/* 버튼 세트 */}
@@ -156,7 +222,10 @@ const ProductDetail: React.FC = () => {
                     <button className="bg-gray-900 text-white font-black text-xs tracking-[0.2em] uppercase hover:bg-black transition-all flex items-center justify-center gap-2">
                         Buy Now
                     </button>
-                    <button className="bg-white border border-gray-200 text-gray-900 font-black text-xs tracking-[0.2em] uppercase hover:bg-gray-50 transition-all flex items-center justify-center gap-2">
+                    <button
+                        onClick={handleAddToCart}
+                        className="bg-white border border-gray-200 text-gray-900 font-black text-xs tracking-[0.2em] uppercase hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
+                    >
                         <ShoppingBag className="w-4 h-4" /> Cart
                     </button>
                 </div>

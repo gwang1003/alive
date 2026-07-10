@@ -2,9 +2,11 @@ import React from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import { Search, User, ShoppingBag } from 'lucide-react';
 import logo from '../assets/logo.png';
+import useCartStore from '../store/cartStore';
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
+    const cartCount = useCartStore((state) => state.items.reduce((sum, item) => sum + item.quantity, 0));
     const categories = [
         { name: 'NEW', path: '/new' },
         { name: 'BEST', path: '/best' },
@@ -56,7 +58,7 @@ const Header: React.FC = () => {
                 <Link to="/cart" className="relative group text-gray-400 hover:text-gray-900">
                     <ShoppingBag className="w-5 h-5 stroke-[1.5px] transition-colors" />
                     <span className="absolute -top-1 -right-1.5 bg-gray-900 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold border border-white">
-            0
+            {cartCount}
           </span>
                 </Link>
             </div>

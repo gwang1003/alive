@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import aliveLogo from '../assets/logo.png';
 import axios from "../api/axios";
 import useAuthStore from "../assets/authStore";
+import useCartStore from "../store/cartStore";
 
 
 
@@ -11,6 +12,7 @@ const Login: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: '', password: '' });
     const login = useAuthStore((state) => state.login);
+    const fetchCart = useCartStore((state) => state.fetchCart);
     // 6년 차 짬바: 핸들러 하나로 여러 input 관리하기
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -27,6 +29,7 @@ const Login: React.FC = () => {
 
             // 2. Zustand 상태 업데이트
             login(accessToken, response.data);
+            fetchCart();
 
             // 3. 페이지 이동 (성공 시에만 이동하도록 try-catch 안으로)
             navigate('/');

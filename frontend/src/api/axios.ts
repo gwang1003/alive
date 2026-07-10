@@ -1,5 +1,6 @@
 import axios from 'axios';
 import useAuthStore from "../assets/authStore.tsx";
+import useCartStore from "../store/cartStore";
 
 const api = axios.create({
     baseURL: '/api', // Vite 프록시 설정을 통해 8080으로 전달됩니다.
@@ -41,6 +42,7 @@ api.interceptors.response.use(
             } catch (reissueError) {
                 // RefreshToken마저 만료된 경우 -> 로그아웃 처리
                 useAuthStore.getState().logout();
+                useCartStore.getState().clearCart();
                 return Promise.reject(reissueError);
             }
         }
