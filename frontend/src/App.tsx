@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import ProductDetail from "./pages/ProductDetail.tsx";
 import Footer from "./components/Footer";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import axios from "./api/axios";
 import useAuthStore from "./assets/authStore.tsx";
 import ProductForm from "./pages/admin/ProductForm.tsx";
@@ -38,6 +39,7 @@ const App: React.FC = () => {
                     {/* 메인 페이지: 신상품 목록 표시 */}
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Register />} />
                     <Route path="/product/detail/:productId" element={<ProductDetail />} />
                     <Route path="/new" element={<ProductForm />} />
                     {/* 나중에 추가할 경로들 예시 */}

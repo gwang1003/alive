@@ -19,6 +19,10 @@ interface ProductProps {
     };
 }
 
+// 백엔드가 내려주는 이미지는 "/products/..." 형태의 상대 경로라 "/api"를 붙여야 하지만,
+// 목업 데이터의 로컬 import 이미지는 이미 완성된 URL이라 그대로 써야 함
+const resolveImageSrc = (img: string) => (img.startsWith('/products/') ? `/api${img}` : img);
+
 const ProductCard: React.FC<ProductProps> = ({ product }) => {
     const navigate = useNavigate();
     const productDetail = () => {
@@ -37,7 +41,7 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
                     {product.images.map((img, index) => (
                         <SwiperSlide key={index}>
                             <img
-                                src={`/api`+img}
+                                src={resolveImageSrc(img)}
                                 alt={`${product.name}-${index}`}
                                 className="w-full h-full object-cover"
                             />
@@ -47,7 +51,7 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
                 <div className="absolute top-4 left-4 z-10 grid gap-1 grid-cols-4">
                 {product.tag && (
                     product.tag.map((tags) => (
-                        <span className="bg-white px-2 py-1 text-[10px] font-bold tracking-widest shadow-sm group block float-left">
+                        <span key={tags} className="bg-white px-2 py-1 text-[10px] font-bold tracking-widest shadow-sm group block float-left">
                             {tags}
                         </span>
                     ))
@@ -56,7 +60,7 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
             </div>
 
             {/* 텍스트 영역 */}
-            <Link to={`/products/detail/${product.productId}`} className="flex flex-col gap-1">
+            <Link to={`/product/detail/${product.productId}`} className="flex flex-col gap-1">
                 <h3 className="text-[14px] font-bold text-gray-800 tracking-tight">{product.name}</h3>
                 <div className="flex items-center gap-2 mt-1">
           <span className="text-[15px] font-black text-gray-900">

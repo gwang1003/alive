@@ -275,7 +275,7 @@ public class ProductService {
         if (request.getCategoryId() != null) {
             Category category = categoryRepository.findById(request.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("카테고리를 찾을 수 없습니다"));
-            // category 필드가 없으므로 별도 처리 필요
+            product.updateCategory(category);
         }
 
         // 상품 정보 업데이트

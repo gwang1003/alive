@@ -23,10 +23,12 @@ const ProductDetail: React.FC = () => {
             const response = await axios.get(`/products/${productId}`)
             console.log(response)
             setMainImage(response.data.images[0].imageUrl)
+            setThumbnails(response.data.images.filter((img) => img.isThumbnail == false))
             setProductData(response.data)
+            console.log(thumbnails)
         }
         init();
-    }, []);
+    }, [productId]);
 
     // 썸네일 이미지 리스트
     // const thumbnails = [
@@ -89,7 +91,7 @@ const ProductDetail: React.FC = () => {
                     {productData.images.map((img, i) => (
                         <div
                             key={i}
-                            onMouseEnter={() => setMainImage("/api"+img.imageUrl)} // 클릭 대신 마우스만 올려도 바뀌게 하면 더 힙함
+                            onMouseEnter={() => setMainImage(img.imageUrl)} // 클릭 대신 마우스만 올려도 바뀌게 하면 더 힙함
                             className={`aspect-square w-full rounded-lg overflow-hidden cursor-pointer transition-all border-2
                                 ${mainImage === img ? 'border-gray-900 opacity-100' : 'border-transparent opacity-60'}`}
                         >
@@ -99,7 +101,7 @@ const ProductDetail: React.FC = () => {
                 </div>
 
                 {/* 메인 썸네일: 5:5 비율(aspect-square)로 큼직하게 배치 */}
-                <div className="flex-1 aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-50 shadow-sm">
+                <div className="max-h-[688px] flex-1 aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-50 shadow-sm">
                     <img
                         src={"/api"+mainImage}
                         alt="main"
@@ -206,8 +208,8 @@ const ProductDetail: React.FC = () => {
 
                 {/* 전후좌우 4컷 그리드 */}
                 <div className="grid grid-cols-4 gap-4">
-                    {productData.images && productData.images.map((img:string) =>
-                        <img src={"/api"+img.imageUrl} alt="Front" className="w-full rounded-xl bg-gray-50" />
+                    {productData.images && productData.images.map((img, i) =>
+                        <img key={i} src={"/api"+img.imageUrl} alt="Front" className="w-full rounded-xl bg-gray-50" />
                     )}
                 </div>
             </section>
@@ -216,7 +218,7 @@ const ProductDetail: React.FC = () => {
             <section className="bg-gray-50 rounded-2xl p-10 flex justify-between items-center">
                 <div className="flex flex-col gap-1">
                     <span className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em]">Model Info</span>
-                    <h4 className="text-xl font-black text-gray-900">MODEL ${productData.modelInfo.name}</h4>
+                    <h4 className="text-xl font-black text-gray-900">MODEL {productData.modelInfo.modelName}</h4>
                 </div>
                 <div className="flex gap-12">
                     {[

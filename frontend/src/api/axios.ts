@@ -11,10 +11,7 @@ const api = axios.create({
 
 // api 호출 시 인터셉트하여 토큰 검증해서 넣어주는 부분
 api.interceptors.request.use((config) => {
-    // const token = localStorage.getItem('accessToken');
     const token = useAuthStore.getState().accessToken;
-    console.log(useAuthStore)
-    console.log(token)
     if(token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -35,8 +32,8 @@ api.interceptors.response.use(
                 const response = await api.post('/auth/refresh');
                 const { accessToken } = response.data;
 
-                // 2. 새로운 토큰을 Zustand나 메모리에 저장
-                // useAuthStore.getState().setAccessToken(accessToken);
+                // 2. 새로운 토큰을 Zustand 스토어에 저장 (다음 요청부터 이 토큰을 사용)
+                useAuthStore.getState().setAccessToken(accessToken);
 
                 // 3. 원래 실패했던 요청의 헤더를 새 토큰으로 교체 후 재요청
                 originalRequest.headers.Authorization = `Bearer ${accessToken}`;

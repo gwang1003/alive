@@ -121,4 +121,8 @@ public class Product {
     public void updateStockQuantity(Integer stockQuantity) {
         this.stockQuantity = stockQuantity;
     }
+
+    public void updateCategory(Category category) {
+        this.category = category;
+    }
 }
