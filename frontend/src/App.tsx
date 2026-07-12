@@ -7,6 +7,9 @@ import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import OrderDetail from "./pages/OrderDetail";
+import OrderHistory from "./pages/OrderHistory";
 import axios from "./api/axios";
 import useAuthStore from "./assets/authStore.tsx";
 import useCartStore from "./store/cartStore";
@@ -14,6 +17,7 @@ import ProductForm from "./pages/admin/ProductForm.tsx";
 
 const App: React.FC = () => {
     const login = useAuthStore((state) => state.login);
+    const setAuthChecked = useAuthStore((state) => state.setAuthChecked);
     const fetchCart = useCartStore((state) => state.fetchCart);
 
     useEffect(() => {
@@ -30,6 +34,8 @@ const App: React.FC = () => {
             } catch (error) {
                 console.log("기존 로그인 정보 없음 (비로그인 상태)");
                 // 여기서 로그아웃 처리를 하거나 그대로 둡니다.
+            } finally {
+                setAuthChecked();
             }
         };
 
@@ -45,6 +51,9 @@ const App: React.FC = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/orders" element={<OrderHistory />} />
+                    <Route path="/orders/:orderId" element={<OrderDetail />} />
                     <Route path="/product/detail/:productId" element={<ProductDetail />} />
                     <Route path="/new" element={<ProductForm />} />
                     {/* 나중에 추가할 경로들 예시 */}

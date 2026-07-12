@@ -7,19 +7,21 @@ import useAuthStore from '../assets/authStore';
 const Cart: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
+    const authChecked = useAuthStore((state) => state.authChecked);
     const { items, isLoading, fetchCart, updateQuantity, removeItem } = useCartStore();
 
     useEffect(() => {
+        if (!authChecked) return;
         if (!accessToken) {
             navigate('/login');
             return;
         }
         fetchCart();
-    }, [accessToken]);
+    }, [authChecked, accessToken]);
 
     const totalPrice = items.reduce((sum, item) => sum + item.finalPrice * item.quantity, 0);
 
-    if (!accessToken) {
+    if (!authChecked || !accessToken) {
         return null;
     }
 
@@ -105,11 +107,10 @@ const Cart: React.FC = () => {
                         </div>
 
                         <button
-                            disabled
-                            title="주문 기능은 아직 준비 중입니다"
-                            className="w-full h-16 mt-8 bg-gray-200 text-gray-400 font-black text-xs tracking-[0.2em] uppercase rounded-xl cursor-not-allowed"
+                            onClick={() => navigate('/checkout')}
+                            className="w-full h-16 mt-8 bg-gray-900 text-white font-black text-xs tracking-[0.2em] uppercase rounded-xl hover:bg-black transition-all"
                         >
-                            Checkout (준비 중)
+                            Checkout
                         </button>
                     </>
                 )}

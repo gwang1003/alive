@@ -52,6 +52,7 @@ const Header: React.FC = () => {
             {/* 오른쪽: 유틸리티 아이콘 */}
             <div className="flex items-center gap-6 text-gray-400">
                 <Search className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors" />
+                <Link to="/orders" className="text-[11px] font-bold hover:text-gray-900 transition-colors">주문내역</Link>
                 <button onClick={() => navigate('/login')}>
                     <User className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors"/>
                 </button>
