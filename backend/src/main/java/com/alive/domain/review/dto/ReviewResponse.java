@@ -1,12 +1,14 @@
 package com.alive.domain.review.dto;
 
 import com.alive.domain.review.entity.Review;
+import com.alive.domain.review.entity.ReviewImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -21,6 +23,7 @@ public class ReviewResponse {
     private String color;
     private String size;
     private LocalDateTime createdAt;
+    private List<String> imageUrls;
 
     public static ReviewResponse fromEntity(Review review) {
         return ReviewResponse.builder()
@@ -31,6 +34,7 @@ public class ReviewResponse {
                 .color(review.getOrderItem().getColor())
                 .size(review.getOrderItem().getSize())
                 .createdAt(review.getCreatedAt())
+                .imageUrls(review.getImages().stream().map(ReviewImage::getImageUrl).toList())
                 .build();
     }
 

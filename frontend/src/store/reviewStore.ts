@@ -13,6 +13,7 @@ interface ReviewState {
     fetchSummary: (productId: number) => Promise<void>;
     fetchReviewableItems: (productId: number) => Promise<void>;
     createReview: (request: ReviewCreateRequest) => Promise<Review>;
+    uploadReviewImages: (reviewId: number, files: File[]) => Promise<Review>;
 }
 
 const useReviewStore = create<ReviewState>((set) => ({
@@ -51,6 +52,15 @@ const useReviewStore = create<ReviewState>((set) => ({
 
     createReview: async (request) => {
         const response = await api.post<Review>('/reviews', request);
+        return response.data;
+    },
+
+    uploadReviewImages: async (reviewId, files) => {
+        const formData = new FormData();
+        files.forEach((file) => formData.append('files', file));
+        const response = await api.post<Review>(`/reviews/${reviewId}/images`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
         return response.data;
     },
 }));

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -63,6 +64,18 @@ public class ReviewController {
     public ResponseEntity<ReviewResponse> createReview(@Valid @RequestBody ReviewCreateRequest request) {
         ReviewResponse response = reviewService.createReview(currentEmail(), request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * 리뷰 사진 첨부 (본인 리뷰만, 최대 5장)
+     * POST /api/reviews/{reviewId}/images
+     */
+    @PostMapping("/{reviewId}/images")
+    public ResponseEntity<ReviewResponse> uploadReviewImages(
+            @PathVariable Long reviewId,
+            @RequestParam("files") List<MultipartFile> files
+    ) {
+        return ResponseEntity.ok(reviewService.uploadReviewImages(currentEmail(), reviewId, files));
     }
 
     private String currentEmail() {

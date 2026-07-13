@@ -6,6 +6,7 @@ export interface Review {
     color: string;
     size: string;
     createdAt: string;
+    imageUrls: string[];
 }
 
 export interface ReviewSummary {

@@ -28,6 +28,7 @@ const ProductDetail: React.FC = () => {
     const fetchReviewSummary = useReviewStore((state) => state.fetchSummary);
     const fetchReviewableItems = useReviewStore((state) => state.fetchReviewableItems);
     const createReview = useReviewStore((state) => state.createReview);
+    const uploadReviewImages = useReviewStore((state) => state.uploadReviewImages);
 
     const wishlistItems = useWishlistStore((state) => state.items);
     const fetchWishlist = useWishlistStore((state) => state.fetchWishlist);
@@ -39,7 +40,7 @@ const ProductDetail: React.FC = () => {
     const [thumbnails, setThumbnails] = useState<string[]>([]);
     const [productData, setProductData] = useState();
     const [relatedProducts, setRelatedProducts] = useState([]);
-    const [isImageZoomed, setIsImageZoomed] = useState(false);
+    const [zoomImageUrl, setZoomImageUrl] = useState<string | null>(null);
 
     const [selectedColor, setSelectedColor] = useState('');
     const [selectedSize, setSelectedSize] = useState('');
@@ -54,6 +55,7 @@ const ProductDetail: React.FC = () => {
     const [reviewContent, setReviewContent] = useState('');
     const [reviewSubmitError, setReviewSubmitError] = useState('');
     const [reviewSubmitting, setReviewSubmitting] = useState(false);
+    const [reviewImageFiles, setReviewImageFiles] = useState<File[]>([]);
 
     useEffect(() => {
         const init = async() => {
@@ -162,6 +164,7 @@ const ProductDetail: React.FC = () => {
         setReviewRating(5);
         setReviewContent('');
         setReviewSubmitError('');
+        setReviewImageFiles([]);
         setShowReviewForm(true);
     };
 
@@ -179,12 +182,16 @@ const ProductDetail: React.FC = () => {
 
         setReviewSubmitting(true);
         try {
-            await createReview({
+            const created = await createReview({
                 orderItemId: Number(selectedOrderItemId),
                 rating: reviewRating,
                 content: reviewContent,
             });
+            if (reviewImageFiles.length > 0) {
+                await uploadReviewImages(created.reviewId, reviewImageFiles);
+            }
             setShowReviewForm(false);
+            setReviewImageFiles([]);
             setReviewPage(0);
             await Promise.all([
                 fetchReviews(Number(productId), 0, `${reviewSort},desc`),
@@ -220,7 +227,7 @@ const ProductDetail: React.FC = () => {
 
                 {/* 메인 썸네일: 5:5 비율(aspect-square)로 큼직하게 배치 */}
                 <div
-                    onClick={() => setIsImageZoomed(true)}
+                    onClick={() => setZoomImageUrl(mainImage)}
                     className="group relative max-h-[688px] flex-1 aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-50 shadow-sm cursor-zoom-in"
                 >
                     <img
@@ -234,19 +241,19 @@ const ProductDetail: React.FC = () => {
                 </div>
             </div>
 
-            {isImageZoomed && (
+            {zoomImageUrl && (
                 <div
-                    onClick={() => setIsImageZoomed(false)}
+                    onClick={() => setZoomImageUrl(null)}
                     className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center cursor-zoom-out"
                 >
                     <button
-                        onClick={() => setIsImageZoomed(false)}
+                        onClick={() => setZoomImageUrl(null)}
                         className="absolute top-6 right-6 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
                     >
                         <X className="w-6 h-6 text-white" />
                     </button>
                     <img
-                        src={"/api"+mainImage}
+                        src={"/api"+zoomImageUrl}
                         alt="zoomed"
                         className="max-w-[90vw] max-h-[90vh] object-contain"
                     />
@@ -597,6 +604,16 @@ const ProductDetail: React.FC = () => {
                         rows={4}
                         className="w-full rounded-xl border border-gray-200 p-4 text-sm outline-none focus:border-gray-900 transition-all"
                     />
+                    <div>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => setReviewImageFiles(Array.from(e.target.files ?? []).slice(0, 5))}
+                            className="text-xs text-gray-500"
+                        />
+                        <p className="text-[11px] text-gray-400 mt-1">사진은 최대 5장까지 첨부할 수 있어요 ({reviewImageFiles.length}/5)</p>
+                    </div>
                     {reviewSubmitError && <p className="text-xs font-bold text-red-500">{reviewSubmitError}</p>}
                     <div className="flex justify-end gap-3">
                         <button
@@ -647,6 +664,19 @@ const ProductDetail: React.FC = () => {
                                 <p className="text-sm font-bold text-gray-800 leading-relaxed">
                                     {review.content}
                                 </p>
+                                {review.imageUrls.length > 0 && (
+                                    <div className="flex gap-2">
+                                        {review.imageUrls.map((url, i) => (
+                                            <img
+                                                key={i}
+                                                src={`/api${url}`}
+                                                alt="review"
+                                                className="w-20 h-20 rounded-lg object-cover cursor-pointer"
+                                                onClick={() => setZoomImageUrl(url)}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))}
