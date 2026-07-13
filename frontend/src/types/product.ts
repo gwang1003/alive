@@ -18,3 +18,28 @@ export interface Product {
     thumbnailUrl?: string; // product_images 테이블 연동 시
 }
 
+export interface ProductListItem {
+    productId: number;
+    name: string;
+    price: number;
+    discountRate: number;
+    finalPrice: number;
+    images: string[];
+    gender: string;
+    minAge: number | null;
+    maxAge: number | null;
+    stockQuantity: number;
+    viewCount: number;
+    categoryName: string | null;
+}
+
+export interface PageResponse<T> {
+    content: T[];
+    totalElements: number;
+    totalPages: number;
+    number: number;
+    size: number;
+    first: boolean;
+    last: boolean;
+}
+
