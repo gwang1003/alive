@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-import { Search, User, ShoppingBag } from 'lucide-react';
+import { Search, User, ShoppingBag, Heart } from 'lucide-react';
 import logo from '../assets/logo.png';
 import useCartStore from '../store/cartStore';
 
@@ -56,6 +56,9 @@ const Header: React.FC = () => {
                 <button onClick={() => navigate('/login')}>
                     <User className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors"/>
                 </button>
+                <Link to="/wishlist" className="text-gray-400 hover:text-gray-900">
+                    <Heart className="w-5 h-5 stroke-[1.5px] transition-colors" />
+                </Link>
                 <Link to="/cart" className="relative group text-gray-400 hover:text-gray-900">
                     <ShoppingBag className="w-5 h-5 stroke-[1.5px] transition-colors" />
                     <span className="absolute -top-1 -right-1.5 bg-gray-900 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold border border-white">

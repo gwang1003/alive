@@ -7,6 +7,7 @@ import axios from "../api/axios.ts";
 import useCartStore from "../store/cartStore";
 import useAuthStore from "../assets/authStore.tsx";
 import useReviewStore from "../store/reviewStore";
+import useWishlistStore from "../store/wishlistStore";
 
 const ProductDetail: React.FC = () => {
     // 스크롤 이동을 위한 레퍼런스 생성 (Java의 참조 변수와 비슷합니다)
@@ -28,6 +29,11 @@ const ProductDetail: React.FC = () => {
     const fetchReviewSummary = useReviewStore((state) => state.fetchSummary);
     const fetchReviewableItems = useReviewStore((state) => state.fetchReviewableItems);
     const createReview = useReviewStore((state) => state.createReview);
+
+    const wishlistItems = useWishlistStore((state) => state.items);
+    const fetchWishlist = useWishlistStore((state) => state.fetchWishlist);
+    const addWishlist = useWishlistStore((state) => state.addWishlist);
+    const removeWishlist = useWishlistStore((state) => state.removeWishlist);
 
     const [mainImage, setMainImage] = useState("");
     const { productId } = useParams();
@@ -74,6 +80,11 @@ const ProductDetail: React.FC = () => {
         if (!productId || !accessToken) return;
         fetchReviewableItems(Number(productId));
     }, [productId, accessToken]);
+
+    useEffect(() => {
+        if (!accessToken) return;
+        fetchWishlist();
+    }, [accessToken]);
 
     // 썸네일 이미지 리스트
     // const thumbnails = [
@@ -147,6 +158,19 @@ const ProductDetail: React.FC = () => {
             alert('장바구니에 담았습니다');
         } catch (error: any) {
             setCartError(error.response?.data?.message ?? '장바구니 담기에 실패했습니다');
+        }
+    };
+
+    const handleToggleWishlist = async () => {
+        if (!accessToken) {
+            navigate('/login');
+            return;
+        }
+        const isWishlisted = wishlistItems.some((item) => item.productId === Number(productId));
+        if (isWishlisted) {
+            await removeWishlist(Number(productId));
+        } else {
+            await addWishlist(Number(productId));
         }
     };
 
@@ -235,7 +259,11 @@ const ProductDetail: React.FC = () => {
                     </div>
                     <div className="flex gap-2">
                         <button className="p-3 rounded-full hover:bg-gray-100 transition-colors"><Share2 className="w-5 h-5 text-gray-600" /></button>
-                        <button className="p-3 rounded-full hover:bg-gray-100 transition-colors"><Heart className="w-5 h-5 text-gray-600" /></button>
+                        <button onClick={handleToggleWishlist} className="p-3 rounded-full hover:bg-gray-100 transition-colors">
+                            <Heart
+                                className={`w-5 h-5 ${wishlistItems.some((item) => item.productId === Number(productId)) ? 'text-red-500 fill-red-500' : 'text-gray-600'}`}
+                            />
+                        </button>
                     </div>
                 </div>
 
