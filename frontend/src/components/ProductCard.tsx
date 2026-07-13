@@ -19,8 +19,7 @@ interface ProductProps {
     };
 }
 
-// 백엔드가 내려주는 이미지는 "/products/..." 형태의 상대 경로라 "/api"를 붙여야 하지만,
-// 목업 데이터의 로컬 import 이미지는 이미 완성된 URL이라 그대로 써야 함
+// 백엔드가 내려주는 이미지는 "/products/..." 형태의 상대 경로라 "/api"를 붙여줘야 함
 const resolveImageSrc = (img: string) => (img.startsWith('/products/') ? `/api${img}` : img);
 
 const ProductCard: React.FC<ProductProps> = ({ product }) => {

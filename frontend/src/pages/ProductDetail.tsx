@@ -14,7 +14,6 @@ const ProductDetail: React.FC = () => {
     const detailRef = useRef<HTMLDivElement>(null);
     const reviewRef = useRef<HTMLDivElement>(null);
     const guideRef = useRef<HTMLDivElement>(null);
-    const qnaRef = useRef<HTMLDivElement>(null);
     const realatedRef = useRef<HTMLDivElement>(null);
 
     const navigate = useNavigate();
@@ -39,6 +38,7 @@ const ProductDetail: React.FC = () => {
     const { productId } = useParams();
     const [thumbnails, setThumbnails] = useState<string[]>([]);
     const [productData, setProductData] = useState();
+    const [relatedProducts, setRelatedProducts] = useState([]);
 
     const [selectedColor, setSelectedColor] = useState('');
     const [selectedSize, setSelectedSize] = useState('');
@@ -86,40 +86,18 @@ const ProductDetail: React.FC = () => {
         fetchWishlist();
     }, [accessToken]);
 
-    // 썸네일 이미지 리스트
-    // const thumbnails = [
-    //     pa1,
-    //     pa2,
-    //     pa3,
-    //     pb1,
-    //     pb2
-    // ];
-    //
-    // const productData = {
-    //     "productId": 101,
-    //     "modelInfo": {
-    //         "name": "민수",
-    //         "height": "110cm",
-    //         "weight": "19kg",
-    //         "wearingSize": "110",
-    //         "wearingColor": "Melange Grey"
-    //     },
-    //     "sections": {
-    //         "mainImage": pa1,
-    //         "multiAngles": [
-    //             pa2,
-    //             pa3,
-    //             pb1,
-    //             pb2
-    //         ],
-    //         "description": "활동량이 많은 아이들을 위해 탄탄한 분또 소재로 제작된 후드티입니다. 루즈한 핏으로 편안한 착용감을 선사하며, 세탁 후 변형이 적어 데일리 아이템으로 추천합니다.",
-    //         "detailViews": [
-    //             pa2,
-    //             pa3,
-    //             pb1,
-    //         ]
-    //     }
-    // }
+    useEffect(() => {
+        if (!productData?.categoryId) return;
+        const fetchRelated = async () => {
+            try {
+                const response = await axios.get('/products', { params: { categoryId: productData.categoryId, size: 5 } });
+                setRelatedProducts(response.data.content.filter((p) => p.productId !== Number(productId)));
+            } catch (error) {
+                console.error('추천상품 조회 실패:', error);
+            }
+        };
+        fetchRelated();
+    }, [productData?.categoryId, productId]);
 
     const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
         ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -129,7 +107,6 @@ const ProductDetail: React.FC = () => {
         { name: '상세정보', ref: detailRef },
         { name: '가이드', ref: guideRef },
         { name: `구매후기 (${reviewSummary?.totalCount ?? 0})`, ref: reviewRef },
-        { name: '상품문의', ref: qnaRef },
         { name: '추천상품', ref: realatedRef },
     ];
     if(productData == null) {
@@ -418,24 +395,6 @@ const ProductDetail: React.FC = () => {
                 </p>
             </section>
 
-            {/* 4. 디테일 뷰: 옷의 디테일 컷 (통이미지 느낌으로 쭉 나열) */}
-            <section className="space-y-12">
-                <div className="flex flex-col items-center gap-4 mb-16">
-                    <span className="text-[10px] font-black text-gray-300 tracking-[0.3em] uppercase">Detail View</span>
-                    <h3 className="text-3xl font-black tracking-tighter text-gray-900 uppercase">Focus on Detail.</h3>
-                </div>
-
-                {/* 디테일 이미지들을 반복문 없이 수동으로 배치 (하드코딩) */}
-                <div className="flex flex-col gap-6">
-                    {/*{productData.detailViews && productData.detailViews.map((img:string) =>*/}
-                    {/*    <img src={img} alt="Detail 1" className="w-full rounded-2xl" />*/}
-                    {/*)}*/}
-                    {/*<img src={productData.sections.detailViews[0]} alt="Detail 1" className="w-full rounded-2xl" />*/}
-                    {/*<img src={productData.sections.detailViews[1]} alt="Detail 2" className="w-full rounded-2xl" />*/}
-                    {/*<img src={productData.sections.detailViews[2]} alt="Detail 3" className="w-full rounded-2xl" />*/}
-                    {/*<img src={productData.sections.detailViews[0]} alt="Detail 4" className="w-full rounded-2xl" />*/}
-                </div>
-            </section>
         </div>
         {/* 가이드 영역 */}
         <div className="max-w-7xl mx-auto py-32 border-t border-gray-50" ref={guideRef}>
@@ -684,40 +643,27 @@ const ProductDetail: React.FC = () => {
             )}
         </div>
 
-        {/* 상품문의 섹션 */}
-        <div className="max-w-7xl mx-auto py-24 border-t border-gray-50" ref={qnaRef}>
-            <div className="flex justify-between items-center mb-12">
-                <h3 className="text-2xl font-black tracking-tight">Product Q&A</h3>
-                <button className="px-6 py-2 bg-gray-900 text-white text-xs font-bold rounded-full">문의하기</button>
-            </div>
-            <div className="border-t border-gray-900">
-                {[1, 2].map((i) => (
-                    <div key={i} className="flex items-center justify-between py-6 border-b border-gray-100 text-sm">
-                        <div className="flex gap-6 items-center">
-                            <span className="text-gray-400 font-bold">답변완료</span>
-                            <span className="font-medium text-gray-800">재입고 언제 되나요?</span>
-                        </div>
-                        <div className="text-gray-400">lee**** | 2024.02.10</div>
-                    </div>
-                ))}
-            </div>
-        </div>
-
         {/* 추천상품 섹션 */}
-        <div className="max-w-7xl mx-auto py-24 border-t border-gray-50 mb-40" ref={realatedRef}>
-            <h3 className="text-2xl font-black mb-12 tracking-tight">Related Items.</h3>
-            <div className="grid grid-cols-5 gap-6">
-                {productData.images.map((img, i) => (
-                    <div key={i} className="group cursor-pointer">
-                        <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-4 bg-gray-50">
-                            <img src={"/api"+img.imageUrl} alt="related" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        {relatedProducts.length > 0 && (
+            <div className="max-w-7xl mx-auto py-24 border-t border-gray-50 mb-40" ref={realatedRef}>
+                <h3 className="text-2xl font-black mb-12 tracking-tight">Related Items.</h3>
+                <div className="grid grid-cols-5 gap-6">
+                    {relatedProducts.map((product) => (
+                        <div
+                            key={product.productId}
+                            onClick={() => navigate(`/product/detail/${product.productId}`)}
+                            className="group cursor-pointer"
+                        >
+                            <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-4 bg-gray-50">
+                                <img src={"/api"+product.images[0]} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            </div>
+                            <h4 className="text-sm font-bold text-gray-800">{product.name}</h4>
+                            <p className="text-sm font-black text-gray-900 mt-1">{product.finalPrice.toLocaleString()}원</p>
                         </div>
-                        <h4 className="text-sm font-bold text-gray-800">코튼 베이직 팬츠</h4>
-                        <p className="text-sm font-black text-gray-900 mt-1">24,000원</p>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
-        </div>
+        )}
     </div>)
 };
 
