@@ -83,6 +83,10 @@ public class Order {
         this.status = OrderStatus.CANCELLED;
     }
 
+    public void updateStatus(OrderStatus status) {
+        this.status = status;
+    }
+
     public void addOrderItem(OrderItem orderItem) {
         this.orderItems.add(orderItem);
     }

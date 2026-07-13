@@ -115,6 +115,14 @@ public class OrderService {
         return OrderResponse.fromEntity(order);
     }
 
+    @Transactional
+    public OrderResponse updateOrderStatus(Long orderId, OrderStatus status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다"));
+        order.updateStatus(status);
+        return OrderResponse.fromEntity(order);
+    }
+
     private String generateOrderNumber() {
         String timestamp = LocalDateTime.now().format(ORDER_NUMBER_FORMAT);
         String random = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
