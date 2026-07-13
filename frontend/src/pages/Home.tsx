@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import axios from "../api/axios.ts";
+import { getRecentlyViewedIds } from '../utils/recentlyViewed';
 
 const Home: React.FC = () => {
     const [products, setProducts] = useState([]);
     const [bestProducts, setBestProducts] = useState([]);
+    const [recentProducts, setRecentProducts] = useState([]);
     useEffect(() => {
         const init = async () => {
             try {
@@ -20,6 +22,18 @@ const Home: React.FC = () => {
                 setBestProducts(bestResponse.data);
             } catch (error) {
                 console.error('인기상품 조회 실패:', error);
+            }
+            try {
+                const recentIds = getRecentlyViewedIds();
+                const detailResponses = await Promise.all(
+                    recentIds.map((id) => axios.get(`/products/${id}`).catch(() => null))
+                );
+                const recent = detailResponses
+                    .filter((res) => res !== null)
+                    .map((res) => ({ ...res.data, images: res.data.images.map((img) => img.imageUrl) }));
+                setRecentProducts(recent);
+            } catch (error) {
+                console.error('최근 본 상품 조회 실패:', error);
             }
         }
         init()
@@ -72,6 +86,17 @@ const Home: React.FC = () => {
                     ))}
                 </div>
             </div>
+
+            {recentProducts.length > 0 && (
+                <div className="mx-auto px-12 py-20">
+                    <h2 className="text-2xl font-black mb-12 tracking-tight">Recently Viewed.</h2>
+                    <div className="grid grid-cols-4 gap-x-8 gap-y-16">
+                        {recentProducts.map((product) => (
+                            <ProductCard key={product.productId} product={product} />
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

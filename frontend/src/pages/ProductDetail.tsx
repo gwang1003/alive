@@ -8,6 +8,7 @@ import useCartStore from "../store/cartStore";
 import useAuthStore from "../assets/authStore.tsx";
 import useReviewStore from "../store/reviewStore";
 import useWishlistStore from "../store/wishlistStore";
+import { addRecentlyViewed } from "../utils/recentlyViewed";
 
 const ProductDetail: React.FC = () => {
     // 스크롤 이동을 위한 레퍼런스 생성 (Java의 참조 변수와 비슷합니다)
@@ -69,6 +70,7 @@ const ProductDetail: React.FC = () => {
             setCartQuantity(1);
             setCartError('');
             console.log(thumbnails)
+            addRecentlyViewed(Number(productId));
         }
         init();
     }, [productId]);
