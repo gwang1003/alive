@@ -9,6 +9,7 @@ import useAuthStore from "../assets/authStore.tsx";
 import useReviewStore from "../store/reviewStore";
 import useWishlistStore from "../store/wishlistStore";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
+import useRestockStore from "../store/restockStore";
 
 const ProductDetail: React.FC = () => {
     // 스크롤 이동을 위한 레퍼런스 생성 (Java의 참조 변수와 비슷합니다)
@@ -47,6 +48,12 @@ const ProductDetail: React.FC = () => {
     const [selectedSize, setSelectedSize] = useState('');
     const [cartQuantity, setCartQuantity] = useState(1);
     const [cartError, setCartError] = useState('');
+    const [restockRequested, setRestockRequested] = useState(false);
+    const [restockSubmitting, setRestockSubmitting] = useState(false);
+
+    const requestRestockNotification = useRestockStore((state) => state.requestNotification);
+    const cancelRestockNotification = useRestockStore((state) => state.cancelNotification);
+    const checkRestockRequested = useRestockStore((state) => state.checkRequested);
 
     const [reviewSort, setReviewSort] = useState<'createdAt' | 'rating'>('createdAt');
     const [reviewPage, setReviewPage] = useState(0);
@@ -104,6 +111,20 @@ const ProductDetail: React.FC = () => {
         fetchRelated();
     }, [productData?.categoryId, productId]);
 
+    useEffect(() => {
+        if (!accessToken || !productData) {
+            setRestockRequested(false);
+            return;
+        }
+        const stocks = productData.sizes || [];
+        const stock = stocks.find((s) => s.color === selectedColor && s.size === selectedSize);
+        if (!stock || stock.quantity > 0) {
+            setRestockRequested(false);
+            return;
+        }
+        checkRestockRequested(stock.stockId).then(setRestockRequested).catch(() => {});
+    }, [selectedColor, selectedSize, accessToken, productData]);
+
     const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
         ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
@@ -140,6 +161,28 @@ const ProductDetail: React.FC = () => {
             alert('장바구니에 담았습니다');
         } catch (error: any) {
             setCartError(error.response?.data?.message ?? '장바구니 담기에 실패했습니다');
+        }
+    };
+
+    const handleToggleRestockNotification = async () => {
+        if (!accessToken) {
+            navigate('/login');
+            return;
+        }
+        if (!selectedStock) return;
+        setRestockSubmitting(true);
+        try {
+            if (restockRequested) {
+                await cancelRestockNotification(selectedStock.stockId);
+                setRestockRequested(false);
+            } else {
+                await requestRestockNotification(selectedStock.stockId);
+                setRestockRequested(true);
+            }
+        } catch (error: any) {
+            setCartError(error.response?.data?.message ?? '재입고 알림 신청에 실패했습니다');
+        } finally {
+            setRestockSubmitting(false);
         }
     };
 
@@ -315,7 +358,19 @@ const ProductDetail: React.FC = () => {
                             ))}
                         </select>
                     </div>
-                    {selectedStock && (
+                    {selectedStock && selectedStock.quantity === 0 && (
+                        <div className="group">
+                            <p className="text-xs font-black text-red-500 uppercase tracking-widest mb-3">품절된 옵션입니다</p>
+                            <button
+                                onClick={handleToggleRestockNotification}
+                                disabled={restockSubmitting}
+                                className={`h-12 px-6 rounded-xl text-xs font-black uppercase tracking-widest transition-all disabled:opacity-50 ${restockRequested ? 'bg-gray-100 text-gray-500' : 'bg-gray-900 text-white hover:bg-black'}`}
+                            >
+                                {restockRequested ? '재입고 알림 신청 취소' : '재입고 알림 신청'}
+                            </button>
+                        </div>
+                    )}
+                    {selectedStock && selectedStock.quantity > 0 && (
                         <div className="group">
                             <label className="block text-[11px] font-black text-gray-400 mb-2 tracking-widest uppercase">Quantity ({selectedStock.quantity}개 남음)</label>
                             <input

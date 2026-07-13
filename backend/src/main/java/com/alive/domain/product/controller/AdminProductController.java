@@ -98,4 +98,17 @@ public class AdminProductController {
         productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * 옵션(색상/사이즈)별 재고 수량 수정
+     * PATCH /api/admin/products/{productId}/stocks/{stockId}
+     */
+    @PatchMapping("/{productId}/stocks/{stockId}")
+    public ResponseEntity<ProductStockResponse> updateStock(
+            @PathVariable Long productId,
+            @PathVariable Long stockId,
+            @Valid @RequestBody StockUpdateRequest request
+    ) {
+        return ResponseEntity.ok(productService.updateStock(productId, stockId, request));
+    }
 }

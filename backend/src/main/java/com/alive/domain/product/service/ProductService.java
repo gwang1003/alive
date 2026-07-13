@@ -4,6 +4,8 @@ import com.alive.common.service.FileStorageService;
 import com.alive.domain.product.dto.*;
 import com.alive.domain.product.entity.*;
 import com.alive.domain.product.repository.*;
+import com.alive.domain.restock.entity.RestockNotification;
+import com.alive.domain.restock.repository.RestockNotificationRepository;
 import java.io.File;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +35,7 @@ public class ProductService {
     private final ProductStockRepository productStockRepository;
     private final ProductDetailRepository productDetailRepository;
     private final FileStorageService fileStorageService;
+    private final RestockNotificationRepository restockNotificationRepository;
 
 
     // ========== 상품 조회 (일반 사용자) ==========
@@ -277,6 +280,30 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다"));
         return ProductDetailResponse.fromEntity(product);
+    }
+
+    /**
+     * 옵션(색상/사이즈)별 재고 수량 수정. 0 → 양수로 바뀌면 재입고 알림 신청자에게 알림 플래그를 세움
+     * (실제 이메일/푸시 발송은 범위 밖 — 추후 알림 시스템과 함께 처리)
+     */
+    @Transactional
+    public ProductStockResponse updateStock(Long productId, Long stockId, StockUpdateRequest request) {
+        ProductStock stock = productStockRepository.findById(stockId)
+                .orElseThrow(() -> new RuntimeException("옵션을 찾을 수 없습니다"));
+
+        if (!stock.getProduct().getProductId().equals(productId)) {
+            throw new RuntimeException("해당 상품의 옵션이 아닙니다");
+        }
+
+        boolean wasOutOfStock = stock.getQuantity() == 0;
+        stock.updateQuantity(request.getStockQuantity());
+
+        if (wasOutOfStock && request.getStockQuantity() > 0) {
+            List<RestockNotification> pending = restockNotificationRepository.findByProductStockStockIdAndNotifiedFalse(stockId);
+            pending.forEach(RestockNotification::markNotified);
+        }
+
+        return ProductStockResponse.fromEntity(stock);
     }
 
     /**
