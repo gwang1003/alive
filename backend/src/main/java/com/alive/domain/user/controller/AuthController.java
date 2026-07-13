@@ -75,7 +75,7 @@ public class AuthController {
      * POST /api/auth/refresh
      */
     @PostMapping("/refresh")
-    public ResponseEntity<Map<String, String>> refreshAccessToken(
+    public ResponseEntity<Map<String, Object>> refreshAccessToken(
             HttpServletRequest request,
             HttpServletResponse response
     ) {
@@ -108,8 +108,14 @@ public class AuthController {
         Cookie newRefreshTokenCookie = createRefreshTokenCookie(newRefreshToken);
         response.addCookie(newRefreshTokenCookie);
 
-        Map<String, String> responseBody = new HashMap<>();
+        Map<String, String> userInfo = new HashMap<>();
+        userInfo.put("email", user.getEmail());
+        userInfo.put("name", user.getName());
+        userInfo.put("role", user.getRole().name());
+
+        Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("accessToken", newAccessToken);
+        responseBody.put("user", userInfo);
         responseBody.put("message", "AccessToken이 갱신되었습니다");
 
         return ResponseEntity.ok(responseBody);
