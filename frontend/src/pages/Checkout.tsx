@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useCartStore from '../store/cartStore';
 import useOrderStore from '../store/orderStore';
 import useAuthStore from '../assets/authStore';
+import useAddressStore from '../store/addressStore';
 
 const Checkout: React.FC = () => {
     const navigate = useNavigate();
@@ -10,8 +11,10 @@ const Checkout: React.FC = () => {
     const authChecked = useAuthStore((state) => state.authChecked);
     const { items, fetchCart } = useCartStore();
     const { createOrder } = useOrderStore();
+    const { addresses, fetchAddresses } = useAddressStore();
 
     const [form, setForm] = useState({ recipientName: '', recipientPhone: '', deliveryAddress: '', deliveryMessage: '' });
+    const [selectedAddressId, setSelectedAddressId] = useState<number | 'new'>('new');
     const [error, setError] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
@@ -22,7 +25,38 @@ const Checkout: React.FC = () => {
             return;
         }
         fetchCart();
+        fetchAddresses();
     }, [authChecked, accessToken]);
+
+    useEffect(() => {
+        const defaultAddress = addresses.find((a) => a.isDefault);
+        if (defaultAddress) {
+            setSelectedAddressId(defaultAddress.addressId);
+            setForm((prev) => ({
+                ...prev,
+                recipientName: defaultAddress.recipientName,
+                recipientPhone: defaultAddress.phone,
+                deliveryAddress: `(${defaultAddress.zipcode}) ${defaultAddress.address} ${defaultAddress.addressDetail ?? ''}`.trim(),
+            }));
+        }
+    }, [addresses]);
+
+    const handleSelectAddress = (id: number | 'new') => {
+        setSelectedAddressId(id);
+        if (id === 'new') {
+            setForm({ recipientName: '', recipientPhone: '', deliveryAddress: '', deliveryMessage: form.deliveryMessage });
+            return;
+        }
+        const addr = addresses.find((a) => a.addressId === id);
+        if (addr) {
+            setForm((prev) => ({
+                ...prev,
+                recipientName: addr.recipientName,
+                recipientPhone: addr.phone,
+                deliveryAddress: `(${addr.zipcode}) ${addr.address} ${addr.addressDetail ?? ''}`.trim(),
+            }));
+        }
+    };
 
     const totalPrice = items.reduce((sum, item) => sum + item.finalPrice * item.quantity, 0);
     const deliveryFee = totalPrice >= 50000 ? 0 : 3000;
@@ -73,6 +107,38 @@ const Checkout: React.FC = () => {
                 <div className="grid grid-cols-2 gap-16">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <h2 className="text-xs font-black text-gray-400 tracking-widest uppercase mb-2">배송 정보</h2>
+
+                        {addresses.length > 0 && (
+                            <div className="space-y-2 mb-4">
+                                {addresses.map((addr) => (
+                                    <label key={addr.addressId} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer text-sm has-[:checked]:border-gray-900">
+                                        <input
+                                            type="radio"
+                                            name="savedAddress"
+                                            checked={selectedAddressId === addr.addressId}
+                                            onChange={() => handleSelectAddress(addr.addressId)}
+                                            className="mt-1"
+                                        />
+                                        <span>
+                                            <span className="font-bold text-gray-900">{addr.recipientName}</span>
+                                            {addr.isDefault && <span className="ml-2 text-[10px] font-black text-white bg-gray-900 px-2 py-0.5 rounded-full">기본</span>}
+                                            <br />
+                                            <span className="text-gray-500 text-xs">({addr.zipcode}) {addr.address} {addr.addressDetail}</span>
+                                        </span>
+                                    </label>
+                                ))}
+                                <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer text-sm has-[:checked]:border-gray-900">
+                                    <input
+                                        type="radio"
+                                        name="savedAddress"
+                                        checked={selectedAddressId === 'new'}
+                                        onChange={() => handleSelectAddress('new')}
+                                    />
+                                    새 배송지 입력
+                                </label>
+                            </div>
+                        )}
+
                         <div className="space-y-1">
                             <input
                                 type="text"

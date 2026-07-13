@@ -11,6 +11,7 @@ import Checkout from "./pages/Checkout";
 import OrderDetail from "./pages/OrderDetail";
 import OrderHistory from "./pages/OrderHistory";
 import Wishlist from "./pages/Wishlist";
+import AddressBook from "./pages/AddressBook";
 import ProductList from "./pages/ProductList";
 import axios from "./api/axios";
 import useAuthStore from "./assets/authStore.tsx";
@@ -61,6 +62,7 @@ const App: React.FC = () => {
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/orders" element={<OrderHistory />} />
                     <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/addresses" element={<AddressBook />} />
                     <Route path="/orders/:orderId" element={<OrderDetail />} />
                     <Route path="/product/detail/:productId" element={<ProductDetail />} />
                     <Route path="/new" element={<ProductList title="신상품" defaultSort="createdAt,desc" />} />
