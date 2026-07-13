@@ -23,6 +23,8 @@ import AdminProductEdit from "./pages/admin/AdminProductEdit";
 import AdminOrderList from "./pages/admin/AdminOrderList";
 import AdminOrderDetail from "./pages/admin/AdminOrderDetail";
 import AdminBannerList from "./pages/admin/AdminBannerList";
+import AdminInquiryList from "./pages/admin/AdminInquiryList";
+import Inquiry from "./pages/Inquiry";
 
 const App: React.FC = () => {
     const login = useAuthStore((state) => state.login);
@@ -64,6 +66,7 @@ const App: React.FC = () => {
                     <Route path="/orders" element={<OrderHistory />} />
                     <Route path="/wishlist" element={<Wishlist />} />
                     <Route path="/addresses" element={<AddressBook />} />
+                    <Route path="/inquiries" element={<Inquiry />} />
                     <Route path="/orders/:orderId" element={<OrderDetail />} />
                     <Route path="/product/detail/:productId" element={<ProductDetail />} />
                     <Route path="/new" element={<ProductList title="신상품" defaultSort="createdAt,desc" />} />
@@ -79,6 +82,7 @@ const App: React.FC = () => {
                     <Route path="/admin/orders" element={<AdminRoute><AdminOrderList /></AdminRoute>} />
                     <Route path="/admin/orders/:orderId" element={<AdminRoute><AdminOrderDetail /></AdminRoute>} />
                     <Route path="/admin/banners" element={<AdminRoute><AdminBannerList /></AdminRoute>} />
+                    <Route path="/admin/inquiries" element={<AdminRoute><AdminInquiryList /></AdminRoute>} />
                     {/* 나중에 추가할 경로들 예시 */}
                     {/* <Route path="/login" element={<Login />} /> */}
                     {/* <Route path="/products/:id" element={<ProductDetail />} /> */}

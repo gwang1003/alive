@@ -5,6 +5,7 @@ const LINKS = [
     { name: '상품 관리', path: '/admin/products' },
     { name: '주문 관리', path: '/admin/orders' },
     { name: '배너 관리', path: '/admin/banners' },
+    { name: '문의 관리', path: '/admin/inquiries' },
 ];
 
 const AdminNav: React.FC = () => {

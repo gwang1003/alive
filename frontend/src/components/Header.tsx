@@ -59,6 +59,7 @@ const Header: React.FC = () => {
                 )}
                 <Link to="/orders" className="text-[11px] font-bold hover:text-gray-900 transition-colors">주문내역</Link>
                 <Link to="/addresses" className="text-[11px] font-bold hover:text-gray-900 transition-colors">배송지 관리</Link>
+                <Link to="/inquiries" className="text-[11px] font-bold hover:text-gray-900 transition-colors">1:1 문의</Link>
                 <button onClick={() => navigate('/login')}>
                     <User className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors"/>
                 </button>
