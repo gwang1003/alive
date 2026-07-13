@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Heart, Share2, ShoppingBag, ShoppingCart} from 'lucide-react';
+import {Heart, Share2, ShoppingBag, ShoppingCart, X, ZoomIn} from 'lucide-react';
 import bottomSize from '../assets/products/common/bottomSize.jpg';
 import topSize from '../assets/products/common/topSize.jpg';
 import {useNavigate, useParams} from "react-router-dom";
@@ -39,6 +39,7 @@ const ProductDetail: React.FC = () => {
     const [thumbnails, setThumbnails] = useState<string[]>([]);
     const [productData, setProductData] = useState();
     const [relatedProducts, setRelatedProducts] = useState([]);
+    const [isImageZoomed, setIsImageZoomed] = useState(false);
 
     const [selectedColor, setSelectedColor] = useState('');
     const [selectedSize, setSelectedSize] = useState('');
@@ -218,14 +219,39 @@ const ProductDetail: React.FC = () => {
                 </div>
 
                 {/* 메인 썸네일: 5:5 비율(aspect-square)로 큼직하게 배치 */}
-                <div className="max-h-[688px] flex-1 aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-50 shadow-sm">
+                <div
+                    onClick={() => setIsImageZoomed(true)}
+                    className="group relative max-h-[688px] flex-1 aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-50 shadow-sm cursor-zoom-in"
+                >
                     <img
                         src={"/api"+mainImage}
                         alt="main"
                         className="w-full h-full object-cover transition-opacity duration-300"
                     />
+                    <div className="absolute bottom-4 right-4 p-2 bg-white/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        <ZoomIn className="w-4 h-4 text-gray-700" />
+                    </div>
                 </div>
             </div>
+
+            {isImageZoomed && (
+                <div
+                    onClick={() => setIsImageZoomed(false)}
+                    className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center cursor-zoom-out"
+                >
+                    <button
+                        onClick={() => setIsImageZoomed(false)}
+                        className="absolute top-6 right-6 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                    >
+                        <X className="w-6 h-6 text-white" />
+                    </button>
+                    <img
+                        src={"/api"+mainImage}
+                        alt="zoomed"
+                        className="max-w-[90vw] max-h-[90vh] object-contain"
+                    />
+                </div>
+            )}
 
             {/* [오른쪽] 정보 구매 영역 */}
             <div className="flex flex-col">
