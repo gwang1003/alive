@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAdminStore from '../../store/adminStore';
 import { OrderStatus } from '../../types/order';
+import AdminNav from '../../components/AdminNav';
 
 const STATUS_LABEL: Record<string, string> = {
     PENDING: '주문 접수',
@@ -25,6 +26,7 @@ const AdminOrderList: React.FC = () => {
     return (
         <div className="min-h-screen bg-white px-12 py-16">
             <div className="max-w-6xl mx-auto">
+                <AdminNav />
                 <div className="flex justify-between items-center mb-10">
                     <h1 className="text-3xl font-black tracking-tighter">주문 관리</h1>
                     <select

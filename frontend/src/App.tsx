@@ -22,6 +22,7 @@ import AdminProductList from "./pages/admin/AdminProductList";
 import AdminProductEdit from "./pages/admin/AdminProductEdit";
 import AdminOrderList from "./pages/admin/AdminOrderList";
 import AdminOrderDetail from "./pages/admin/AdminOrderDetail";
+import AdminBannerList from "./pages/admin/AdminBannerList";
 
 const App: React.FC = () => {
     const login = useAuthStore((state) => state.login);
@@ -77,6 +78,7 @@ const App: React.FC = () => {
                     <Route path="/admin/products/:productId/edit" element={<AdminRoute><AdminProductEdit /></AdminRoute>} />
                     <Route path="/admin/orders" element={<AdminRoute><AdminOrderList /></AdminRoute>} />
                     <Route path="/admin/orders/:orderId" element={<AdminRoute><AdminOrderDetail /></AdminRoute>} />
+                    <Route path="/admin/banners" element={<AdminRoute><AdminBannerList /></AdminRoute>} />
                     {/* 나중에 추가할 경로들 예시 */}
                     {/* <Route path="/login" element={<Login />} /> */}
                     {/* <Route path="/products/:id" element={<ProductDetail />} /> */}

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAdminStore from '../../store/adminStore';
+import AdminNav from '../../components/AdminNav';
 
 const AdminProductList: React.FC = () => {
     const navigate = useNavigate();
@@ -22,6 +23,7 @@ const AdminProductList: React.FC = () => {
     return (
         <div className="min-h-screen bg-white px-12 py-16">
             <div className="max-w-6xl mx-auto">
+                <AdminNav />
                 <div className="flex justify-between items-center mb-12">
                     <h1 className="text-3xl font-black tracking-tighter">상품 관리</h1>
                     <button
