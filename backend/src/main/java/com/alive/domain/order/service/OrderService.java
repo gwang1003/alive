@@ -138,6 +138,28 @@ public class OrderService {
         return OrderResponse.fromEntity(order);
     }
 
+    @Transactional
+    public OrderResponse cancelOrder(String email, Long orderId) {
+        User user = getUser(email);
+        Order order = orderRepository.findByOrderIdAndUserUserId(orderId, user.getUserId())
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다"));
+
+        if (order.getStatus() == OrderStatus.CANCELLED) {
+            throw new RuntimeException("이미 취소된 주문입니다");
+        }
+        if (order.getStatus() != OrderStatus.PENDING && order.getStatus() != OrderStatus.PAID) {
+            throw new RuntimeException("배송이 시작된 주문은 취소할 수 없습니다");
+        }
+
+        for (OrderItem item : order.getOrderItems()) {
+            ProductStock stock = item.getProductStock();
+            stock.updateQuantity(stock.getQuantity() + item.getQuantity());
+        }
+
+        order.cancel();
+        return OrderResponse.fromEntity(order);
+    }
+
     private String generateOrderNumber() {
         String timestamp = LocalDateTime.now().format(ORDER_NUMBER_FORMAT);
         String random = UUID.randomUUID().toString().substring(0, 6).toUpperCase();

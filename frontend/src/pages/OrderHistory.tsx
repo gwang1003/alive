@@ -15,7 +15,7 @@ const OrderHistory: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
     const authChecked = useAuthStore((state) => state.authChecked);
-    const { orders, isLoading, fetchOrders } = useOrderStore();
+    const { orders, isLoading, fetchOrders, cancelOrder } = useOrderStore();
 
     useEffect(() => {
         if (!authChecked) return;
@@ -29,6 +29,16 @@ const OrderHistory: React.FC = () => {
     if (!authChecked || !accessToken) {
         return null;
     }
+
+    const handleCancel = async (e: React.MouseEvent, orderId: number) => {
+        e.stopPropagation();
+        if (!window.confirm('이 주문을 취소하시겠습니까?')) return;
+        try {
+            await cancelOrder(orderId);
+        } catch (err: any) {
+            alert(err.response?.data?.message ?? '주문 취소에 실패했습니다');
+        }
+    };
 
     return (
         <div className="min-h-screen bg-white px-6 py-16">
@@ -64,9 +74,19 @@ const OrderHistory: React.FC = () => {
                                     </p>
                                 ))}
                             </div>
-                            <p className="text-right text-sm font-black text-gray-900 mt-4">
-                                {order.finalAmount.toLocaleString()} KRW
-                            </p>
+                            <div className="flex justify-between items-center mt-4">
+                                {(order.status === 'PENDING' || order.status === 'PAID') && (
+                                    <button
+                                        onClick={(e) => handleCancel(e, order.orderId)}
+                                        className="text-[11px] font-bold text-red-500 hover:underline"
+                                    >
+                                        주문취소
+                                    </button>
+                                )}
+                                <p className="text-right text-sm font-black text-gray-900 ml-auto">
+                                    {order.finalAmount.toLocaleString()} KRW
+                                </p>
+                            </div>
                         </div>
                     ))}
                 </div>

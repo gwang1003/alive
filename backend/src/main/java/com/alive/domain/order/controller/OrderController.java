@@ -47,6 +47,15 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderDetail(currentEmail(), orderId));
     }
 
+    /**
+     * 주문 취소 (PENDING/PAID 상태만 가능, 재고 복원)
+     * PATCH /api/orders/{orderId}/cancel
+     */
+    @PatchMapping("/{orderId}/cancel")
+    public ResponseEntity<OrderResponse> cancelOrder(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.cancelOrder(currentEmail(), orderId));
+    }
+
     private String currentEmail() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }

@@ -8,6 +8,7 @@ interface OrderState {
     createOrder: (request: OrderCreateRequest) => Promise<Order>;
     fetchOrders: () => Promise<void>;
     fetchOrderDetail: (orderId: number) => Promise<Order>;
+    cancelOrder: (orderId: number) => Promise<Order>;
 }
 
 const useOrderStore = create<OrderState>((set, get) => ({
@@ -31,6 +32,12 @@ const useOrderStore = create<OrderState>((set, get) => ({
 
     fetchOrderDetail: async (orderId) => {
         const response = await api.get<Order>(`/orders/${orderId}`);
+        return response.data;
+    },
+
+    cancelOrder: async (orderId) => {
+        const response = await api.patch<Order>(`/orders/${orderId}/cancel`);
+        set({ orders: get().orders.map((o) => (o.orderId === orderId ? response.data : o)) });
         return response.data;
     },
 }));

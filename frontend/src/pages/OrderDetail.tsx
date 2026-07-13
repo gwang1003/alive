@@ -14,9 +14,11 @@ const STATUS_LABEL: Record<string, string> = {
 const OrderDetail: React.FC = () => {
     const { orderId } = useParams();
     const navigate = useNavigate();
-    const { fetchOrderDetail } = useOrderStore();
+    const { fetchOrderDetail, cancelOrder } = useOrderStore();
     const [order, setOrder] = useState<Order | null>(null);
     const [error, setError] = useState('');
+    const [cancelError, setCancelError] = useState('');
+    const [cancelling, setCancelling] = useState(false);
 
     useEffect(() => {
         const load = async () => {
@@ -29,6 +31,20 @@ const OrderDetail: React.FC = () => {
         };
         load();
     }, [orderId]);
+
+    const handleCancel = async () => {
+        if (!window.confirm('이 주문을 취소하시겠습니까?')) return;
+        setCancelError('');
+        setCancelling(true);
+        try {
+            const updated = await cancelOrder(Number(orderId));
+            setOrder(updated);
+        } catch (err: any) {
+            setCancelError(err.response?.data?.message ?? '주문 취소에 실패했습니다');
+        } finally {
+            setCancelling(false);
+        }
+    };
 
     if (error) {
         return (
@@ -96,7 +112,18 @@ const OrderDetail: React.FC = () => {
                     </div>
                 </div>
 
+                {cancelError && <p className="text-xs font-bold text-red-500 mt-4">{cancelError}</p>}
+
                 <div className="flex gap-4 mt-12">
+                    {(order.status === 'PENDING' || order.status === 'PAID') && (
+                        <button
+                            onClick={handleCancel}
+                            disabled={cancelling}
+                            className="flex-1 h-14 border border-red-200 text-red-500 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-50 transition-all disabled:opacity-50"
+                        >
+                            주문 취소
+                        </button>
+                    )}
                     <button
                         onClick={() => navigate('/orders')}
                         className="flex-1 h-14 border border-gray-200 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-gray-50 transition-all"
