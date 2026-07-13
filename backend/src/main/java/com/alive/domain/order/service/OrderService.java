@@ -12,6 +12,8 @@ import com.alive.domain.product.entity.ProductStock;
 import com.alive.domain.user.entity.User;
 import com.alive.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,6 +113,19 @@ public class OrderService {
     public OrderResponse getOrderDetail(String email, Long orderId) {
         User user = getUser(email);
         Order order = orderRepository.findByOrderIdAndUserUserId(orderId, user.getUserId())
+                .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다"));
+        return OrderResponse.fromEntity(order);
+    }
+
+    public Page<OrderResponse> getAdminOrders(OrderStatus status, Pageable pageable) {
+        Page<Order> orders = status != null
+                ? orderRepository.findByStatus(status, pageable)
+                : orderRepository.findAll(pageable);
+        return orders.map(OrderResponse::fromEntity);
+    }
+
+    public OrderResponse getAdminOrderDetail(Long orderId) {
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다"));
         return OrderResponse.fromEntity(order);
     }

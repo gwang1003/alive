@@ -16,6 +16,11 @@ import axios from "./api/axios";
 import useAuthStore from "./assets/authStore.tsx";
 import useCartStore from "./store/cartStore";
 import ProductForm from "./pages/admin/ProductForm.tsx";
+import AdminRoute from "./components/AdminRoute";
+import AdminProductList from "./pages/admin/AdminProductList";
+import AdminProductEdit from "./pages/admin/AdminProductEdit";
+import AdminOrderList from "./pages/admin/AdminOrderList";
+import AdminOrderDetail from "./pages/admin/AdminOrderDetail";
 
 const App: React.FC = () => {
     const login = useAuthStore((state) => state.login);
@@ -65,7 +70,11 @@ const App: React.FC = () => {
                     <Route path="/outer" element={<ProductList title="아우터" categoryId={3} />} />
                     <Route path="/sets" element={<ProductList title="세트" categoryId={5} />} />
                     <Route path="/sale" element={<ProductList title="세일" discountedOnly />} />
-                    <Route path="/admin/products/new" element={<ProductForm />} />
+                    <Route path="/admin/products" element={<AdminRoute><AdminProductList /></AdminRoute>} />
+                    <Route path="/admin/products/new" element={<AdminRoute><ProductForm /></AdminRoute>} />
+                    <Route path="/admin/products/:productId/edit" element={<AdminRoute><AdminProductEdit /></AdminRoute>} />
+                    <Route path="/admin/orders" element={<AdminRoute><AdminOrderList /></AdminRoute>} />
+                    <Route path="/admin/orders/:orderId" element={<AdminRoute><AdminOrderDetail /></AdminRoute>} />
                     {/* 나중에 추가할 경로들 예시 */}
                     {/* <Route path="/login" element={<Login />} /> */}
                     {/* <Route path="/products/:id" element={<ProductDetail />} /> */}

@@ -3,7 +3,11 @@ package com.alive.domain.product.controller;
 import com.alive.domain.product.dto.*;
 import com.alive.domain.product.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,5 +57,45 @@ public class AdminProductController {
         }
     }
 
-    // ... 나머지 메서드들
+    /**
+     * 전체 상품 목록 조회 (비활성 상품 포함)
+     * GET /api/admin/products?page&size
+     */
+    @GetMapping
+    public ResponseEntity<Page<ProductListResponse>> getProducts(
+            @PageableDefault(size = 20) Pageable pageable
+    ) {
+        return ResponseEntity.ok(productService.getAdminProductList(pageable));
+    }
+
+    /**
+     * 상품 상세 조회 (비활성 상품 포함, 수정 폼 로딩용)
+     * GET /api/admin/products/{productId}
+     */
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductDetailResponse> getProduct(@PathVariable Long productId) {
+        return ResponseEntity.ok(productService.getAdminProductDetail(productId));
+    }
+
+    /**
+     * 상품 수정 (활성/비활성 토글 포함)
+     * PATCH /api/admin/products/{productId}
+     */
+    @PatchMapping("/{productId}")
+    public ResponseEntity<ProductResponse> updateProduct(
+            @PathVariable Long productId,
+            @Valid @RequestBody ProductUpdateRequest request
+    ) {
+        return ResponseEntity.ok(productService.updateProduct(productId, request));
+    }
+
+    /**
+     * 상품 삭제 (소프트 삭제)
+     * DELETE /api/admin/products/{productId}
+     */
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
+        productService.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
+    }
 }

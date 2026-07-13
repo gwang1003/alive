@@ -3,10 +3,12 @@ import {Link, useNavigate} from 'react-router-dom';
 import { Search, User, ShoppingBag, Heart } from 'lucide-react';
 import logo from '../assets/logo.png';
 import useCartStore from '../store/cartStore';
+import useAuthStore from '../assets/authStore';
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
     const cartCount = useCartStore((state) => state.items.reduce((sum, item) => sum + item.quantity, 0));
+    const isAdmin = useAuthStore((state) => state.user?.role === 'ADMIN');
     const categories = [
         { name: 'NEW', path: '/new' },
         { name: 'BEST', path: '/best' },
@@ -52,6 +54,9 @@ const Header: React.FC = () => {
             {/* 오른쪽: 유틸리티 아이콘 */}
             <div className="flex items-center gap-6 text-gray-400">
                 <Search className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors" />
+                {isAdmin && (
+                    <Link to="/admin/orders" className="text-[11px] font-bold text-red-500 hover:text-red-600 transition-colors">관리자</Link>
+                )}
                 <Link to="/orders" className="text-[11px] font-bold hover:text-gray-900 transition-colors">주문내역</Link>
                 <button onClick={() => navigate('/login')}>
                     <User className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors"/>

@@ -31,6 +31,7 @@ export interface ProductListItem {
     stockQuantity: number;
     viewCount: number;
     categoryName: string | null;
+    isActive: boolean;
 }
 
 export interface PageResponse<T> {

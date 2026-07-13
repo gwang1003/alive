@@ -30,6 +30,7 @@ public class ProductListResponse {
     private Integer stockQuantity;
     private Integer viewCount;
     private String categoryName;
+    private Boolean isActive;
 
     // Entity → DTO 변환 (목록용 - 간단한 정보만)
     public static ProductListResponse fromEntity(Product product) {
@@ -50,6 +51,7 @@ public class ProductListResponse {
                 .viewCount(product.getViewCount())
                 .categoryName(product.getCategory() != null ?
                         product.getCategory().getName() : null)
+                .isActive(product.getIsActive())
                 .build();
     }
 }

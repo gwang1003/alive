@@ -264,6 +264,22 @@ public class ProductService {
 
 
     /**
+     * 전체 상품 목록 조회 (비활성 상품 포함, 관리자용)
+     */
+    public Page<ProductListResponse> getAdminProductList(Pageable pageable) {
+        return productRepository.findAll(pageable).map(ProductListResponse::fromEntity);
+    }
+
+    /**
+     * 상품 상세 조회 (비활성 상품 포함, 관리자용 수정 폼 로딩)
+     */
+    public ProductDetailResponse getAdminProductDetail(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다"));
+        return ProductDetailResponse.fromEntity(product);
+    }
+
+    /**
      * 상품 수정
      */
     @Transactional
