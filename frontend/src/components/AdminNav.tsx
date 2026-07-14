@@ -12,12 +12,12 @@ const AdminNav: React.FC = () => {
     const location = useLocation();
 
     return (
-        <nav className="flex gap-6 mb-10 border-b border-gray-100 pb-4">
+        <nav className="flex gap-6 mb-10 border-b border-line pb-4">
             {LINKS.map((link) => (
                 <Link
                     key={link.path}
                     to={link.path}
-                    className={`text-xs font-black uppercase tracking-widest ${location.pathname.startsWith(link.path) ? 'text-gray-900' : 'text-gray-400 hover:text-gray-900'}`}
+                    className={`text-xs font-black uppercase tracking-widest ${location.pathname.startsWith(link.path) ? 'text-coral-deep' : 'text-ink-soft hover:text-ink'}`}
                 >
                     {link.name}
                 </Link>

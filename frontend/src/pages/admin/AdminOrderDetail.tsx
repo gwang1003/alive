@@ -46,43 +46,43 @@ const AdminOrderDetail: React.FC = () => {
     };
 
     if (!order) {
-        return <div className="min-h-screen bg-white px-12 py-16 text-sm text-gray-400">불러오는 중...</div>;
+        return <div className="min-h-screen bg-canvas px-12 py-16 text-sm text-ink-soft">불러오는 중...</div>;
     }
 
     return (
-        <div className="min-h-screen bg-white px-12 py-16">
+        <div className="min-h-screen bg-canvas px-12 py-16">
             <div className="max-w-2xl mx-auto space-y-8">
-                <button onClick={() => navigate('/admin/orders')} className="text-xs font-bold text-gray-400 hover:text-gray-900">
+                <button onClick={() => navigate('/admin/orders')} className="text-xs font-bold text-ink-soft hover:text-ink">
                     ← 목록으로
                 </button>
 
                 <div>
-                    <h1 className="text-2xl font-black tracking-tighter">{order.orderNumber}</h1>
-                    <p className="text-xs text-gray-400 mt-1">{new Date(order.orderedAt).toLocaleString('ko-KR')}</p>
+                    <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">{order.orderNumber}</h1>
+                    <p className="text-xs text-ink-soft mt-1">{new Date(order.orderedAt).toLocaleString('ko-KR')}</p>
                 </div>
 
-                <div className="bg-gray-50 rounded-2xl p-6 space-y-2 text-sm">
-                    <p><span className="font-bold text-gray-500">수령인</span> {order.recipientName} ({order.recipientPhone})</p>
-                    <p><span className="font-bold text-gray-500">배송지</span> {order.deliveryAddress}</p>
-                    {order.deliveryMessage && <p><span className="font-bold text-gray-500">메시지</span> {order.deliveryMessage}</p>}
+                <div className="bg-surface border border-line rounded-2xl p-6 space-y-2 text-sm">
+                    <p><span className="font-bold text-ink-soft">수령인</span> {order.recipientName} ({order.recipientPhone})</p>
+                    <p><span className="font-bold text-ink-soft">배송지</span> {order.deliveryAddress}</p>
+                    {order.deliveryMessage && <p><span className="font-bold text-ink-soft">메시지</span> {order.deliveryMessage}</p>}
                 </div>
 
                 <div className="space-y-2">
                     {order.items.map((item, i) => (
-                        <p key={i} className="text-sm text-gray-700">
+                        <p key={i} className="text-sm text-ink-soft">
                             {item.productName} ({item.color}/{item.size}) × {item.quantity} — {item.subtotal.toLocaleString()}원
                         </p>
                     ))}
                 </div>
-                <p className="text-right text-lg font-black text-gray-900">{order.finalAmount.toLocaleString()}원</p>
+                <p className="text-right text-lg font-black text-ink">{order.finalAmount.toLocaleString()}원</p>
 
-                <div className="flex items-end gap-4 pt-4 border-t border-gray-100">
+                <div className="flex items-end gap-4 pt-4 border-t border-line">
                     <div className="flex flex-col gap-1">
-                        <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest">주문 상태</label>
+                        <label className="text-[11px] font-black text-ink-soft uppercase tracking-widest">주문 상태</label>
                         <select
                             value={selectedStatus}
                             onChange={(e) => setSelectedStatus(e.target.value as OrderStatus)}
-                            className="border-b-2 border-gray-100 py-2 text-sm font-bold outline-none bg-transparent"
+                            className="border-b-2 border-line py-2 text-sm font-bold outline-none bg-transparent"
                         >
                             {STATUS_VALUES.map((status) => (
                                 <option key={status} value={status}>{STATUS_LABEL[status]}</option>
@@ -92,7 +92,7 @@ const AdminOrderDetail: React.FC = () => {
                     <button
                         onClick={handleUpdateStatus}
                         disabled={isUpdating || selectedStatus === order.status}
-                        className="px-6 py-3 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all disabled:opacity-50"
+                        className="px-6 py-3 bg-coral text-white text-xs font-black uppercase tracking-widest rounded-full hover:bg-coral-deep transition-all disabled:opacity-50"
                     >
                         상태 변경
                     </button>

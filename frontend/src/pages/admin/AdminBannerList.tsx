@@ -49,79 +49,79 @@ const AdminBannerList: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white px-12 py-16">
+        <div className="min-h-screen bg-canvas px-12 py-16">
             <div className="max-w-4xl mx-auto">
                 <AdminNav />
                 <div className="flex justify-between items-center mb-12">
-                    <h1 className="text-3xl font-black tracking-tighter">배너 관리</h1>
+                    <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">배너 관리</h1>
                     <button
                         onClick={() => setShowForm(!showForm)}
-                        className="px-6 py-3 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all"
+                        className="px-6 py-3 bg-coral text-white text-xs font-black uppercase tracking-widest rounded-full hover:bg-coral-deep transition-all"
                     >
                         배너 등록
                     </button>
                 </div>
 
                 {showForm && (
-                    <form onSubmit={handleSubmit} className="bg-gray-50 rounded-2xl p-8 mb-10 space-y-4">
+                    <form onSubmit={handleSubmit} className="bg-surface border border-line rounded-2xl p-8 mb-10 space-y-4">
                         <input
                             placeholder="배너 제목"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full h-12 border-b border-gray-200 bg-transparent outline-none focus:border-gray-900 text-sm"
+                            className="w-full h-12 border-b border-line bg-transparent outline-none focus:border-coral text-sm"
                             required
                         />
                         <input
                             placeholder="링크 URL (선택, 예: /sale)"
                             value={linkUrl}
                             onChange={(e) => setLinkUrl(e.target.value)}
-                            className="w-full h-12 border-b border-gray-200 bg-transparent outline-none focus:border-gray-900 text-sm"
+                            className="w-full h-12 border-b border-line bg-transparent outline-none focus:border-coral text-sm"
                         />
                         <input
                             type="number"
                             placeholder="노출 순서 (낮을수록 먼저)"
                             value={displayOrder}
                             onChange={(e) => setDisplayOrder(Number(e.target.value))}
-                            className="w-full h-12 border-b border-gray-200 bg-transparent outline-none focus:border-gray-900 text-sm"
+                            className="w-full h-12 border-b border-line bg-transparent outline-none focus:border-coral text-sm"
                         />
                         <input
                             type="file"
                             accept="image/*"
                             onChange={(e) => setImage(e.target.files?.[0] ?? null)}
-                            className="text-xs text-gray-500"
+                            className="text-xs text-ink-soft"
                         />
                         {error && <p className="text-xs font-bold text-red-500">{error}</p>}
                         <div className="flex justify-end gap-3">
-                            <button type="button" onClick={() => setShowForm(false)} className="px-6 py-3 text-xs font-black text-gray-500 uppercase tracking-widest">
+                            <button type="button" onClick={() => setShowForm(false)} className="px-6 py-3 text-xs font-black text-ink-soft uppercase tracking-widest">
                                 취소
                             </button>
-                            <button type="submit" disabled={submitting} className="px-8 py-3 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all disabled:opacity-50">
+                            <button type="submit" disabled={submitting} className="px-8 py-3 bg-coral text-white text-xs font-black uppercase tracking-widest rounded-full hover:bg-coral-deep transition-all disabled:opacity-50">
                                 저장
                             </button>
                         </div>
                     </form>
                 )}
 
-                {isLoading && adminBanners.length === 0 && <p className="text-sm text-gray-400">불러오는 중...</p>}
+                {isLoading && adminBanners.length === 0 && <p className="text-sm text-ink-soft">불러오는 중...</p>}
                 {!isLoading && adminBanners.length === 0 && !showForm && (
-                    <p className="text-gray-400 text-center py-32">등록된 배너가 없습니다.</p>
+                    <p className="text-ink-soft text-center py-32">등록된 배너가 없습니다.</p>
                 )}
 
                 <div className="space-y-4">
                     {adminBanners.map((banner) => (
-                        <div key={banner.bannerId} className="border border-gray-100 rounded-2xl p-6 flex gap-6 items-center">
-                            <img src={`/api${banner.imageUrl}`} alt={banner.title} className="w-32 h-20 object-cover rounded-xl bg-gray-50" />
+                        <div key={banner.bannerId} className="border border-line rounded-2xl p-6 flex gap-6 items-center">
+                            <img src={`/api${banner.imageUrl}`} alt={banner.title} className="w-32 h-20 object-cover rounded-xl bg-canvas" />
                             <div className="flex-1">
-                                <p className="text-sm font-black text-gray-900">{banner.title}</p>
-                                <p className="text-xs text-gray-400">{banner.linkUrl || '링크 없음'} · 순서 {banner.displayOrder}</p>
+                                <p className="text-sm font-black text-ink">{banner.title}</p>
+                                <p className="text-xs text-ink-soft">{banner.linkUrl || '링크 없음'} · 순서 {banner.displayOrder}</p>
                             </div>
                             <button
                                 onClick={() => handleToggleActive(banner.bannerId, banner.isActive)}
-                                className={`text-[10px] font-black px-3 py-1 rounded-full border ${banner.isActive ? 'text-green-600 border-green-200 bg-green-50' : 'text-gray-400 border-gray-200 bg-gray-50'}`}
+                                className={`text-[10px] font-black px-3 py-1 rounded-full border ${banner.isActive ? 'text-green-600 border-green-200 bg-green-50' : 'text-ink-soft border-line bg-line/20'}`}
                             >
                                 {banner.isActive ? '활성' : '비활성'}
                             </button>
-                            <button onClick={() => handleDelete(banner.bannerId)} className="text-[11px] font-bold text-red-500 hover:underline">
+                            <button onClick={() => handleDelete(banner.bannerId)} className="text-[11px] font-bold text-coral-deep hover:underline">
                                 삭제
                             </button>
                         </div>

@@ -21,23 +21,23 @@ const AdminProductList: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white px-12 py-16">
+        <div className="min-h-screen bg-canvas px-12 py-16">
             <div className="max-w-6xl mx-auto">
                 <AdminNav />
                 <div className="flex justify-between items-center mb-12">
-                    <h1 className="text-3xl font-black tracking-tighter">상품 관리</h1>
+                    <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">상품 관리</h1>
                     <button
                         onClick={() => navigate('/admin/products/new')}
-                        className="px-6 py-3 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all"
+                        className="px-6 py-3 bg-coral text-white text-xs font-black uppercase tracking-widest rounded-full hover:bg-coral-deep transition-all"
                     >
                         상품 등록
                     </button>
                 </div>
 
-                {isLoading && products.length === 0 && <p className="text-sm text-gray-400">불러오는 중...</p>}
+                {isLoading && products.length === 0 && <p className="text-sm text-ink-soft">불러오는 중...</p>}
 
                 <table className="w-full text-sm">
-                    <thead className="bg-gray-50 text-gray-500 font-bold uppercase tracking-wider text-xs">
+                    <thead className="bg-line/30 text-ink-soft font-bold uppercase tracking-wider text-xs">
                         <tr>
                             <th className="py-4 px-4 text-left">상품명</th>
                             <th className="py-4 px-4">가격</th>
@@ -47,20 +47,20 @@ const AdminProductList: React.FC = () => {
                             <th className="py-4 px-4">관리</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-line">
                         {products.map((product) => (
-                            <tr key={product.productId} className="hover:bg-gray-50">
-                                <td className="py-4 px-4 font-bold text-gray-900">{product.name}</td>
+                            <tr key={product.productId} className="hover:bg-surface">
+                                <td className="py-4 px-4 font-bold text-ink">{product.name}</td>
                                 <td className="py-4 px-4 text-center">{product.price.toLocaleString()}원</td>
                                 <td className="py-4 px-4 text-center">{product.stockQuantity}</td>
-                                <td className="py-4 px-4 text-center text-gray-500">{product.categoryName ?? '-'}</td>
+                                <td className="py-4 px-4 text-center text-ink-soft">{product.categoryName ?? '-'}</td>
                                 <td className="py-4 px-4 text-center">
                                     <button
                                         onClick={() => handleToggleActive(product.productId, product.isActive)}
                                         className={`text-[10px] font-black px-3 py-1 rounded-full border transition-colors ${
                                             product.isActive
                                                 ? 'text-green-600 border-green-200 bg-green-50 hover:bg-green-100'
-                                                : 'text-gray-400 border-gray-200 bg-gray-50 hover:bg-gray-100'
+                                                : 'text-ink-soft border-line bg-line/20 hover:bg-line/30'
                                         }`}
                                     >
                                         {product.isActive ? '활성' : '비활성'}
@@ -70,13 +70,13 @@ const AdminProductList: React.FC = () => {
                                     <div className="flex justify-center gap-2">
                                         <button
                                             onClick={() => navigate(`/admin/products/${product.productId}/edit`)}
-                                            className="text-[11px] font-bold text-blue-600 hover:underline"
+                                            className="text-[11px] font-bold text-[#1D6478] hover:underline"
                                         >
                                             수정
                                         </button>
                                         <button
                                             onClick={() => handleDelete(product.productId)}
-                                            className="text-[11px] font-bold text-red-500 hover:underline"
+                                            className="text-[11px] font-bold text-coral-deep hover:underline"
                                         >
                                             삭제
                                         </button>
@@ -93,7 +93,7 @@ const AdminProductList: React.FC = () => {
                             <button
                                 key={n}
                                 onClick={() => fetchProducts(n)}
-                                className={`w-10 h-10 flex items-center justify-center text-xs font-bold rounded-full ${n === productPage ? 'bg-gray-900 text-white' : 'text-gray-400 hover:bg-gray-50'}`}
+                                className={`w-10 h-10 flex items-center justify-center text-xs font-bold rounded-full ${n === productPage ? 'bg-coral text-white' : 'text-ink-soft hover:bg-surface'}`}
                             >
                                 {n + 1}
                             </button>

@@ -209,14 +209,14 @@ const ProductForm: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-20">
-            <header className="bg-white border-b sticky top-0 z-50 px-12 py-6 flex justify-between items-center">
-                <h1 className="text-xl font-black italic uppercase">Admin : Product Enrollment</h1>
+        <div className="min-h-screen bg-canvas pb-20">
+            <header className="bg-surface border-b border-line sticky top-0 z-50 px-12 py-6 flex justify-between items-center">
+                <h1 className="font-display text-xl font-semibold italic uppercase text-ink">Admin : Product Enrollment</h1>
                 <div className="flex items-center gap-4">
                     {submitError && (
                         <p className="text-xs font-bold text-red-500">{submitError}</p>
                     )}
-                    <button onClick={handleSubmit} className="bg-black text-white px-10 py-3 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gray-800 transition-all">
+                    <button onClick={handleSubmit} className="bg-coral text-white px-10 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-coral-deep transition-all">
                         Save Product
                     </button>
                 </div>
@@ -226,17 +226,17 @@ const ProductForm: React.FC = () => {
                 <div className="space-y-10">
 
                     {/* 1. 상품 옵션 설정 (컬러 & 사이즈) */}
-                    <section className="bg-white rounded-3xl p-10 shadow-sm border border-gray-100">
-                        <h2 className="text-[11px] font-black text-gray-400 tracking-[0.2em] uppercase mb-8">Product Options</h2>
+                    <section className="bg-surface rounded-3xl p-10 shadow-sm border border-line">
+                        <h2 className="text-[11px] font-black text-ink-soft tracking-[0.2em] uppercase mb-8">Product Options</h2>
                         <div className="grid grid-cols-2 gap-12">
                             {/* 컬러 옵션 */}
                             <div className="space-y-4">
-                                <label className="text-xs font-black text-gray-900 uppercase">Available Colors</label>
+                                <label className="text-xs font-black text-ink uppercase">Available Colors</label>
                                 <div className="flex flex-wrap gap-2 mb-4">
                                     {options.colors.map((color, i) => (
-                                        <span key={i} className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-xs font-bold">
+                                        <span key={i} className="flex items-center gap-2 px-4 py-2 bg-line/30 rounded-full text-xs font-bold">
                                             {color}
-                                            <button onClick={() => removeOption('colors', i)} className="text-gray-400 hover:text-red-500"><X size={12}/></button>
+                                            <button onClick={() => removeOption('colors', i)} className="text-ink-soft hover:text-coral-deep"><X size={12}/></button>
                                         </span>
                                     ))}
                                 </div>
@@ -244,7 +244,7 @@ const ProductForm: React.FC = () => {
                                     <input
                                         type="text"
                                         placeholder="컬러 추가 후 Enter"
-                                        className="w-full border-b py-2 text-sm outline-none focus:border-black pr-10"
+                                        className="w-full border-b border-line py-2 text-sm outline-none focus:border-coral pr-10"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
@@ -253,18 +253,18 @@ const ProductForm: React.FC = () => {
                                             }
                                         }}
                                     />
-                                    <Plus size={16} className="absolute right-2 top-2 text-gray-400" />
+                                    <Plus size={16} className="absolute right-2 top-2 text-ink-soft" />
                                 </div>
                             </div>
 
                             {/* 사이즈 옵션 */}
                             <div className="space-y-4">
-                                <label className="text-xs font-black text-gray-900 uppercase">Available Sizes</label>
+                                <label className="text-xs font-black text-ink uppercase">Available Sizes</label>
                                 <div className="flex flex-wrap gap-2 mb-4">
                                     {options.sizes.map((size, i) => (
-                                        <span key={i} className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-full text-xs font-bold">
+                                        <span key={i} className="flex items-center gap-2 px-4 py-2 bg-coral text-white rounded-full text-xs font-bold">
                       {size}
-                                            <button onClick={() => removeOption('sizes', i)} className="text-gray-500 hover:text-white"><X size={12}/></button>
+                                            <button onClick={() => removeOption('sizes', i)} className="text-white/70 hover:text-white"><X size={12}/></button>
                     </span>
                                     ))}
                                 </div>
@@ -272,7 +272,7 @@ const ProductForm: React.FC = () => {
                                     <input
                                         type="text"
                                         placeholder="사이즈 추가 후 Enter"
-                                        className="w-full border-b py-2 text-sm outline-none focus:border-black pr-10"
+                                        className="w-full border-b border-line py-2 text-sm outline-none focus:border-coral pr-10"
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
@@ -281,40 +281,40 @@ const ProductForm: React.FC = () => {
                                             }
                                         }}
                                     />
-                                    <Plus size={16} className="absolute right-2 top-2 text-gray-400" />
+                                    <Plus size={16} className="absolute right-2 top-2 text-ink-soft" />
                                 </div>
                             </div>
                         </div>
                     </section>
 
                     {/* 2. 재고 수량 관리 섹션 */}
-                    <section className="bg-white rounded-3xl p-10 shadow-sm border border-gray-100">
+                    <section className="bg-surface rounded-3xl p-10 shadow-sm border border-line">
                         <div className="flex justify-between items-center mb-8">
                             <div className="flex items-center gap-3">
-                                <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
-                                <h2 className="text-[11px] font-black text-gray-400 tracking-[0.2em] uppercase">Inventory Management</h2>
+                                <div className="w-1.5 h-6 bg-coral rounded-full" />
+                                <h2 className="text-[11px] font-black text-ink-soft tracking-[0.2em] uppercase">Inventory Management</h2>
                             </div>
-                            <p className="text-[10px] font-bold text-gray-400 italic">* 옵션을 변경하면 조합이 자동 갱신됩니다.</p>
+                            <p className="text-[10px] font-bold text-ink-soft italic">* 옵션을 변경하면 조합이 자동 갱신됩니다.</p>
                         </div>
 
-                        <div className="overflow-hidden border border-gray-100 rounded-2xl">
+                        <div className="overflow-hidden border border-line rounded-2xl">
                             <table className="w-full text-left border-collapse">
-                                <thead className="bg-gray-50 border-b border-gray-100">
+                                <thead className="bg-line/30 border-b border-line">
                                 <tr>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-500 uppercase">Color</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-500 uppercase">Size</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-500 uppercase w-40">Stock Quantity</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-gray-500 uppercase">Status</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-ink-soft uppercase">Color</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-ink-soft uppercase">Size</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-ink-soft uppercase w-40">Stock Quantity</th>
+                                    <th className="px-6 py-4 text-[10px] font-black text-ink-soft uppercase">Status</th>
                                 </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-50">
+                                <tbody className="divide-y divide-line">
                                 {stocks.map((stock, idx) => (
-                                    <tr key={`${stock.color}-${stock.size}`} className="hover:bg-gray-50/50 transition-colors">
+                                    <tr key={`${stock.color}-${stock.size}`} className="hover:bg-canvas transition-colors">
                                         <td className="px-6 py-4">
-                                            <span className="text-xs font-bold text-gray-900">{stock.color}</span>
+                                            <span className="text-xs font-bold text-ink">{stock.color}</span>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-1 rounded">{stock.size}</span>
+                                            <span className="text-xs font-black text-[#1D6478] bg-sky/20 px-2 py-1 rounded">{stock.size}</span>
                                         </td>
                                         <td className="px-6 py-4">
                                             <input
@@ -322,12 +322,12 @@ const ProductForm: React.FC = () => {
                                                 min="0"
                                                 value={stock.quantity}
                                                 onChange={(e) => updateStockQuantity(idx, parseInt(e.target.value) || 0)}
-                                                className="w-full border-b border-gray-200 py-1 text-sm font-bold outline-none focus:border-blue-600 transition-colors"
+                                                className="w-full border-b border-line py-1 text-sm font-bold outline-none focus:border-coral transition-colors"
                                             />
                                         </td>
                                         <td className="px-6 py-4">
                                             {stock.quantity === 0 ? (
-                                                <span className="text-[10px] font-bold text-red-400">품절 예정</span>
+                                                <span className="text-[10px] font-bold text-coral-deep">품절 예정</span>
                                             ) : (
                                                 <span className="text-[10px] font-bold text-green-500">판매 가능</span>
                                             )}
@@ -340,17 +340,17 @@ const ProductForm: React.FC = () => {
                     </section>
 
                     {/* 이미지 에셋 섹션 */}
-                    <section className="bg-white rounded-3xl p-10 shadow-sm border border-gray-100">
-                        <h2 className="text-[11px] font-black text-gray-400 tracking-[0.2em] uppercase mb-8">Image Assets</h2>
+                    <section className="bg-surface rounded-3xl p-10 shadow-sm border border-line">
+                        <h2 className="text-[11px] font-black text-ink-soft tracking-[0.2em] uppercase mb-8">Image Assets</h2>
                         <div className="grid grid-cols-2 gap-10">
                             {/* 메인 이미지 업로드 */}
                             <div className="space-y-4">
-                                <span className="text-xs font-black text-gray-900 uppercase">Main Image</span>
-                                <label className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-100 rounded-3xl cursor-pointer hover:bg-gray-50 overflow-hidden relative">
+                                <span className="text-xs font-black text-ink uppercase">Main Image</span>
+                                <label className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-line rounded-3xl cursor-pointer hover:bg-canvas overflow-hidden relative">
                                     {mainImage ? (
                                         <img src={mainImage.preview} className="w-full h-full object-cover" />
                                     ) : (
-                                        <div className="flex flex-col items-center text-gray-300">
+                                        <div className="flex flex-col items-center text-ink-soft/60">
                                             <Upload size={30} />
                                             <span className="text-[10px] font-bold mt-2">Click to Upload</span>
                                         </div>
@@ -361,21 +361,21 @@ const ProductForm: React.FC = () => {
 
                             {/* 썸네일 이미지 업로드 (N개) */}
                             <div className="space-y-4">
-                                <span className="text-xs font-black text-gray-900 uppercase">Thumbnails (Multiple)</span>
+                                <span className="text-xs font-black text-ink uppercase">Thumbnails (Multiple)</span>
                                 <div className="grid grid-cols-2 gap-4">
                                     {thumbnails.map((t, idx) => (
-                                        <div key={t.id} className="relative aspect-square rounded-2xl overflow-hidden border">
+                                        <div key={t.id} className="relative aspect-square rounded-2xl overflow-hidden border border-line">
                                             <img src={t.preview} className="w-full h-full object-cover" />
                                             <button
                                                 onClick={() => setThumbnails(prev => prev.filter(item => item.id !== t.id))}
-                                                className="absolute top-2 right-2 p-1 bg-black/50 text-white rounded-full hover:bg-black"
+                                                className="absolute top-2 right-2 p-1 bg-ink/50 text-white rounded-full hover:bg-ink"
                                             >
                                                 <X size={12} />
                                             </button>
                                         </div>
                                     ))}
-                                    <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-gray-100 rounded-2xl cursor-pointer hover:bg-gray-50">
-                                        <Plus size={24} className="text-gray-300" />
+                                    <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-line rounded-2xl cursor-pointer hover:bg-canvas">
+                                        <Plus size={24} className="text-ink-soft/60" />
                                         <input type="file" className="hidden" multiple onChange={handleThumbnailChange} accept="image/*" />
                                     </label>
                                 </div>
@@ -384,16 +384,16 @@ const ProductForm: React.FC = () => {
                     </section>
 
                     {/* [신규 추가] 상품 메인 스토리 섹션 */}
-                    <section className="bg-white rounded-3xl p-10 shadow-sm border border-gray-100">
+                    <section className="bg-surface rounded-3xl p-10 shadow-sm border border-line">
                         <div className="flex items-center gap-3 mb-8">
-                            <div className="w-1.5 h-6 bg-black rounded-full" />
-                            <h2 className="text-[11px] font-black text-gray-400 tracking-[0.2em] uppercase">Title & Description</h2>
+                            <div className="w-1.5 h-6 bg-coral rounded-full" />
+                            <h2 className="text-[11px] font-black text-ink-soft tracking-[0.2em] uppercase">Title & Description</h2>
                         </div>
 
                         <div className="space-y-8">
                             <div className="space-y-2">
-                                <span className="text-xs font-black text-gray-900 uppercase">TITLE</span>
-                                <input type="text" className="w-full border-b py-1 text-sm font-bold outline-none focus:border-black" placeholder="상품명을 입력해 주세요."
+                                <span className="text-xs font-black text-ink uppercase">TITLE</span>
+                                <input type="text" className="w-full border-b border-line py-1 text-sm font-bold outline-none focus:border-coral" placeholder="상품명을 입력해 주세요."
                                        onChange={(e) => setProduct({...product, name: e.target.value})}/>
                                 {/*<textarea*/}
                                 {/*    placeholder="상품명을 입력해 주세요."*/}
@@ -404,10 +404,10 @@ const ProductForm: React.FC = () => {
                         </div>
                         <div className="space-y-8 pt-5">
                             <div className="space-y-2">
-                                <span className="text-xs font-black text-gray-900 uppercase">DESCRIPTION</span>
+                                <span className="text-xs font-black text-ink uppercase">DESCRIPTION</span>
                                 <textarea
                                     placeholder="상품에 대한 전반적인 스토리텔링을 입력해주세요. 이 내용은 상세페이지 최상단에 노출됩니다."
-                                    className="w-full bg-gray-50 border-none rounded-3xl p-4 text-sm leading-relaxed outline-none focus:ring-2 ring-gray-100 transition-all min-h-[180px] resize-none"
+                                    className="w-full bg-canvas border-none rounded-3xl p-4 text-sm leading-relaxed outline-none focus:ring-2 ring-coral/20 transition-all min-h-[180px] resize-none"
                                     onChange={(e) => setProduct({...product, mainDescription: e.target.value})}
                                 />
                             </div>
@@ -417,25 +417,25 @@ const ProductForm: React.FC = () => {
                     {/* 그 아래에 기존 Detail View Builder (이미지 위주) 섹션이 오면 됨 */}
 
                     {/* 상세 설명 & 디테일 뷰 빌더 */}
-                    <section className="bg-white rounded-3xl p-10 shadow-sm border border-gray-100">
-                        <h2 className="text-[11px] font-black text-gray-400 tracking-[0.2em] uppercase mb-8">Product Story & Detail Views</h2>
+                    <section className="bg-surface rounded-3xl p-10 shadow-sm border border-line">
+                        <h2 className="text-[11px] font-black text-ink-soft tracking-[0.2em] uppercase mb-8">Product Story & Detail Views</h2>
                         <div className="space-y-6">
                             {detailBlocks.map((block) => (
-                                <div key={block.id} className="relative p-8 bg-gray-50 rounded-2xl border border-transparent hover:border-gray-200 group">
+                                <div key={block.id} className="relative p-8 bg-canvas rounded-2xl border border-transparent hover:border-line group">
                                     <button
                                         onClick={() => setDetailBlocks(prev => prev.filter(b => b.id !== block.id))}
-                                        className="absolute top-4 right-4 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                                        className="absolute top-4 right-4 text-ink-soft/60 hover:text-coral-deep opacity-0 group-hover:opacity-100 transition-all"
                                     >
                                         <Trash2 size={18} />
                                     </button>
 
                                     {block.type === 'IMAGE' ? (
                                         <div className="flex flex-col items-center">
-                                            <label className="w-full h-48 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer overflow-hidden">
+                                            <label className="w-full h-48 border-2 border-dashed border-line rounded-xl flex flex-col items-center justify-center cursor-pointer overflow-hidden">
                                                 {block.preview ? (
                                                     <img src={block.preview} className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <div className="text-gray-300 flex flex-col items-center">
+                                                    <div className="text-ink-soft/60 flex flex-col items-center">
                                                         <ImageIcon size={24} />
                                                         <span className="text-[10px] font-bold mt-2">Detail Image Upload</span>
                                                     </div>
@@ -445,9 +445,9 @@ const ProductForm: React.FC = () => {
                                         </div>
                                     ) : (
                                         <div className="space-y-2">
-                                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Description Text</span>
+                                            <span className="text-[10px] font-black text-ink-soft uppercase tracking-widest">Description Text</span>
                                             <textarea
-                                                className="w-full bg-white border border-gray-200 rounded-xl p-6 text-sm outline-none focus:border-black min-h-[120px]"
+                                                className="w-full bg-surface border border-line rounded-xl p-6 text-sm outline-none focus:border-coral min-h-[120px]"
                                                 placeholder="상세한 상품 설명을 적어주세요."
                                                 onChange={(e) => updateBlockText(block.id, e.target.value)}
                                             />
@@ -457,8 +457,8 @@ const ProductForm: React.FC = () => {
                             ))}
 
                             <div className="flex gap-4 mt-8">
-                                <button onClick={() => addBlock('IMAGE')} className="flex-1 h-14 border-2 border-gray-100 rounded-2xl text-xs font-black text-gray-400 hover:border-black hover:text-black transition-all">+ ADD DETAIL IMAGE</button>
-                                <button onClick={() => addBlock('TEXT')} className="flex-1 h-14 border-2 border-gray-100 rounded-2xl text-xs font-black text-gray-400 hover:border-black hover:text-black transition-all">+ ADD STORY TEXT</button>
+                                <button onClick={() => addBlock('IMAGE')} className="flex-1 h-14 border-2 border-line rounded-2xl text-xs font-black text-ink-soft hover:border-coral hover:text-coral-deep transition-all">+ ADD DETAIL IMAGE</button>
+                                <button onClick={() => addBlock('TEXT')} className="flex-1 h-14 border-2 border-line rounded-2xl text-xs font-black text-ink-soft hover:border-coral hover:text-coral-deep transition-all">+ ADD STORY TEXT</button>
                             </div>
                         </div>
                     </section>
@@ -467,17 +467,17 @@ const ProductForm: React.FC = () => {
                 {/* 2. 사이드바: 모델 정보 (셀렉트 박스 포함) */}
                 <aside className="space-y-8">
                     {/* 사이드바 내부: Category & Gender */}
-                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 space-y-8">
-                        <div className="flex items-center gap-2 border-b pb-4">
-                            <h3 className="text-[11px] font-black text-gray-900 uppercase tracking-widest">Classification</h3>
+                    <div className="bg-surface rounded-3xl p-8 shadow-sm border border-line space-y-8">
+                        <div className="flex items-center gap-2 border-b border-line pb-4">
+                            <h3 className="text-[11px] font-black text-ink uppercase tracking-widest">Classification</h3>
                         </div>
 
                         <div className="space-y-6">
                             {/* 카테고리 선택 */}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Category</label>
+                                <label className="text-[10px] font-bold text-ink-soft uppercase ml-1">Category</label>
                                 <select
-                                    className="w-full border-b py-2 text-sm font-bold outline-none bg-transparent appearance-none focus:border-black transition-colors"
+                                    className="w-full border-b border-line py-2 text-sm font-bold outline-none bg-transparent appearance-none focus:border-coral transition-colors"
                                     value={product.categoryId}
                                     onChange={(e) => setProduct({...product, categoryId: Number(e.target.value)})}
                                 >
@@ -490,7 +490,7 @@ const ProductForm: React.FC = () => {
 
                             {/* 성별 선택 (버튼 그룹 스타일) */}
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-gray-400 uppercase ml-1">Gender</label>
+                                <label className="text-[10px] font-bold text-ink-soft uppercase ml-1">Gender</label>
                                 <div className="grid grid-cols-3 gap-2">
                                     {[
                                         { label: '남아', value: 'MALE' },
@@ -502,8 +502,8 @@ const ProductForm: React.FC = () => {
                                             onClick={() => setProduct({...product, gender: item.value as any})}
                                             className={`py-3 rounded-xl text-xs font-bold transition-all ${
                                                 product.gender === item.value
-                                                    ? 'bg-black text-white'
-                                                    : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+                                                    ? 'bg-coral text-white'
+                                                    : 'bg-canvas text-ink-soft hover:bg-line/30'
                                             }`}
                                         >
                                             {item.label}
@@ -513,24 +513,24 @@ const ProductForm: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 sticky top-32 space-y-10">
+                    <div className="bg-surface rounded-3xl p-8 shadow-sm border border-line sticky top-32 space-y-10">
                         <div className="space-y-6">
-                            <div className="flex items-center gap-2 border-b pb-4">
-                                <User size={16} className="text-gray-900" />
-                                <h3 className="text-[11px] font-black text-gray-900 uppercase tracking-widest">Model Information</h3>
+                            <div className="flex items-center gap-2 border-b border-line pb-4">
+                                <User size={16} className="text-ink" />
+                                <h3 className="text-[11px] font-black text-ink uppercase tracking-widest">Model Information</h3>
                             </div>
 
                             <div className="grid gap-6">
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase">Model Name</label>
-                                    <input type="text" className="w-full border-b py-1 text-sm font-bold outline-none focus:border-black"
+                                    <label className="text-[10px] font-bold text-ink-soft uppercase">Model Name</label>
+                                    <input type="text" className="w-full border-b border-line py-1 text-sm font-bold outline-none focus:border-coral"
                                            onChange={(e) => setModelInfo({...modelInfo, modelName: e.target.value})}/>
                                 </div>
 
                                 {/* [중요] 동적 셀렉트 박스: 등록된 컬러 옵션 사용 */}
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase">Wearing Color</label>
-                                    <select className="w-full border-b py-2 text-sm font-bold outline-none bg-transparent appearance-none"
+                                    <label className="text-[10px] font-bold text-ink-soft uppercase">Wearing Color</label>
+                                    <select className="w-full border-b border-line py-2 text-sm font-bold outline-none bg-transparent appearance-none"
                                             onChange={(e) => setModelInfo({...modelInfo, wearingColor: e.target.value})}>
                                         <option value="">컬러 선택</option>
                                         {options.colors.map(color => (
@@ -541,8 +541,8 @@ const ProductForm: React.FC = () => {
 
                                 {/* [중요] 동적 셀렉트 박스: 등록된 사이즈 옵션 사용 */}
                                 <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase">Wearing Size</label>
-                                    <select className="w-full border-b py-2 text-sm font-bold outline-none bg-transparent appearance-none"
+                                    <label className="text-[10px] font-bold text-ink-soft uppercase">Wearing Size</label>
+                                    <select className="w-full border-b border-line py-2 text-sm font-bold outline-none bg-transparent appearance-none"
                                             onChange={(e) => setModelInfo({...modelInfo, wearingSize: Number(e.target.value)})}>
                                         <option value="">사이즈 선택</option>
                                         {options.sizes.map(size => (
@@ -553,13 +553,13 @@ const ProductForm: React.FC = () => {
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Height (cm)</label>
-                                        <input type="number" placeholder="ex) 110" className="w-full border-b py-1 text-sm font-bold outline-none focus:border-black"
+                                        <label className="text-[10px] font-bold text-ink-soft uppercase">Height (cm)</label>
+                                        <input type="number" placeholder="ex) 110" className="w-full border-b border-line py-1 text-sm font-bold outline-none focus:border-coral"
                                                onChange={(e) => setModelInfo({...modelInfo, height: Number(e.target.value)})}/>
                                     </div>
                                     <div className="space-y-1">
-                                        <label className="text-[10px] font-bold text-gray-400 uppercase">Weight (kg)</label>
-                                        <input type="number" placeholder="ex) 19" className="w-full border-b py-1 text-sm font-bold outline-none focus:border-black"
+                                        <label className="text-[10px] font-bold text-ink-soft uppercase">Weight (kg)</label>
+                                        <input type="number" placeholder="ex) 19" className="w-full border-b border-line py-1 text-sm font-bold outline-none focus:border-coral"
                                                onChange={(e) => setModelInfo({...modelInfo, weight: Number(e.target.value)})}/>
                                     </div>
                                 </div>
@@ -567,9 +567,9 @@ const ProductForm: React.FC = () => {
                         </div>
 
                         {/* 상품 기본 정보 */}
-                        <div className="space-y-6 pt-6 border-t border-gray-50">
-                            <h3 className="text-[11px] font-black text-gray-900 uppercase tracking-widest">Pricing</h3>
-                            <input type="number" placeholder="판매가 (₩)" className="w-full border-b py-2 text-sm font-bold outline-none focus:border-black"
+                        <div className="space-y-6 pt-6 border-t border-line">
+                            <h3 className="text-[11px] font-black text-ink uppercase tracking-widest">Pricing</h3>
+                            <input type="number" placeholder="판매가 (₩)" className="w-full border-b border-line py-2 text-sm font-bold outline-none focus:border-coral"
                                    onChange={(e) => setProduct({...product, price: Number(e.target.value)})}/>
                         </div>
                     </div>
