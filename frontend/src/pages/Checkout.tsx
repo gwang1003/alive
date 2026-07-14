@@ -119,11 +119,11 @@ const Checkout: React.FC = () => {
 
     if (items.length === 0) {
         return (
-            <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-6">
-                <p className="text-gray-400">장바구니가 비어있습니다.</p>
+            <div className="min-h-screen bg-canvas flex flex-col items-center justify-center gap-6">
+                <p className="text-ink-soft">장바구니가 비어있습니다.</p>
                 <button
                     onClick={() => navigate('/')}
-                    className="px-8 py-3 bg-gray-900 text-white text-xs font-black tracking-widest uppercase rounded-xl hover:bg-black transition-all"
+                    className="px-8 py-3 bg-coral text-white text-xs font-black tracking-widest uppercase rounded-full hover:bg-coral-deep transition-all"
                 >
                     쇼핑 계속하기
                 </button>
@@ -132,18 +132,18 @@ const Checkout: React.FC = () => {
     }
 
     return (
-        <div className="min-h-screen bg-white px-6 py-16">
+        <div className="min-h-screen bg-canvas px-6 py-16">
             <div className="max-w-3xl mx-auto">
-                <h1 className="text-3xl font-black tracking-tighter mb-12">Checkout</h1>
+                <h1 className="font-display text-3xl font-semibold tracking-tight text-ink mb-12">Checkout</h1>
 
                 <div className="grid grid-cols-2 gap-16">
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <h2 className="text-xs font-black text-gray-400 tracking-widest uppercase mb-2">배송 정보</h2>
+                        <h2 className="text-xs font-black text-ink-soft tracking-widest uppercase mb-2">배송 정보</h2>
 
                         {addresses.length > 0 && (
                             <div className="space-y-2 mb-4">
                                 {addresses.map((addr) => (
-                                    <label key={addr.addressId} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer text-sm has-[:checked]:border-gray-900">
+                                    <label key={addr.addressId} className="flex items-start gap-3 p-3 rounded-xl border border-line cursor-pointer text-sm has-[:checked]:border-coral">
                                         <input
                                             type="radio"
                                             name="savedAddress"
@@ -152,14 +152,14 @@ const Checkout: React.FC = () => {
                                             className="mt-1"
                                         />
                                         <span>
-                                            <span className="font-bold text-gray-900">{addr.recipientName}</span>
-                                            {addr.isDefault && <span className="ml-2 text-[10px] font-black text-white bg-gray-900 px-2 py-0.5 rounded-full">기본</span>}
+                                            <span className="font-bold text-ink">{addr.recipientName}</span>
+                                            {addr.isDefault && <span className="ml-2 text-[10px] font-black text-white bg-coral px-2 py-0.5 rounded-full">기본</span>}
                                             <br />
-                                            <span className="text-gray-500 text-xs">({addr.zipcode}) {addr.address} {addr.addressDetail}</span>
+                                            <span className="text-ink-soft text-xs">({addr.zipcode}) {addr.address} {addr.addressDetail}</span>
                                         </span>
                                     </label>
                                 ))}
-                                <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 cursor-pointer text-sm has-[:checked]:border-gray-900">
+                                <label className="flex items-center gap-3 p-3 rounded-xl border border-line cursor-pointer text-sm has-[:checked]:border-coral">
                                     <input
                                         type="radio"
                                         name="savedAddress"
@@ -178,7 +178,7 @@ const Checkout: React.FC = () => {
                                 placeholder="받는 분 성함"
                                 value={form.recipientName}
                                 onChange={handleChange}
-                                className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                                className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                                 required
                             />
                         </div>
@@ -189,7 +189,7 @@ const Checkout: React.FC = () => {
                                 placeholder="연락처 (예: 010-1234-5678)"
                                 value={form.recipientPhone}
                                 onChange={handleChange}
-                                className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                                className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                                 required
                             />
                         </div>
@@ -202,12 +202,12 @@ const Checkout: React.FC = () => {
                                         value={newZipcode}
                                         readOnly
                                         required
-                                        className="flex-1 h-14 border-b border-gray-200 outline-none transition-colors text-sm font-medium text-gray-500"
+                                        className="flex-1 h-14 border-b border-line outline-none transition-colors text-sm font-medium text-ink-soft"
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPostcodeSearch(true)}
-                                        className="shrink-0 px-4 text-[11px] font-bold text-gray-500 border-b border-gray-200 hover:text-gray-900 whitespace-nowrap"
+                                        className="shrink-0 px-4 text-[11px] font-bold text-ink-soft border-b border-line hover:text-coral-deep whitespace-nowrap"
                                     >
                                         우편번호 찾기
                                     </button>
@@ -218,14 +218,14 @@ const Checkout: React.FC = () => {
                                     value={newAddress}
                                     readOnly
                                     required
-                                    className="w-full h-14 border-b border-gray-200 outline-none transition-colors text-sm font-medium text-gray-500"
+                                    className="w-full h-14 border-b border-line outline-none transition-colors text-sm font-medium text-ink-soft"
                                 />
                                 <input
                                     type="text"
                                     placeholder="상세주소 (동/호수)"
                                     value={newAddressDetail}
                                     onChange={handleAddressDetailChange}
-                                    className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                                    className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                                 />
                             </div>
                         ) : (
@@ -236,7 +236,7 @@ const Checkout: React.FC = () => {
                                     placeholder="배송지 주소"
                                     value={form.deliveryAddress}
                                     readOnly
-                                    className="w-full h-14 border-b border-gray-200 outline-none transition-colors text-sm font-medium text-gray-500"
+                                    className="w-full h-14 border-b border-line outline-none transition-colors text-sm font-medium text-ink-soft"
                                     required
                                 />
                             </div>
@@ -247,7 +247,7 @@ const Checkout: React.FC = () => {
                                 placeholder="배송 요청사항 (선택)"
                                 value={form.deliveryMessage}
                                 onChange={handleChange}
-                                className="w-full bg-gray-50 border-none rounded-2xl p-4 text-sm outline-none focus:ring-2 ring-gray-100 transition-all min-h-[100px] resize-none"
+                                className="w-full bg-surface border border-line rounded-2xl p-4 text-sm outline-none focus:ring-2 ring-coral/20 transition-all min-h-[100px] resize-none"
                             />
                         </div>
 
@@ -256,38 +256,38 @@ const Checkout: React.FC = () => {
                         <button
                             type="submit"
                             disabled={submitting}
-                            className="w-full h-16 bg-gray-900 text-white font-black text-xs tracking-[0.2em] uppercase hover:bg-black transition-all disabled:opacity-50"
+                            className="w-full h-16 bg-coral text-white font-black text-xs tracking-[0.2em] uppercase rounded-full hover:bg-coral-deep transition-all disabled:opacity-50"
                         >
                             {submitting ? '주문 처리 중...' : '주문하기'}
                         </button>
                     </form>
 
                     <div>
-                        <h2 className="text-xs font-black text-gray-400 tracking-widest uppercase mb-6">주문 상품</h2>
-                        <div className="space-y-4 divide-y divide-gray-100">
+                        <h2 className="text-xs font-black text-ink-soft tracking-widest uppercase mb-6">주문 상품</h2>
+                        <div className="space-y-4 divide-y divide-line">
                             {items.map((item) => (
                                 <div key={item.cartItemId} className="flex justify-between items-center pt-4 first:pt-0">
                                     <div>
-                                        <p className="text-sm font-bold text-gray-900">{item.productName}</p>
-                                        <p className="text-xs text-gray-400">{item.color} / {item.size} × {item.quantity}</p>
+                                        <p className="text-sm font-bold text-ink">{item.productName}</p>
+                                        <p className="text-xs text-ink-soft">{item.color} / {item.size} × {item.quantity}</p>
                                     </div>
-                                    <p className="text-sm font-black text-gray-900">
+                                    <p className="text-sm font-black text-ink">
                                         {(item.finalPrice * item.quantity).toLocaleString()} KRW
                                     </p>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="mt-8 pt-6 border-t border-gray-900 space-y-2">
-                            <div className="flex justify-between text-sm text-gray-500">
+                        <div className="mt-8 pt-6 border-t border-ink space-y-2">
+                            <div className="flex justify-between text-sm text-ink-soft">
                                 <span>상품 금액</span>
                                 <span>{totalPrice.toLocaleString()} KRW</span>
                             </div>
-                            <div className="flex justify-between text-sm text-gray-500">
+                            <div className="flex justify-between text-sm text-ink-soft">
                                 <span>배송비</span>
                                 <span>{deliveryFee.toLocaleString()} KRW</span>
                             </div>
-                            <div className="flex justify-between text-lg font-black text-gray-900 pt-2">
+                            <div className="flex justify-between text-lg font-black text-ink pt-2">
                                 <span>총 결제 금액</span>
                                 <span>{(totalPrice + deliveryFee).toLocaleString()} KRW</span>
                             </div>

@@ -83,7 +83,7 @@ const Register: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white flex flex-col justify-center items-center px-6">
+        <div className="min-h-screen bg-canvas flex flex-col justify-center items-center px-6">
             <div className="w-full max-w-[400px] space-y-12">
                 <div className="flex flex-col items-center gap-4">
                     <img
@@ -92,7 +92,7 @@ const Register: React.FC = () => {
                         className="h-10 cursor-pointer"
                         onClick={() => navigate('/')}
                     />
-                    <p className="text-xs font-bold text-gray-400 tracking-[0.3em] uppercase">Create Account</p>
+                    <p className="text-xs font-bold text-ink-soft tracking-[0.3em] uppercase">Create Account</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -102,7 +102,7 @@ const Register: React.FC = () => {
                                 type="email"
                                 name="email"
                                 placeholder="이메일 계정"
-                                className="flex-1 h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                                className="flex-1 h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
@@ -110,13 +110,13 @@ const Register: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={handleCheckEmail}
-                                className="shrink-0 px-4 text-[11px] font-bold text-gray-500 border-b border-gray-200 hover:text-gray-900 whitespace-nowrap"
+                                className="shrink-0 px-4 text-[11px] font-bold text-ink-soft border-b border-line hover:text-coral-deep whitespace-nowrap"
                             >
                                 중복확인
                             </button>
                         </div>
                         {emailChecked && (
-                            <p className="text-[11px] font-bold text-blue-600">사용 가능한 이메일입니다.</p>
+                            <p className="text-[11px] font-bold text-sage">사용 가능한 이메일입니다.</p>
                         )}
                     </div>
 
@@ -125,7 +125,7 @@ const Register: React.FC = () => {
                             type="password"
                             name="password"
                             placeholder="비밀번호 (8자 이상)"
-                            className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                            className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                             value={formData.password}
                             onChange={handleChange}
                             minLength={8}
@@ -138,7 +138,7 @@ const Register: React.FC = () => {
                             type="password"
                             name="passwordConfirm"
                             placeholder="비밀번호 확인"
-                            className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                            className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                             value={formData.passwordConfirm}
                             onChange={handleChange}
                             minLength={8}
@@ -151,7 +151,7 @@ const Register: React.FC = () => {
                             type="text"
                             name="name"
                             placeholder="이름"
-                            className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                            className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                             value={formData.name}
                             onChange={handleChange}
                             required
@@ -163,15 +163,15 @@ const Register: React.FC = () => {
                             type="text"
                             name="phone"
                             placeholder="휴대폰번호 (예: 010-1234-5678)"
-                            className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                            className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                             value={formData.phone}
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="space-y-2 pt-2">
-                        <div className="h-28 overflow-y-auto rounded-xl border border-gray-200 p-3 text-[11px] leading-relaxed text-gray-500 space-y-2">
-                            <p className="font-bold text-gray-700">이용약관 및 개인정보처리방침 (예시)</p>
+                        <div className="h-28 overflow-y-auto rounded-xl border border-line p-3 text-[11px] leading-relaxed text-ink-soft space-y-2">
+                            <p className="font-bold text-ink">이용약관 및 개인정보처리방침 (예시)</p>
                             <p>
                                 본 약관은 alive(이하 "회사")가 제공하는 서비스의 이용과 관련하여 회사와 회원 간의 권리, 의무 및
                                 책임사항을 규정함을 목적으로 합니다. 회원은 회사가 정한 절차에 따라 가입을 신청하며, 서비스 이용
@@ -182,11 +182,11 @@ const Register: React.FC = () => {
                                 고객 문의 응대 목적으로만 이용하며, 관련 법령에 따른 보관 기간이 경과하거나 회원 탈퇴 시 지체
                                 없이 파기합니다. 회원은 언제든지 자신의 개인정보 처리 현황을 조회하거나 수정을 요청할 수 있습니다.
                             </p>
-                            <p className="text-gray-400">
+                            <p className="text-ink-soft/70">
                                 ※ 본 문서는 데모/개발 목적의 예시 텍스트이며, 실제 법적 효력을 갖는 약관이 아닙니다.
                             </p>
                         </div>
-                        <label className="flex items-center gap-2 text-[12px] font-bold text-gray-600">
+                        <label className="flex items-center gap-2 text-[12px] font-bold text-ink-soft">
                             <input
                                 type="checkbox"
                                 checked={agreedTerms}
@@ -202,16 +202,16 @@ const Register: React.FC = () => {
 
                     <button
                         disabled={!agreedTerms}
-                        className="w-full h-16 bg-gray-900 text-white font-black text-xs tracking-[0.2em] uppercase mt-8 hover:bg-black transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="w-full h-16 bg-coral text-white font-black text-xs tracking-[0.2em] uppercase mt-8 rounded-full hover:bg-coral-deep transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         Sign Up
                     </button>
                 </form>
 
-                <div className="flex justify-center gap-2 text-[11px] font-bold text-gray-400">
+                <div className="flex justify-center gap-2 text-[11px] font-bold text-ink-soft">
                     <span>이미 계정이 있으신가요?</span>
                     <button
-                        className="text-gray-900"
+                        className="text-ink"
                         onClick={() => navigate('/login')}
                     >
                         로그인

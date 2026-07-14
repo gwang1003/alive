@@ -11,6 +11,14 @@ const STATUS_LABEL: Record<string, string> = {
     CANCELLED: '주문 취소',
 };
 
+const STATUS_COLOR: Record<string, string> = {
+    PENDING: '#746657',
+    PAID: '#1D6478',
+    SHIPPING: '#8A5A05',
+    DELIVERED: '#5B7A3A',
+    CANCELLED: '#E24F2C',
+};
+
 const OrderHistory: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -41,14 +49,14 @@ const OrderHistory: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white px-6 py-16">
+        <div className="min-h-screen bg-canvas px-6 py-16">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-3xl font-black tracking-tighter mb-12">주문내역</h1>
+                <h1 className="font-display text-3xl font-semibold tracking-tight text-ink mb-12">주문내역</h1>
 
-                {isLoading && orders.length === 0 && <p className="text-sm text-gray-400">불러오는 중...</p>}
+                {isLoading && orders.length === 0 && <p className="text-sm text-ink-soft">불러오는 중...</p>}
 
                 {!isLoading && orders.length === 0 && (
-                    <p className="text-gray-400 text-center py-32">주문 내역이 없습니다.</p>
+                    <p className="text-ink-soft text-center py-32">주문 내역이 없습니다.</p>
                 )}
 
                 <div className="space-y-6">
@@ -56,20 +64,23 @@ const OrderHistory: React.FC = () => {
                         <div
                             key={order.orderId}
                             onClick={() => navigate(`/orders/${order.orderId}`)}
-                            className="border border-gray-100 rounded-2xl p-8 cursor-pointer hover:border-gray-300 transition-all"
+                            className="border border-line rounded-2xl p-8 cursor-pointer hover:border-coral transition-all"
                         >
                             <div className="flex justify-between items-center mb-4">
                                 <div>
-                                    <p className="text-xs font-bold text-gray-400">{order.orderNumber}</p>
-                                    <p className="text-xs text-gray-400">{new Date(order.orderedAt).toLocaleString('ko-KR')}</p>
+                                    <p className="text-xs font-bold text-ink-soft">{order.orderNumber}</p>
+                                    <p className="text-xs text-ink-soft">{new Date(order.orderedAt).toLocaleString('ko-KR')}</p>
                                 </div>
-                                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+                                <span
+                                    className="text-[10px] font-black uppercase tracking-widest"
+                                    style={{ color: STATUS_COLOR[order.status] ?? '#746657' }}
+                                >
                                     {STATUS_LABEL[order.status] ?? order.status}
                                 </span>
                             </div>
                             <div className="space-y-1">
                                 {order.items.map((item, i) => (
-                                    <p key={i} className="text-sm text-gray-700">
+                                    <p key={i} className="text-sm text-ink-soft">
                                         {item.productName} ({item.color}/{item.size}) × {item.quantity}
                                     </p>
                                 ))}
@@ -78,12 +89,12 @@ const OrderHistory: React.FC = () => {
                                 {(order.status === 'PENDING' || order.status === 'PAID') && (
                                     <button
                                         onClick={(e) => handleCancel(e, order.orderId)}
-                                        className="text-[11px] font-bold text-red-500 hover:underline"
+                                        className="text-[11px] font-bold text-coral-deep hover:underline"
                                     >
                                         주문취소
                                     </button>
                                 )}
-                                <p className="text-right text-sm font-black text-gray-900 ml-auto">
+                                <p className="text-right text-sm font-black text-ink ml-auto">
                                     {order.finalAmount.toLocaleString()} KRW
                                 </p>
                             </div>

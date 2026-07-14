@@ -116,13 +116,13 @@ const MyPage: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white px-6 py-16">
+        <div className="min-h-screen bg-canvas px-6 py-16">
             <div className="max-w-2xl mx-auto space-y-12">
                 <div className="flex justify-between items-center">
-                    <h1 className="text-3xl font-black tracking-tighter">마이페이지</h1>
+                    <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">마이페이지</h1>
                     <button
                         onClick={handleLogout}
-                        className="text-[11px] font-bold text-gray-500 hover:text-gray-900 uppercase tracking-widest"
+                        className="text-[11px] font-bold text-ink-soft hover:text-coral-deep uppercase tracking-widest"
                     >
                         로그아웃
                     </button>
@@ -131,43 +131,43 @@ const MyPage: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4">
                     <Link
                         to="/orders"
-                        className="border border-gray-100 rounded-2xl p-6 hover:border-gray-900 transition-all"
+                        className="border border-line rounded-2xl p-6 hover:border-coral transition-all"
                     >
-                        <p className="text-sm font-black text-gray-900">주문내역</p>
-                        <p className="text-xs text-gray-400 mt-1">주문 조회 및 취소</p>
+                        <p className="text-sm font-black text-ink">주문내역</p>
+                        <p className="text-xs text-ink-soft mt-1">주문 조회 및 취소</p>
                     </Link>
                     <Link
                         to="/addresses"
-                        className="border border-gray-100 rounded-2xl p-6 hover:border-gray-900 transition-all"
+                        className="border border-line rounded-2xl p-6 hover:border-coral transition-all"
                     >
-                        <p className="text-sm font-black text-gray-900">배송지 관리</p>
-                        <p className="text-xs text-gray-400 mt-1">배송지 추가 및 수정</p>
+                        <p className="text-sm font-black text-ink">배송지 관리</p>
+                        <p className="text-xs text-ink-soft mt-1">배송지 추가 및 수정</p>
                     </Link>
                     <Link
                         to="/wishlist"
-                        className="border border-gray-100 rounded-2xl p-6 hover:border-gray-900 transition-all"
+                        className="border border-line rounded-2xl p-6 hover:border-coral transition-all"
                     >
-                        <p className="text-sm font-black text-gray-900">위시리스트</p>
-                        <p className="text-xs text-gray-400 mt-1">찜한 상품 보기</p>
+                        <p className="text-sm font-black text-ink">위시리스트</p>
+                        <p className="text-xs text-ink-soft mt-1">찜한 상품 보기</p>
                     </Link>
                     <Link
                         to="/inquiries"
-                        className="border border-gray-100 rounded-2xl p-6 hover:border-gray-900 transition-all"
+                        className="border border-line rounded-2xl p-6 hover:border-coral transition-all"
                     >
-                        <p className="text-sm font-black text-gray-900">1:1 문의</p>
-                        <p className="text-xs text-gray-400 mt-1">문의 내역 확인</p>
+                        <p className="text-sm font-black text-ink">1:1 문의</p>
+                        <p className="text-xs text-ink-soft mt-1">문의 내역 확인</p>
                     </Link>
                 </div>
 
                 <section className="space-y-4">
-                    <h2 className="text-xs font-black text-gray-400 tracking-widest uppercase">회원정보 수정</h2>
+                    <h2 className="text-xs font-black text-ink-soft tracking-widest uppercase">회원정보 수정</h2>
                     <form onSubmit={handleProfileSubmit} className="space-y-4">
                         <div className="space-y-1">
                             <input
                                 type="email"
                                 value={profile?.email ?? ''}
                                 readOnly
-                                className="w-full h-14 border-b border-gray-200 outline-none text-sm font-medium text-gray-400"
+                                className="w-full h-14 border-b border-line outline-none text-sm font-medium text-ink-soft"
                             />
                         </div>
                         <div className="space-y-1">
@@ -177,7 +177,7 @@ const MyPage: React.FC = () => {
                                 placeholder="이름"
                                 value={profileForm.name}
                                 onChange={handleProfileChange}
-                                className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                                className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                                 required
                             />
                         </div>
@@ -188,15 +188,15 @@ const MyPage: React.FC = () => {
                                 placeholder="휴대폰번호 (예: 010-1234-5678)"
                                 value={profileForm.phone}
                                 onChange={handleProfileChange}
-                                className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                                className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                             />
                         </div>
                         {profileError && <p className="text-xs font-bold text-red-500">{profileError}</p>}
-                        {profileSuccess && <p className="text-xs font-bold text-blue-600">{profileSuccess}</p>}
+                        {profileSuccess && <p className="text-xs font-bold text-sage">{profileSuccess}</p>}
                         <button
                             type="submit"
                             disabled={savingProfile}
-                            className="px-8 py-3 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all disabled:opacity-50"
+                            className="px-8 py-3 bg-coral text-white text-xs font-black uppercase tracking-widest rounded-full hover:bg-coral-deep transition-all disabled:opacity-50"
                         >
                             저장
                         </button>
@@ -204,7 +204,7 @@ const MyPage: React.FC = () => {
                 </section>
 
                 <section className="space-y-4">
-                    <h2 className="text-xs font-black text-gray-400 tracking-widest uppercase">비밀번호 변경</h2>
+                    <h2 className="text-xs font-black text-ink-soft tracking-widest uppercase">비밀번호 변경</h2>
                     <form onSubmit={handlePasswordSubmit} className="space-y-4">
                         <div className="space-y-1">
                             <input
@@ -213,7 +213,7 @@ const MyPage: React.FC = () => {
                                 placeholder="현재 비밀번호"
                                 value={passwordForm.currentPassword}
                                 onChange={handlePasswordChange}
-                                className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                                className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                                 required
                             />
                         </div>
@@ -225,7 +225,7 @@ const MyPage: React.FC = () => {
                                 value={passwordForm.newPassword}
                                 onChange={handlePasswordChange}
                                 minLength={8}
-                                className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                                className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                                 required
                             />
                         </div>
@@ -237,16 +237,16 @@ const MyPage: React.FC = () => {
                                 value={passwordForm.newPasswordConfirm}
                                 onChange={handlePasswordChange}
                                 minLength={8}
-                                className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                                className="w-full h-14 border-b border-line outline-none focus:border-coral transition-colors text-sm font-medium"
                                 required
                             />
                         </div>
                         {passwordError && <p className="text-xs font-bold text-red-500">{passwordError}</p>}
-                        {passwordSuccess && <p className="text-xs font-bold text-blue-600">{passwordSuccess}</p>}
+                        {passwordSuccess && <p className="text-xs font-bold text-sage">{passwordSuccess}</p>}
                         <button
                             type="submit"
                             disabled={savingPassword}
-                            className="px-8 py-3 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all disabled:opacity-50"
+                            className="px-8 py-3 bg-coral text-white text-xs font-black uppercase tracking-widest rounded-full hover:bg-coral-deep transition-all disabled:opacity-50"
                         >
                             비밀번호 변경
                         </button>
