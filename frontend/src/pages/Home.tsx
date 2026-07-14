@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import CrayonUnderline from '../components/CrayonUnderline';
+import heroFallbackImage from '../assets/products/b/ea082c2b937819a1c6ff9e6988304be1.jpg';
 import axios from "../api/axios.ts";
 import { getRecentlyViewedIds } from '../utils/recentlyViewed';
 import useBannerStore from '../store/bannerStore';
@@ -83,7 +84,7 @@ const Home: React.FC = () => {
                     </div>
                     <div className="relative h-[70vh]">
                         <img
-                            src={heroBanner ? `/api${heroBanner.imageUrl}` : "https://images.unsplash.com/photo-1519234129112-25039f60447a?auto=format&fit=crop&q=80&w=800"}
+                            src={heroBanner ? `/api${heroBanner.imageUrl}` : heroFallbackImage}
                             className="absolute inset-0 w-full h-full object-cover rounded-bl-[100px]"
                             alt={heroBanner ? heroBanner.title : "spring collection"}
                         />
