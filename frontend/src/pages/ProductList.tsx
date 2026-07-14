@@ -81,16 +81,16 @@ const ProductList: React.FC<ProductListProps> = ({ title, categoryId, defaultSor
     const handleFilterChange = () => setPage(0);
 
     return (
-        <div className="min-h-screen bg-white px-12 py-16">
+        <div className="min-h-screen bg-canvas px-12 py-16">
             <div className="max-w-7xl mx-auto">
-                <h1 className="text-3xl font-black tracking-tighter mb-10">{title}</h1>
+                <h1 className="font-display text-3xl font-semibold tracking-tight text-ink mb-10">{title}</h1>
 
                 {!discountedOnly && (
-                    <div className="flex flex-wrap items-end gap-6 mb-12 pb-8 border-b border-gray-100">
+                    <div className="flex flex-wrap items-end gap-6 mb-12 pb-8 border-b border-line">
                         <div className="flex flex-col gap-1">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">성별</label>
+                            <label className="text-[10px] font-black text-ink-soft uppercase tracking-widest">성별</label>
                             <select
-                                className="border-b-2 border-gray-100 py-2 text-sm font-bold outline-none bg-transparent"
+                                className="border-b-2 border-line py-2 text-sm font-bold outline-none bg-transparent"
                                 value={gender}
                                 onChange={(e) => { setGender(e.target.value); handleFilterChange(); }}
                             >
@@ -100,59 +100,59 @@ const ProductList: React.FC<ProductListProps> = ({ title, categoryId, defaultSor
                             </select>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">가격 범위</label>
+                            <label className="text-[10px] font-black text-ink-soft uppercase tracking-widest">가격 범위</label>
                             <div className="flex items-center gap-2">
                                 <input
                                     type="number"
                                     placeholder="최소"
-                                    className="w-24 border-b-2 border-gray-100 py-2 text-sm font-bold outline-none bg-transparent"
+                                    className="w-24 border-b-2 border-line py-2 text-sm font-bold outline-none bg-transparent"
                                     value={minPrice}
                                     onChange={(e) => { setMinPrice(e.target.value); handleFilterChange(); }}
                                 />
-                                <span className="text-gray-300">~</span>
+                                <span className="text-ink-soft/50">~</span>
                                 <input
                                     type="number"
                                     placeholder="최대"
-                                    className="w-24 border-b-2 border-gray-100 py-2 text-sm font-bold outline-none bg-transparent"
+                                    className="w-24 border-b-2 border-line py-2 text-sm font-bold outline-none bg-transparent"
                                     value={maxPrice}
                                     onChange={(e) => { setMaxPrice(e.target.value); handleFilterChange(); }}
                                 />
                             </div>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">연령(개월)</label>
+                            <label className="text-[10px] font-black text-ink-soft uppercase tracking-widest">연령(개월)</label>
                             <div className="flex items-center gap-2">
                                 <input
                                     type="number"
                                     placeholder="최소"
-                                    className="w-20 border-b-2 border-gray-100 py-2 text-sm font-bold outline-none bg-transparent"
+                                    className="w-20 border-b-2 border-line py-2 text-sm font-bold outline-none bg-transparent"
                                     value={minAge}
                                     onChange={(e) => { setMinAge(e.target.value); handleFilterChange(); }}
                                 />
-                                <span className="text-gray-300">~</span>
+                                <span className="text-ink-soft/50">~</span>
                                 <input
                                     type="number"
                                     placeholder="최대"
-                                    className="w-20 border-b-2 border-gray-100 py-2 text-sm font-bold outline-none bg-transparent"
+                                    className="w-20 border-b-2 border-line py-2 text-sm font-bold outline-none bg-transparent"
                                     value={maxAge}
                                     onChange={(e) => { setMaxAge(e.target.value); handleFilterChange(); }}
                                 />
                             </div>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">키워드</label>
+                            <label className="text-[10px] font-black text-ink-soft uppercase tracking-widest">키워드</label>
                             <input
                                 type="text"
                                 placeholder="상품명 검색"
-                                className="w-40 border-b-2 border-gray-100 py-2 text-sm font-bold outline-none bg-transparent"
+                                className="w-40 border-b-2 border-line py-2 text-sm font-bold outline-none bg-transparent"
                                 value={keyword}
                                 onChange={(e) => { setKeyword(e.target.value); handleFilterChange(); }}
                             />
                         </div>
                         <div className="flex flex-col gap-1 ml-auto">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">정렬</label>
+                            <label className="text-[10px] font-black text-ink-soft uppercase tracking-widest">정렬</label>
                             <select
-                                className="border-b-2 border-gray-100 py-2 text-sm font-bold outline-none bg-transparent"
+                                className="border-b-2 border-line py-2 text-sm font-bold outline-none bg-transparent"
                                 value={sort}
                                 onChange={(e) => { setSort(e.target.value); handleFilterChange(); }}
                             >
@@ -164,9 +164,9 @@ const ProductList: React.FC<ProductListProps> = ({ title, categoryId, defaultSor
                     </div>
                 )}
 
-                {isLoading && products.length === 0 && <p className="text-sm text-gray-400">불러오는 중...</p>}
+                {isLoading && products.length === 0 && <p className="text-sm text-ink-soft">불러오는 중...</p>}
                 {!isLoading && products.length === 0 && (
-                    <p className="text-gray-400 text-center py-32">조건에 맞는 상품이 없습니다.</p>
+                    <p className="text-ink-soft text-center py-32">조건에 맞는 상품이 없습니다.</p>
                 )}
 
                 <div className="grid grid-cols-4 gap-8">
@@ -181,7 +181,7 @@ const ProductList: React.FC<ProductListProps> = ({ title, categoryId, defaultSor
                             <button
                                 key={n}
                                 onClick={() => setPage(n)}
-                                className={`w-10 h-10 flex items-center justify-center text-xs font-bold rounded-full ${n === page ? 'bg-gray-900 text-white' : 'text-gray-400 hover:bg-gray-50'}`}
+                                className={`w-10 h-10 flex items-center justify-center text-xs font-bold rounded-full ${n === page ? 'bg-coral text-white' : 'text-ink-soft hover:bg-surface'}`}
                             >
                                 {n + 1}
                             </button>
