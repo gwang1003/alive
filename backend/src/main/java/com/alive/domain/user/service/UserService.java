@@ -1,8 +1,10 @@
 package com.alive.domain.user.service;
 
+import com.alive.domain.user.dto.ChangePasswordRequest;
 import com.alive.domain.user.dto.LoginRequest;
 import com.alive.domain.user.dto.LoginResponse;
 import com.alive.domain.user.dto.RegisterRequest;
+import com.alive.domain.user.dto.UpdateProfileRequest;
 import com.alive.domain.user.dto.UserResponse;
 import com.alive.domain.user.entity.User;
 import com.alive.domain.user.entity.UserRole;
@@ -91,5 +93,29 @@ public class UserService {
     // 이메일 존재 여부 확인
     public boolean isEmailExists(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    // 회원정보 수정 (이름, 전화번호)
+    @Transactional
+    public UserResponse updateProfile(String email, UpdateProfileRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+
+        user.updateProfile(request.getName(), request.getPhone());
+
+        return UserResponse.fromEntity(user);
+    }
+
+    // 비밀번호 변경
+    @Transactional
+    public void changePassword(String email, ChangePasswordRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다");
+        }
+
+        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
     }
 }

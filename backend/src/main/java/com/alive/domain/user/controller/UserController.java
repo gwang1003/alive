@@ -1,15 +1,15 @@
 package com.alive.domain.user.controller;
 
+import com.alive.domain.user.dto.ChangePasswordRequest;
+import com.alive.domain.user.dto.UpdateProfileRequest;
 import com.alive.domain.user.dto.UserResponse;
 import com.alive.domain.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -24,12 +24,32 @@ public class UserController {
      */
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser() {
-        // SecurityContext에서 현재 인증된 사용자 이메일 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName(); // principal (이메일)
-
-        UserResponse user = userService.getUserByEmail(email);
+        UserResponse user = userService.getUserByEmail(currentEmail());
         return ResponseEntity.ok(user);
+    }
+
+    /**
+     * 회원정보 수정 (이름, 전화번호)
+     * PATCH /api/users/me
+     */
+    @PatchMapping("/me")
+    public ResponseEntity<UserResponse> updateProfile(@Valid @RequestBody UpdateProfileRequest request) {
+        return ResponseEntity.ok(userService.updateProfile(currentEmail(), request));
+    }
+
+    /**
+     * 비밀번호 변경
+     * PATCH /api/users/me/password
+     */
+    @PatchMapping("/me/password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        userService.changePassword(currentEmail(), request);
+        return ResponseEntity.noContent().build();
+    }
+
+    private String currentEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 
     /**
