@@ -27,10 +27,17 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
     const productDetail = () => {
         navigate(`/product/detail/${product.productId}`);
     }
+    const tagStyle = (tag: string) => {
+        const upper = tag.toUpperCase();
+        if (upper.includes('SALE')) return 'bg-coral text-white';
+        if (upper.includes('BEST')) return 'bg-butter/60 text-[#8A5A05]';
+        return 'bg-sky/40 text-[#1D6478]';
+    };
+
     return (
         <div className="group flex flex-col gap-4" onClick={productDetail}>
             {/* 이미지 슬라이드 영역 */}
-            <div className="relative aspect-[3/4] overflow-hidden bg-gray-50 rounded-sm">
+            <div className="relative aspect-[3/4] overflow-hidden bg-canvas rounded-2xl">
                 <Swiper
                     modules={[Pagination, Navigation]}
                     pagination={{ clickable: true }}
@@ -47,10 +54,10 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
                         </SwiperSlide>
                     ))}
                 </Swiper>
-                <div className="absolute top-4 left-4 z-10 grid gap-1 grid-cols-4">
+                <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-1.5">
                 {product.tag && (
                     product.tag.map((tags) => (
-                        <span key={tags} className="bg-white px-2 py-1 text-[10px] font-bold tracking-widest shadow-sm group block float-left">
+                        <span key={tags} className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest shadow-sm ${tagStyle(tags)}`}>
                             {tags}
                         </span>
                     ))
@@ -60,13 +67,13 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
 
             {/* 텍스트 영역 */}
             <Link to={`/product/detail/${product.productId}`} className="flex flex-col gap-1">
-                <h3 className="text-[14px] font-bold text-gray-800 tracking-tight">{product.name}</h3>
+                <h3 className="text-[14px] font-bold text-ink tracking-tight">{product.name}</h3>
                 <div className="flex items-center gap-2 mt-1">
-          <span className="text-[15px] font-black text-gray-900">
+          <span className="text-[15px] font-black text-ink">
             {Math.floor(product.price * (1 - product.discountRate / 100)).toLocaleString()} KRW
           </span>
                     {product.discountRate > 0 && (
-                        <span className="text-[13px] text-red-500 font-bold">{product.discountRate}%</span>
+                        <span className="text-[13px] text-coral-deep font-bold">{product.discountRate}%</span>
                     )}
                 </div>
             </Link>

@@ -2,3 +2,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    @apply bg-canvas text-ink font-body;
+}
+
+/* Swiper 화살표/페이지네이션 색상을 브랜드 톤에 맞춤 */
+.swiper-button-next,
+.swiper-button-prev {
+    color: #2B2420 !important;
+    transform: scale(0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.group:hover .swiper-button-next,
+.group:hover .swiper-button-prev {
+    opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+    background: #FF6B4D !important;
+}

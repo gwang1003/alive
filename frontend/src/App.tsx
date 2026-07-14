@@ -55,7 +55,7 @@ const App: React.FC = () => {
     }, [login]);
     return (
         <Router>
-            <div className="min-h-screen bg-gray-50 text-gray-900">
+            <div className="min-h-screen bg-canvas text-ink">
                 <Header />
                 <Routes>
                     {/* 메인 페이지: 신상품 목록 표시 */}

@@ -21,16 +21,14 @@ const Header: React.FC = () => {
     ];
 
     return (
-        <header className="w-full h-12 bg-white/90 backdrop-blur-md sticky top-0 z-50 px-12 flex items-center justify-between border-b border-gray-50">
+        <header className="w-full h-14 bg-surface/90 backdrop-blur-md sticky top-0 z-50 px-12 flex items-center justify-between border-b border-line">
 
             {/* 왼쪽: 로고 이미지 영역 */}
             <Link to="/" className="flex items-center h-full">
-                {/* 여기에 가져오실 이미지를 넣으세요 */}
                 <img src={logo} alt="ALIVE KIDS" className="h-full w-auto object-contain" />
                 <div className="h-10 w-auto flex items-center justify-center">
-                    {/* 예시: <img src={logoImg} alt="ALIVE KIDS" className="h-full w-auto object-contain" /> */}
-                    <span className="text-2xl font-black tracking-tighter text-gray-900">
-            <span className="text-red-500">ALIVE</span>
+                    <span className="font-display text-2xl font-semibold tracking-tight text-ink">
+            <span className="text-coral">ALIVE</span>
           </span>
                 </div>
             </Link>
@@ -41,35 +39,35 @@ const Header: React.FC = () => {
                     <Link
                         key={menu.name}
                         to={menu.path}
-                        className={`text-[14px] font-bold tracking-tight transition-colors hover:text-red-500 relative group
-              ${menu.isPoint ? 'text-red-500' : 'text-gray-700'}
+                        className={`text-[14px] font-bold tracking-tight transition-colors hover:text-coral-deep relative group
+              ${menu.isPoint ? 'text-coral' : 'text-ink-soft'}
             `}
                     >
                         {menu.name}
                         {/* 호버 시 나타나는 아주 얇은 언더라인 */}
-                        <span className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-red-500 transition-all group-hover:w-full" />
+                        <span className="absolute -bottom-1 left-0 w-0 h-[1.5px] bg-coral transition-all group-hover:w-full" />
                     </Link>
                 ))}
             </nav>
 
             {/* 오른쪽: 유틸리티 아이콘 */}
-            <div className="flex items-center gap-6 text-gray-400">
-                <Search className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors" />
+            <div className="flex items-center gap-6 text-ink-soft">
+                <Search className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-ink transition-colors" />
                 {isAdmin && (
-                    <Link to="/admin/orders" className="text-[11px] font-bold text-red-500 hover:text-red-600 transition-colors">관리자</Link>
+                    <Link to="/admin/orders" className="text-[11px] font-bold text-coral-deep hover:text-coral transition-colors">관리자</Link>
                 )}
-                <Link to="/orders" className="text-[11px] font-bold hover:text-gray-900 transition-colors">주문내역</Link>
-                <Link to="/addresses" className="text-[11px] font-bold hover:text-gray-900 transition-colors">배송지 관리</Link>
-                <Link to="/inquiries" className="text-[11px] font-bold hover:text-gray-900 transition-colors">1:1 문의</Link>
+                <Link to="/orders" className="text-[11px] font-bold hover:text-ink transition-colors">주문내역</Link>
+                <Link to="/addresses" className="text-[11px] font-bold hover:text-ink transition-colors">배송지 관리</Link>
+                <Link to="/inquiries" className="text-[11px] font-bold hover:text-ink transition-colors">1:1 문의</Link>
                 <button onClick={() => navigate(accessToken ? '/mypage' : '/login')}>
-                    <User className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-gray-900 transition-colors"/>
+                    <User className="w-5 h-5 stroke-[1.5px] cursor-pointer hover:text-ink transition-colors"/>
                 </button>
-                <Link to="/wishlist" className="text-gray-400 hover:text-gray-900">
+                <Link to="/wishlist" className="text-ink-soft hover:text-coral">
                     <Heart className="w-5 h-5 stroke-[1.5px] transition-colors" />
                 </Link>
-                <Link to="/cart" className="relative group text-gray-400 hover:text-gray-900">
+                <Link to="/cart" className="relative group text-ink-soft hover:text-ink">
                     <ShoppingBag className="w-5 h-5 stroke-[1.5px] transition-colors" />
-                    <span className="absolute -top-1 -right-1.5 bg-gray-900 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold border border-white">
+                    <span className="absolute -top-1 -right-1.5 bg-coral text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold border border-surface">
             {cartCount}
           </span>
                 </Link>

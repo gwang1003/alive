@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
+import CrayonUnderline from '../components/CrayonUnderline';
 import axios from "../api/axios.ts";
 import { getRecentlyViewedIds } from '../utils/recentlyViewed';
 import useBannerStore from '../store/bannerStore';
@@ -50,25 +51,37 @@ const Home: React.FC = () => {
 
     }, []);
     return (
-        <div className="bg-white">
+        <div className="bg-canvas">
             {/* 1. Hero Section: 꽉 찬 이미지와 여백의 조화 */}
-            <section className="relative w-full h-[40vh] bg-[#f2f2f2] flex items-center overflow-hidden">
-                <div className="max-w-7xl mx-auto px-12 w-full grid grid-cols-2 items-center">
+            <section className="relative w-full min-h-[46vh] flex items-center overflow-hidden bg-[radial-gradient(560px_280px_at_88%_-10%,rgba(127,196,214,0.30),transparent_70%),radial-gradient(420px_240px_at_6%_110%,rgba(255,200,87,0.26),transparent_70%)]">
+                <div className="max-w-7xl mx-auto px-12 py-16 w-full grid grid-cols-2 items-center">
                     <div className="flex flex-col gap-6">
-                        <h1 className="text-6xl font-black text-gray-900 leading-[1.1] tracking-tight">
-                            {heroBanner ? heroBanner.title : (<>Essential <br /> Spring Layers.</>)}
+                        <span className="inline-flex items-center gap-2 w-fit text-[11px] font-bold tracking-widest uppercase text-sage bg-sage/15 rounded-full px-4 py-2">
+                            2026 Spring Collection
+                        </span>
+                        <h1 className="font-display text-5xl font-semibold text-ink leading-[1.1] tracking-tight">
+                            {heroBanner ? heroBanner.title : (
+                                <>Essential <br /> Spring{' '}
+                                    <span className="relative inline-block text-coral-deep">
+                                        Layers<CrayonUnderline className="text-coral" />
+                                    </span>.
+                                </>
+                            )}
                         </h1>
                         {!heroBanner && (
-                            <p className="text-gray-500 text-lg leading-relaxed max-w-md">
+                            <p className="text-ink-soft text-lg leading-relaxed max-w-md">
                                 우리아이의 활동성을 고려한 프리미엄 소재와 <br />
                                 감각적인 디자인의 스프링 컬렉션을 만나보세요.
                             </p>
                         )}
-                        <Link to={heroBanner?.linkUrl || '/new'} className="flex items-center gap-2 group text-sm font-bold tracking-widest mt-4">
-                            COLLECTION VIEW <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                        <Link
+                            to={heroBanner?.linkUrl || '/new'}
+                            className="group inline-flex items-center gap-2 w-fit mt-4 bg-coral text-white text-sm font-bold tracking-wide rounded-full px-7 py-3.5 shadow-[0_10px_24px_-10px_rgba(255,107,77,0.7)] hover:-translate-y-0.5 transition-all"
+                        >
+                            컬렉션 보기 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
-                    <div className="relative h-[80vh]">
+                    <div className="relative h-[70vh]">
                         <img
                             src={heroBanner ? `/api${heroBanner.imageUrl}` : "https://images.unsplash.com/photo-1519234129112-25039f60447a?auto=format&fit=crop&q=80&w=800"}
                             className="absolute inset-0 w-full h-full object-cover rounded-bl-[100px]"
@@ -78,9 +91,10 @@ const Home: React.FC = () => {
                 </div>
             </section>
 
-            {/* 2. Curation Section: 상품 그리드 (보더 최소화) */}
+            {/* 2. Curation Section: 상품 그리드 */}
             <div className="mx-auto px-12 py-20">
-                <h2 className="text-2xl font-black mb-12 tracking-tight">New Arrivals.</h2>
+                <p className="text-[11px] font-bold tracking-widest uppercase text-coral-deep mb-3">Just Landed</p>
+                <h2 className="font-display text-2xl font-semibold mb-12 tracking-tight text-ink">New Arrivals.</h2>
                 <div className="grid grid-cols-4 gap-x-8 gap-y-16">
                     {products.map((product) => (
                         <ProductCard key={product.productId} product={product} />
@@ -88,19 +102,23 @@ const Home: React.FC = () => {
                 </div>
             </div>
 
-            {/* 2. Curation Section: 상품 그리드 (보더 최소화) */}
-            <div className="mx-auto px-12 py-20">
-                <h2 className="text-2xl font-black mb-12 tracking-tight">Best Arrivals.</h2>
-                <div className="grid grid-cols-4 gap-x-8 gap-y-16">
-                    {bestProducts.map((product) => (
-                        <ProductCard key={product.productId} product={product} />
-                    ))}
+            {/* 3. Curation Section: 인기 상품 (부드러운 톤 배경으로 리듬감) */}
+            <div className="bg-sky/10">
+                <div className="mx-auto px-12 py-20">
+                    <p className="text-[11px] font-bold tracking-widest uppercase text-coral-deep mb-3">Loved by Parents</p>
+                    <h2 className="font-display text-2xl font-semibold mb-12 tracking-tight text-ink">Best Arrivals.</h2>
+                    <div className="grid grid-cols-4 gap-x-8 gap-y-16">
+                        {bestProducts.map((product) => (
+                            <ProductCard key={product.productId} product={product} />
+                        ))}
+                    </div>
                 </div>
             </div>
 
             {recentProducts.length > 0 && (
                 <div className="mx-auto px-12 py-20">
-                    <h2 className="text-2xl font-black mb-12 tracking-tight">Recently Viewed.</h2>
+                    <p className="text-[11px] font-bold tracking-widest uppercase text-coral-deep mb-3">Take Another Look</p>
+                    <h2 className="font-display text-2xl font-semibold mb-12 tracking-tight text-ink">Recently Viewed.</h2>
                     <div className="grid grid-cols-4 gap-x-8 gap-y-16">
                         {recentProducts.map((product) => (
                             <ProductCard key={product.productId} product={product} />
