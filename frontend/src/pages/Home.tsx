@@ -92,7 +92,7 @@ const Home: React.FC = () => {
             </section>
 
             {/* 2. Curation Section: 상품 그리드 */}
-            <div className="mx-auto px-12 py-20">
+            <div className="max-w-7xl mx-auto px-12 py-20">
                 <p className="text-[11px] font-bold tracking-widest uppercase text-coral-deep mb-3">Just Landed</p>
                 <h2 className="font-display text-2xl font-semibold mb-12 tracking-tight text-ink">New Arrivals.</h2>
                 <div className="grid grid-cols-4 gap-x-8 gap-y-16">
@@ -104,7 +104,7 @@ const Home: React.FC = () => {
 
             {/* 3. Curation Section: 인기 상품 (부드러운 톤 배경으로 리듬감) */}
             <div className="bg-sky/10">
-                <div className="mx-auto px-12 py-20">
+                <div className="max-w-7xl mx-auto px-12 py-20">
                     <p className="text-[11px] font-bold tracking-widest uppercase text-coral-deep mb-3">Loved by Parents</p>
                     <h2 className="font-display text-2xl font-semibold mb-12 tracking-tight text-ink">Best Arrivals.</h2>
                     <div className="grid grid-cols-4 gap-x-8 gap-y-16">
@@ -116,7 +116,7 @@ const Home: React.FC = () => {
             </div>
 
             {recentProducts.length > 0 && (
-                <div className="mx-auto px-12 py-20">
+                <div className="max-w-7xl mx-auto px-12 py-20">
                     <p className="text-[11px] font-bold tracking-widest uppercase text-coral-deep mb-3">Take Another Look</p>
                     <h2 className="font-display text-2xl font-semibold mb-12 tracking-tight text-ink">Recently Viewed.</h2>
                     <div className="grid grid-cols-4 gap-x-8 gap-y-16">
