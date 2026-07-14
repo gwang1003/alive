@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import useAddressStore from '../store/addressStore';
 import useAuthStore from '../assets/authStore';
 import { Address } from '../types/address';
+import { formatPhoneNumber } from '../utils/phone';
+import PostcodeSearchModal from '../components/PostcodeSearchModal';
 
 const EMPTY_FORM = { recipientName: '', phone: '', zipcode: '', address: '', addressDetail: '', isDefault: false };
 
@@ -17,6 +19,7 @@ const AddressBook: React.FC = () => {
     const [form, setForm] = useState(EMPTY_FORM);
     const [error, setError] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [showPostcodeSearch, setShowPostcodeSearch] = useState(false);
 
     useEffect(() => {
         if (!authChecked) return;
@@ -33,7 +36,16 @@ const AddressBook: React.FC = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;
+        if (name === 'phone') {
+            setForm((prev) => ({ ...prev, phone: formatPhoneNumber(value) }));
+            return;
+        }
         setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    };
+
+    const handlePostcodeComplete = ({ zonecode, address }: { zonecode: string; address: string }) => {
+        setForm((prev) => ({ ...prev, zipcode: zonecode, address }));
+        setShowPostcodeSearch(false);
     };
 
     const openAddForm = () => {
@@ -111,20 +123,29 @@ const AddressBook: React.FC = () => {
                             className="w-full h-12 border-b border-gray-200 bg-transparent outline-none focus:border-gray-900 text-sm"
                             required
                         />
-                        <input
-                            name="zipcode"
-                            placeholder="우편번호"
-                            value={form.zipcode}
-                            onChange={handleChange}
-                            className="w-full h-12 border-b border-gray-200 bg-transparent outline-none focus:border-gray-900 text-sm"
-                            required
-                        />
+                        <div className="flex gap-2">
+                            <input
+                                name="zipcode"
+                                placeholder="우편번호"
+                                value={form.zipcode}
+                                readOnly
+                                className="flex-1 h-12 border-b border-gray-200 bg-transparent outline-none text-sm text-gray-500"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPostcodeSearch(true)}
+                                className="shrink-0 px-4 text-[11px] font-bold text-gray-500 border-b border-gray-200 hover:text-gray-900 whitespace-nowrap"
+                            >
+                                우편번호 찾기
+                            </button>
+                        </div>
                         <input
                             name="address"
                             placeholder="주소"
                             value={form.address}
-                            onChange={handleChange}
-                            className="w-full h-12 border-b border-gray-200 bg-transparent outline-none focus:border-gray-900 text-sm"
+                            readOnly
+                            className="w-full h-12 border-b border-gray-200 bg-transparent outline-none text-sm text-gray-500"
                             required
                         />
                         <input
@@ -185,6 +206,13 @@ const AddressBook: React.FC = () => {
                     ))}
                 </div>
             </div>
+
+            {showPostcodeSearch && (
+                <PostcodeSearchModal
+                    onComplete={handlePostcodeComplete}
+                    onClose={() => setShowPostcodeSearch(false)}
+                />
+            )}
         </div>
     );
 };

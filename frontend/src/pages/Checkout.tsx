@@ -4,6 +4,8 @@ import useCartStore from '../store/cartStore';
 import useOrderStore from '../store/orderStore';
 import useAuthStore from '../assets/authStore';
 import useAddressStore from '../store/addressStore';
+import { formatPhoneNumber } from '../utils/phone';
+import PostcodeSearchModal from '../components/PostcodeSearchModal';
 
 const Checkout: React.FC = () => {
     const navigate = useNavigate();
@@ -15,8 +17,12 @@ const Checkout: React.FC = () => {
 
     const [form, setForm] = useState({ recipientName: '', recipientPhone: '', deliveryAddress: '', deliveryMessage: '' });
     const [selectedAddressId, setSelectedAddressId] = useState<number | 'new'>('new');
+    const [newZipcode, setNewZipcode] = useState('');
+    const [newAddress, setNewAddress] = useState('');
+    const [newAddressDetail, setNewAddressDetail] = useState('');
     const [error, setError] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [showPostcodeSearch, setShowPostcodeSearch] = useState(false);
 
     useEffect(() => {
         if (!authChecked) return;
@@ -45,6 +51,9 @@ const Checkout: React.FC = () => {
         setSelectedAddressId(id);
         if (id === 'new') {
             setForm({ recipientName: '', recipientPhone: '', deliveryAddress: '', deliveryMessage: form.deliveryMessage });
+            setNewZipcode('');
+            setNewAddress('');
+            setNewAddressDetail('');
             return;
         }
         const addr = addresses.find((a) => a.addressId === id);
@@ -63,7 +72,30 @@ const Checkout: React.FC = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
+        if (name === 'recipientPhone') {
+            setForm(prev => ({ ...prev, recipientPhone: formatPhoneNumber(value) }));
+            return;
+        }
         setForm(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handlePostcodeComplete = ({ zonecode, address }: { zonecode: string; address: string }) => {
+        setNewZipcode(zonecode);
+        setNewAddress(address);
+        setForm((prev) => ({
+            ...prev,
+            deliveryAddress: `(${zonecode}) ${address} ${newAddressDetail}`.trim(),
+        }));
+        setShowPostcodeSearch(false);
+    };
+
+    const handleAddressDetailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const detail = e.target.value;
+        setNewAddressDetail(detail);
+        setForm((prev) => ({
+            ...prev,
+            deliveryAddress: `(${newZipcode}) ${newAddress} ${detail}`.trim(),
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -161,17 +193,54 @@ const Checkout: React.FC = () => {
                                 required
                             />
                         </div>
-                        <div className="space-y-1">
-                            <input
-                                type="text"
-                                name="deliveryAddress"
-                                placeholder="배송지 주소"
-                                value={form.deliveryAddress}
-                                onChange={handleChange}
-                                className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
-                                required
-                            />
-                        </div>
+                        {selectedAddressId === 'new' ? (
+                            <div className="space-y-3">
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="우편번호"
+                                        value={newZipcode}
+                                        readOnly
+                                        required
+                                        className="flex-1 h-14 border-b border-gray-200 outline-none transition-colors text-sm font-medium text-gray-500"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPostcodeSearch(true)}
+                                        className="shrink-0 px-4 text-[11px] font-bold text-gray-500 border-b border-gray-200 hover:text-gray-900 whitespace-nowrap"
+                                    >
+                                        우편번호 찾기
+                                    </button>
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="주소"
+                                    value={newAddress}
+                                    readOnly
+                                    required
+                                    className="w-full h-14 border-b border-gray-200 outline-none transition-colors text-sm font-medium text-gray-500"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="상세주소 (동/호수)"
+                                    value={newAddressDetail}
+                                    onChange={handleAddressDetailChange}
+                                    className="w-full h-14 border-b border-gray-200 outline-none focus:border-gray-900 transition-colors text-sm font-medium"
+                                />
+                            </div>
+                        ) : (
+                            <div className="space-y-1">
+                                <input
+                                    type="text"
+                                    name="deliveryAddress"
+                                    placeholder="배송지 주소"
+                                    value={form.deliveryAddress}
+                                    readOnly
+                                    className="w-full h-14 border-b border-gray-200 outline-none transition-colors text-sm font-medium text-gray-500"
+                                    required
+                                />
+                            </div>
+                        )}
                         <div className="space-y-1">
                             <textarea
                                 name="deliveryMessage"
@@ -226,6 +295,13 @@ const Checkout: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {showPostcodeSearch && (
+                <PostcodeSearchModal
+                    onComplete={handlePostcodeComplete}
+                    onClose={() => setShowPostcodeSearch(false)}
+                />
+            )}
         </div>
     );
 };
