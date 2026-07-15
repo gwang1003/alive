@@ -13,15 +13,48 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 const STATUS_OPTIONS: (OrderStatus | '')[] = ['', 'PENDING', 'PAID', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
+const STATUS_VALUES: OrderStatus[] = ['PENDING', 'PAID', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
 
 const AdminOrderList: React.FC = () => {
     const navigate = useNavigate();
-    const { orders, orderTotalPages, orderPage, isLoading, fetchOrders } = useAdminStore();
+    const { orders, orderTotalPages, orderPage, isLoading, fetchOrders, updateOrderStatusBulk } = useAdminStore();
     const [statusFilter, setStatusFilter] = useState<OrderStatus | ''>('');
+    const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+    const [bulkStatus, setBulkStatus] = useState<OrderStatus>('PAID');
+    const [isBulkUpdating, setIsBulkUpdating] = useState(false);
 
     useEffect(() => {
         fetchOrders(0, statusFilter || undefined);
+        setSelectedIds(new Set());
     }, [statusFilter]);
+
+    const toggleSelect = (orderId: number) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(orderId)) next.delete(orderId);
+            else next.add(orderId);
+            return next;
+        });
+    };
+
+    const allSelected = orders.length > 0 && selectedIds.size === orders.length;
+    const toggleSelectAll = () => {
+        setSelectedIds(allSelected ? new Set() : new Set(orders.map((o) => o.orderId)));
+    };
+
+    const handleBulkUpdate = async () => {
+        if (selectedIds.size === 0) return;
+        setIsBulkUpdating(true);
+        try {
+            await updateOrderStatusBulk([...selectedIds], bulkStatus);
+            await fetchOrders(orderPage, statusFilter || undefined);
+            setSelectedIds(new Set());
+        } catch (err: any) {
+            alert(err.response?.data?.message ?? '일괄 상태 변경에 실패했습니다');
+        } finally {
+            setIsBulkUpdating(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-white px-12 py-16">
@@ -40,43 +73,77 @@ const AdminOrderList: React.FC = () => {
                     </select>
                 </div>
 
+                {selectedIds.size > 0 && (
+                    <div className="flex items-center gap-4 mb-4 p-4 bg-gray-50 rounded-xl">
+                        <span className="text-xs font-bold text-gray-700">{selectedIds.size}건 선택됨</span>
+                        <select
+                            value={bulkStatus}
+                            onChange={(e) => setBulkStatus(e.target.value as OrderStatus)}
+                            className="border-b-2 border-gray-200 py-1 text-sm font-bold outline-none bg-transparent"
+                        >
+                            {STATUS_VALUES.map((status) => (
+                                <option key={status} value={status}>{STATUS_LABEL[status]}</option>
+                            ))}
+                        </select>
+                        <button
+                            onClick={handleBulkUpdate}
+                            disabled={isBulkUpdating}
+                            className="px-6 py-2 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all disabled:opacity-50"
+                        >
+                            {isBulkUpdating ? '변경 중...' : '선택 항목 상태 변경'}
+                        </button>
+                    </div>
+                )}
+
                 {isLoading && orders.length === 0 && <p className="text-sm text-gray-400">불러오는 중...</p>}
                 {!isLoading && orders.length === 0 && (
                     <p className="text-gray-400 text-center py-32">주문이 없습니다.</p>
                 )}
 
-                <table className="w-full text-sm">
-                    <thead className="bg-gray-50 text-gray-500 font-bold uppercase tracking-wider text-xs">
-                        <tr>
-                            <th className="py-4 px-4 text-left">주문번호</th>
-                            <th className="py-4 px-4">수령인</th>
-                            <th className="py-4 px-4">상태</th>
-                            <th className="py-4 px-4">총액</th>
-                            <th className="py-4 px-4">주문일</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                        {orders.map((order) => (
-                            <tr
-                                key={order.orderId}
-                                onClick={() => navigate(`/admin/orders/${order.orderId}`)}
-                                className="hover:bg-gray-50 cursor-pointer"
-                            >
-                                <td className="py-4 px-4 font-bold text-gray-900">{order.orderNumber}</td>
-                                <td className="py-4 px-4 text-center">{order.recipientName}</td>
-                                <td className="py-4 px-4 text-center">
-                                    <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
-                                        {STATUS_LABEL[order.status] ?? order.status}
-                                    </span>
-                                </td>
-                                <td className="py-4 px-4 text-center font-black">{order.finalAmount.toLocaleString()}원</td>
-                                <td className="py-4 px-4 text-center text-gray-400">
-                                    {new Date(order.orderedAt).toLocaleDateString('ko-KR')}
-                                </td>
+                {orders.length > 0 && (
+                    <table className="w-full text-sm">
+                        <thead className="bg-gray-50 text-gray-500 font-bold uppercase tracking-wider text-xs">
+                            <tr>
+                                <th className="py-4 px-4 w-10">
+                                    <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
+                                </th>
+                                <th className="py-4 px-4 text-left">주문번호</th>
+                                <th className="py-4 px-4">수령인</th>
+                                <th className="py-4 px-4">상태</th>
+                                <th className="py-4 px-4">총액</th>
+                                <th className="py-4 px-4">주문일</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {orders.map((order) => (
+                                <tr
+                                    key={order.orderId}
+                                    onClick={() => navigate(`/admin/orders/${order.orderId}`)}
+                                    className="hover:bg-gray-50 cursor-pointer"
+                                >
+                                    <td className="py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedIds.has(order.orderId)}
+                                            onChange={() => toggleSelect(order.orderId)}
+                                        />
+                                    </td>
+                                    <td className="py-4 px-4 font-bold text-gray-900">{order.orderNumber}</td>
+                                    <td className="py-4 px-4 text-center">{order.recipientName}</td>
+                                    <td className="py-4 px-4 text-center">
+                                        <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">
+                                            {STATUS_LABEL[order.status] ?? order.status}
+                                        </span>
+                                    </td>
+                                    <td className="py-4 px-4 text-center font-black">{order.finalAmount.toLocaleString()}원</td>
+                                    <td className="py-4 px-4 text-center text-gray-400">
+                                        {new Date(order.orderedAt).toLocaleDateString('ko-KR')}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
 
                 {orderTotalPages > 1 && (
                     <div className="flex justify-center mt-12 gap-2">

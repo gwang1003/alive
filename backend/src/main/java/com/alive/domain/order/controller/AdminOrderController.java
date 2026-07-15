@@ -1,5 +1,6 @@
 package com.alive.domain.order.controller;
 
+import com.alive.domain.order.dto.BulkOrderStatusUpdateRequest;
 import com.alive.domain.order.dto.OrderResponse;
 import com.alive.domain.order.dto.OrderStatusUpdateRequest;
 import com.alive.domain.order.entity.OrderStatus;
@@ -53,5 +54,15 @@ public class AdminOrderController {
             @Valid @RequestBody OrderStatusUpdateRequest request
     ) {
         return ResponseEntity.ok(orderService.updateOrderStatus(orderId, request.getStatus()));
+    }
+
+    /**
+     * 주문 상태 일괄 변경
+     * PATCH /api/admin/orders/status
+     */
+    @PatchMapping("/status")
+    public ResponseEntity<Void> updateOrderStatusBulk(@Valid @RequestBody BulkOrderStatusUpdateRequest request) {
+        orderService.updateOrderStatusBulk(request.getOrderIds(), request.getStatus());
+        return ResponseEntity.noContent().build();
     }
 }
