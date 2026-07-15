@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Heart, Share2, ShoppingBag, ShoppingCart, X, ZoomIn} from 'lucide-react';
+import {Heart, ShoppingBag, ShoppingCart, X, ZoomIn} from 'lucide-react';
 import bottomSize from '../assets/products/common/bottomSize.jpg';
 import topSize from '../assets/products/common/topSize.jpg';
 import {useNavigate, useParams} from "react-router-dom";
@@ -164,7 +164,7 @@ const ProductDetail: React.FC = () => {
         }
     };
 
-    const handleBuyNow = async () => {
+    const handleBuyNow = () => {
         setCartError('');
 
         if (!selectedStock) {
@@ -176,33 +176,22 @@ const ProductDetail: React.FC = () => {
             return;
         }
 
-        try {
-            await addToCart(selectedStock.stockId, cartQuantity);
-            const cartItem = useCartStore.getState().items.find(
-                (item) => item.productId === Number(productId) && item.color === selectedColor && item.size === selectedSize
-            );
-            navigate('/checkout', { state: cartItem ? { cartItemIds: [cartItem.cartItemId] } : undefined });
-        } catch (error: any) {
-            setCartError(error.response?.data?.message ?? '주문 처리에 실패했습니다');
-        }
-    };
-
-    const handleShare = async () => {
-        const shareUrl = window.location.href;
-        if (navigator.share) {
-            try {
-                await navigator.share({ title: productData.name, text: `${productData.name} - Alive Kids`, url: shareUrl });
-            } catch {
-                // 사용자가 공유를 취소한 경우 등은 조용히 무시
-            }
-            return;
-        }
-        try {
-            await navigator.clipboard.writeText(shareUrl);
-            alert('상품 링크가 복사되었습니다');
-        } catch {
-            alert('이 브라우저에서는 공유하기를 지원하지 않습니다');
-        }
+        // 장바구니를 건드리지 않고 지금 고른 옵션/수량만 바로 결제로 넘김.
+        // (장바구니에 addToCart로 담으면 같은 옵션이 이미 있을 때 수량이 합쳐져서
+        //  장바구니에 있던 수량까지 같이 결제돼버리는 문제가 있었음)
+        navigate('/checkout', {
+            state: {
+                directItem: {
+                    stockId: selectedStock.stockId,
+                    quantity: cartQuantity,
+                    productName: productData.name,
+                    thumbnailUrl: productData.images[0]?.imageUrl ?? null,
+                    color: selectedColor,
+                    size: selectedSize,
+                    finalPrice: productData.finalPrice,
+                },
+            },
+        });
     };
 
     const handleToggleRestockNotification = async () => {
@@ -354,7 +343,6 @@ const ProductDetail: React.FC = () => {
                         <h1 className="text-4xl font-black text-gray-900 tracking-tighter">{productData.name}</h1>
                     </div>
                     <div className="flex gap-2">
-                        <button onClick={handleShare} className="p-3 rounded-full hover:bg-gray-100 transition-colors"><Share2 className="w-5 h-5 text-gray-600" /></button>
                         <button onClick={handleToggleWishlist} className="p-3 rounded-full hover:bg-gray-100 transition-colors">
                             <Heart
                                 className={`w-5 h-5 ${wishlistItems.some((item) => item.productId === Number(productId)) ? 'text-red-500 fill-red-500' : 'text-gray-600'}`}

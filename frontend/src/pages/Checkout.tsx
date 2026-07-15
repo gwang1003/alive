@@ -16,10 +16,39 @@ const Checkout: React.FC = () => {
     const { createOrder } = useOrderStore();
     const { addresses, fetchAddresses } = useAddressStore();
 
-    // 장바구니에서 선택한 항목만 넘어온 경우(cartItemIds), 그 항목만 주문 대상으로 좁힘.
-    // state가 없으면(직접 /checkout 진입 등) 기존처럼 장바구니 전체를 대상으로 함
-    const cartItemIds: number[] | undefined = (location.state as { cartItemIds?: number[] } | null)?.cartItemIds;
-    const checkoutItems = cartItemIds ? items.filter((item) => cartItemIds.includes(item.cartItemId)) : items;
+    type DirectItemState = {
+        stockId: number;
+        quantity: number;
+        productName: string;
+        thumbnailUrl: string | null;
+        color: string;
+        size: string;
+        finalPrice: number;
+    };
+    const navState = location.state as { cartItemIds?: number[]; directItem?: DirectItemState } | null;
+
+    // Buy Now로 들어온 경우(directItem): 장바구니를 전혀 참조하지 않고 그 옵션/수량만 표시·주문
+    // 장바구니에서 선택해서 들어온 경우(cartItemIds): 그 항목들만 주문 대상으로 좁힘
+    // 둘 다 없으면(직접 /checkout 진입 등) 기존처럼 장바구니 전체를 대상으로 함
+    const directItem = navState?.directItem;
+    const cartItemIds = navState?.cartItemIds;
+    const checkoutItems = directItem
+        ? [{
+            cartItemId: -1,
+            productId: 0,
+            productName: directItem.productName,
+            thumbnailUrl: directItem.thumbnailUrl,
+            color: directItem.color,
+            size: directItem.size,
+            price: directItem.finalPrice,
+            discountRate: null,
+            finalPrice: directItem.finalPrice,
+            quantity: directItem.quantity,
+            availableStock: directItem.quantity,
+        }]
+        : cartItemIds
+            ? items.filter((item) => cartItemIds.includes(item.cartItemId))
+            : items;
 
     const [form, setForm] = useState({ recipientName: '', recipientPhone: '', deliveryAddress: '', deliveryMessage: '' });
     const [selectedAddressId, setSelectedAddressId] = useState<number | 'new'>('new');
@@ -109,7 +138,11 @@ const Checkout: React.FC = () => {
         setError('');
         setSubmitting(true);
         try {
-            const order = await createOrder({ ...form, cartItemIds });
+            const order = await createOrder(
+                directItem
+                    ? { ...form, directItem: { stockId: directItem.stockId, quantity: directItem.quantity } }
+                    : { ...form, cartItemIds }
+            );
             await fetchCart();
             navigate(`/orders/${order.orderId}`);
         } catch (err: any) {
