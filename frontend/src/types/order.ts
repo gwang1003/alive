@@ -33,4 +33,5 @@ export interface OrderCreateRequest {
     recipientPhone: string;
     deliveryAddress: string;
     deliveryMessage?: string;
+    cartItemIds?: number[];
 }

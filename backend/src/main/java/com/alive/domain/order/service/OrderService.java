@@ -45,6 +45,17 @@ public class OrderService {
             throw new RuntimeException("장바구니가 비어있습니다");
         }
 
+        if (request.getCartItemIds() != null && !request.getCartItemIds().isEmpty()) {
+            List<Long> requestedIds = request.getCartItemIds();
+            cartItems = cartItems.stream()
+                    .filter(item -> requestedIds.contains(item.getCartItemId()))
+                    .toList();
+
+            if (cartItems.size() != requestedIds.size()) {
+                throw new RuntimeException("선택한 장바구니 항목을 찾을 수 없습니다");
+            }
+        }
+
         Order order = Order.builder()
                 .user(user)
                 .orderNumber(generateOrderNumber())
@@ -136,6 +147,15 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다"));
         order.updateStatus(status);
         return OrderResponse.fromEntity(order);
+    }
+
+    @Transactional
+    public void updateOrderStatusBulk(List<Long> orderIds, OrderStatus status) {
+        List<Order> orders = orderRepository.findAllById(orderIds);
+        if (orders.size() != orderIds.size()) {
+            throw new RuntimeException("주문을 찾을 수 없습니다");
+        }
+        orders.forEach(order -> order.updateStatus(status));
     }
 
     @Transactional

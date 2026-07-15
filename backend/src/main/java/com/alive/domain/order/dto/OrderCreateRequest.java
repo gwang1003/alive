@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,4 +24,7 @@ public class OrderCreateRequest {
     private String deliveryAddress;
 
     private String deliveryMessage;
+
+    // 지정하지 않으면(null) 장바구니 전체를 주문 처리 (하위 호환)
+    private List<Long> cartItemIds;
 }
