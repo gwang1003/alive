@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import useCartStore from '../store/cartStore';
@@ -10,6 +10,9 @@ const Cart: React.FC = () => {
     const authChecked = useAuthStore((state) => state.authChecked);
     const { items, isLoading, fetchCart, updateQuantity, removeItem } = useCartStore();
     const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+    // 지금까지 한 번이라도 봤던 cartItemId 목록. 수량 변경처럼 items가 갱신될 때마다
+    // "선택 안 된 상태"를 "새로 담긴 항목"으로 착각해 다시 체크해버리는 걸 막기 위해 씀
+    const knownIdsRef = useRef<Set<number>>(new Set());
 
     useEffect(() => {
         if (!authChecked) return;
@@ -20,16 +23,18 @@ const Cart: React.FC = () => {
         fetchCart();
     }, [authChecked, accessToken]);
 
-    // 장바구니가 갱신될 때: 삭제된 항목은 선택 해제하고, 새로 생긴 항목은 기본 선택 상태로 둠
+    // 장바구니가 갱신될 때: 삭제된 항목은 선택 해제하고, 진짜 새로 담긴 항목만 기본 선택 상태로 둠
+    // (수량 변경 등으로 기존 항목이 갱신되는 것과 "새로 담긴 항목"을 구분해야 함)
     useEffect(() => {
+        const currentIds = new Set(items.map((item) => item.cartItemId));
         setSelectedIds((prev) => {
-            const validIds = new Set(items.map((item) => item.cartItemId));
-            const next = new Set([...prev].filter((id) => validIds.has(id)));
+            const next = new Set([...prev].filter((id) => currentIds.has(id)));
             items.forEach((item) => {
-                if (!prev.has(item.cartItemId)) next.add(item.cartItemId);
+                if (!knownIdsRef.current.has(item.cartItemId)) next.add(item.cartItemId);
             });
             return next;
         });
+        knownIdsRef.current = currentIds;
     }, [items]);
 
     const toggleSelect = (cartItemId: number) => {
