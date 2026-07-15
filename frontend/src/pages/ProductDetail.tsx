@@ -164,6 +164,47 @@ const ProductDetail: React.FC = () => {
         }
     };
 
+    const handleBuyNow = async () => {
+        setCartError('');
+
+        if (!selectedStock) {
+            setCartError('색상과 사이즈를 선택해주세요');
+            return;
+        }
+        if (!accessToken) {
+            navigate('/login');
+            return;
+        }
+
+        try {
+            await addToCart(selectedStock.stockId, cartQuantity);
+            const cartItem = useCartStore.getState().items.find(
+                (item) => item.productId === Number(productId) && item.color === selectedColor && item.size === selectedSize
+            );
+            navigate('/checkout', { state: cartItem ? { cartItemIds: [cartItem.cartItemId] } : undefined });
+        } catch (error: any) {
+            setCartError(error.response?.data?.message ?? '주문 처리에 실패했습니다');
+        }
+    };
+
+    const handleShare = async () => {
+        const shareUrl = window.location.href;
+        if (navigator.share) {
+            try {
+                await navigator.share({ title: productData.name, text: `${productData.name} - Alive Kids`, url: shareUrl });
+            } catch {
+                // 사용자가 공유를 취소한 경우 등은 조용히 무시
+            }
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(shareUrl);
+            alert('상품 링크가 복사되었습니다');
+        } catch {
+            alert('이 브라우저에서는 공유하기를 지원하지 않습니다');
+        }
+    };
+
     const handleToggleRestockNotification = async () => {
         if (!accessToken) {
             navigate('/login');
@@ -256,9 +297,9 @@ const ProductDetail: React.FC = () => {
 
             {/* [왼쪽] 대형 이미지 영역 */}
             <div className="flex gap-6">
-                {/* 서브 이미지: 5개가 메인 높이와 일치하도록 높이값 계산 */}
-                <div className="flex flex-col justify-between w-[120px] shrink-0">
-                    {productData.images.map((img, i) => (
+                {/* 서브 이미지: 최대 5개까지, 위에서부터 채워짐 (justify-between으로 늘어나지 않게) */}
+                <div className="flex flex-col justify-start gap-3 w-[120px] shrink-0">
+                    {productData.images.slice(0, 5).map((img, i) => (
                         <div
                             key={i}
                             onMouseEnter={() => setMainImage(img.imageUrl)} // 클릭 대신 마우스만 올려도 바뀌게 하면 더 힙함
@@ -313,7 +354,7 @@ const ProductDetail: React.FC = () => {
                         <h1 className="text-4xl font-black text-gray-900 tracking-tighter">{productData.name}</h1>
                     </div>
                     <div className="flex gap-2">
-                        <button className="p-3 rounded-full hover:bg-gray-100 transition-colors"><Share2 className="w-5 h-5 text-gray-600" /></button>
+                        <button onClick={handleShare} className="p-3 rounded-full hover:bg-gray-100 transition-colors"><Share2 className="w-5 h-5 text-gray-600" /></button>
                         <button onClick={handleToggleWishlist} className="p-3 rounded-full hover:bg-gray-100 transition-colors">
                             <Heart
                                 className={`w-5 h-5 ${wishlistItems.some((item) => item.productId === Number(productId)) ? 'text-red-500 fill-red-500' : 'text-gray-600'}`}
@@ -390,7 +431,10 @@ const ProductDetail: React.FC = () => {
 
                 {/* 버튼 세트 */}
                 <div className="grid grid-cols-2 gap-4 h-16">
-                    <button className="bg-gray-900 text-white font-black text-xs tracking-[0.2em] uppercase hover:bg-black transition-all flex items-center justify-center gap-2">
+                    <button
+                        onClick={handleBuyNow}
+                        className="bg-gray-900 text-white font-black text-xs tracking-[0.2em] uppercase hover:bg-black transition-all flex items-center justify-center gap-2"
+                    >
                         Buy Now
                     </button>
                     <button
