@@ -9,6 +9,7 @@ interface CartState {
     addToCart: (stockId: number, quantity: number) => Promise<void>;
     updateQuantity: (cartItemId: number, quantity: number) => Promise<void>;
     removeItem: (cartItemId: number) => Promise<void>;
+    removeItems: (cartItemIds: number[]) => Promise<void>;
     clearCart: () => void;
 }
 
@@ -39,6 +40,11 @@ const useCartStore = create<CartState>((set, get) => ({
     removeItem: async (cartItemId) => {
         await api.delete(`/cart/items/${cartItemId}`);
         set({ items: get().items.filter(item => item.cartItemId !== cartItemId) });
+    },
+
+    removeItems: async (cartItemIds) => {
+        await Promise.all(cartItemIds.map((id) => api.delete(`/cart/items/${id}`)));
+        set({ items: get().items.filter((item) => !cartItemIds.includes(item.cartItemId)) });
     },
 
     clearCart: () => set({ items: [] }),

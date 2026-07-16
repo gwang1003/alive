@@ -8,7 +8,7 @@ const Cart: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
     const authChecked = useAuthStore((state) => state.authChecked);
-    const { items, isLoading, fetchCart, updateQuantity, removeItem } = useCartStore();
+    const { items, isLoading, fetchCart, updateQuantity, removeItem, removeItems } = useCartStore();
     const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
     // 지금까지 한 번이라도 봤던 cartItemId 목록. 수량 변경처럼 items가 갱신될 때마다
     // "선택 안 된 상태"를 "새로 담긴 항목"으로 착각해 다시 체크해버리는 걸 막기 위해 씀
@@ -62,6 +62,12 @@ const Cart: React.FC = () => {
         navigate('/checkout', { state: { cartItemIds: [...selectedIds] } });
     };
 
+    const handleRemoveSelected = async () => {
+        if (selectedIds.size === 0) return;
+        if (!window.confirm(`선택한 ${selectedIds.size}개 항목을 삭제하시겠습니까?`)) return;
+        await removeItems([...selectedIds]);
+    };
+
     return (
         <div className="min-h-screen bg-canvas px-6 py-16">
             <div className="max-w-4xl mx-auto">
@@ -85,10 +91,19 @@ const Cart: React.FC = () => {
 
                 {items.length > 0 && (
                     <>
-                        <label className="flex items-center gap-3 pb-4 cursor-pointer w-fit">
-                            <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
-                            <span className="text-sm font-bold text-ink-soft">전체 선택 ({selectedIds.size}/{items.length})</span>
-                        </label>
+                        <div className="flex items-center justify-between pb-4">
+                            <label className="flex items-center gap-3 cursor-pointer w-fit">
+                                <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
+                                <span className="text-sm font-bold text-ink-soft">전체 선택 ({selectedIds.size}/{items.length})</span>
+                            </label>
+                            <button
+                                onClick={handleRemoveSelected}
+                                disabled={selectedIds.size === 0}
+                                className="text-[11px] font-bold text-coral-deep hover:underline disabled:opacity-40 disabled:cursor-not-allowed disabled:no-underline"
+                            >
+                                선택 삭제
+                            </button>
+                        </div>
 
                         <div className="divide-y divide-line border-y border-ink">
                             {items.map((item) => (
