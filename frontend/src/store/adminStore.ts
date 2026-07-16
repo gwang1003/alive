@@ -12,6 +12,13 @@ interface ProductUpdatePayload {
     isActive?: boolean;
 }
 
+export interface AdminProductStock {
+    stockId: number;
+    color: string;
+    size: string;
+    quantity: number;
+}
+
 export interface AdminProductDetail {
     productId: number;
     name: string;
@@ -21,6 +28,7 @@ export interface AdminProductDetail {
     isActive: boolean;
     categoryId: number | null;
     categoryName: string | null;
+    sizes: AdminProductStock[];
 }
 
 interface AdminState {
@@ -34,6 +42,7 @@ interface AdminState {
     fetchProducts: (page: number) => Promise<void>;
     fetchProductDetail: (productId: number) => Promise<AdminProductDetail>;
     updateProduct: (productId: number, payload: ProductUpdatePayload) => Promise<void>;
+    updateStock: (productId: number, stockId: number, quantity: number) => Promise<AdminProductStock>;
     deleteProduct: (productId: number) => Promise<void>;
     fetchOrders: (page: number, status?: OrderStatus) => Promise<void>;
     fetchOrderDetail: (orderId: number) => Promise<Order>;
@@ -70,6 +79,14 @@ const useAdminStore = create<AdminState>((set, get) => ({
     updateProduct: async (productId, payload) => {
         await api.patch(`/admin/products/${productId}`, payload);
         await get().fetchProducts(get().productPage);
+    },
+
+    updateStock: async (productId, stockId, quantity) => {
+        const response = await api.patch<AdminProductStock>(
+            `/admin/products/${productId}/stocks/${stockId}`,
+            { stockQuantity: quantity }
+        );
+        return response.data;
     },
 
     deleteProduct: async (productId) => {
