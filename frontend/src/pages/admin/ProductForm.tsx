@@ -155,6 +155,13 @@ const ProductForm: React.FC = () => {
 
     // 4. 서버 전송 (FormData 사용)
     const handleSubmit = async () => {
+        setSubmitError('');
+
+        if (thumbnails.length !== 4) {
+            setSubmitError('상세페이지 큰 사진 아래에 노출되는 사진은 정확히 4장 등록해야 합니다.');
+            return;
+        }
+
         const formData = new FormData();
 
         // 1. 메인 이미지 추가
@@ -196,7 +203,6 @@ const ProductForm: React.FC = () => {
             type: 'application/json'
         }));
 
-        setSubmitError('');
         try {
             await axios.post('/admin/products', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
@@ -359,9 +365,11 @@ const ProductForm: React.FC = () => {
                                 </label>
                             </div>
 
-                            {/* 썸네일 이미지 업로드 (N개) */}
+                            {/* 썸네일 이미지 업로드 (정확히 4개 필수: 상세페이지 큰 사진 아래 4컷 그리드에 노출됨) */}
                             <div className="space-y-4">
-                                <span className="text-xs font-black text-ink uppercase">Thumbnails (Multiple)</span>
+                                <span className={`text-xs font-black uppercase ${thumbnails.length === 4 ? 'text-ink' : 'text-coral-deep'}`}>
+                                    Thumbnails — {thumbnails.length}/4 필수
+                                </span>
                                 <div className="grid grid-cols-2 gap-4">
                                     {thumbnails.map((t, idx) => (
                                         <div key={t.id} className="relative aspect-square rounded-2xl overflow-hidden border border-line">

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from '../api/axios';
 import ProductCard from '../components/ProductCard';
 import { PageResponse, ProductListItem } from '../types/product';
@@ -25,6 +26,7 @@ const GENDER_OPTIONS = [
 ];
 
 const ProductList: React.FC<ProductListProps> = ({ title, categoryId, defaultSort = 'createdAt,desc', discountedOnly = false }) => {
+    const [searchParams] = useSearchParams();
     const [products, setProducts] = useState<ProductListItem[]>([]);
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(0);
@@ -36,11 +38,20 @@ const ProductList: React.FC<ProductListProps> = ({ title, categoryId, defaultSor
     const [maxPrice, setMaxPrice] = useState('');
     const [minAge, setMinAge] = useState('');
     const [maxAge, setMaxAge] = useState('');
-    const [keyword, setKeyword] = useState('');
+    const [keyword, setKeyword] = useState(() => searchParams.get('keyword') ?? '');
 
     useEffect(() => {
         setPage(0);
     }, [categoryId, title]);
+
+    // 헤더 검색으로 진입할 때(?keyword=)마다 검색어 반영
+    useEffect(() => {
+        const urlKeyword = searchParams.get('keyword');
+        if (urlKeyword !== null) {
+            setKeyword(urlKeyword);
+            setPage(0);
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         const fetchProducts = async () => {

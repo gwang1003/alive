@@ -78,6 +78,7 @@ const App: React.FC = () => {
                     <Route path="/outer" element={<ProductList title="아우터" categoryId={3} />} />
                     <Route path="/sets" element={<ProductList title="세트" categoryId={5} />} />
                     <Route path="/sale" element={<ProductList title="세일" discountedOnly />} />
+                    <Route path="/search" element={<ProductList title="검색결과" />} />
                     <Route path="/admin/products" element={<AdminRoute><AdminProductList /></AdminRoute>} />
                     <Route path="/admin/products/new" element={<AdminRoute><ProductForm /></AdminRoute>} />
                     <Route path="/admin/products/:productId/edit" element={<AdminRoute><AdminProductEdit /></AdminRoute>} />

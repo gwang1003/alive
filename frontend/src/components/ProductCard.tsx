@@ -24,7 +24,12 @@ const resolveImageSrc = (img: string) => (img.startsWith('/products/') ? `/api${
 
 const ProductCard: React.FC<ProductProps> = ({ product }) => {
     const navigate = useNavigate();
-    const productDetail = () => {
+    const productDetail = (e: React.MouseEvent) => {
+        const target = e.target as HTMLElement;
+        // Swiper 좌우 화살표/페이지네이션 클릭은 슬라이드 전환만 하고 상세페이지로 이동하지 않도록 예외 처리
+        if (target.closest('.swiper-button-next, .swiper-button-prev, .swiper-pagination-bullet')) {
+            return;
+        }
         navigate(`/product/detail/${product.productId}`);
     }
     const tagStyle = (tag: string) => {

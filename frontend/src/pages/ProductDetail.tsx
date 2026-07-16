@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Heart, Share2, ShoppingBag, ShoppingCart, X, ZoomIn} from 'lucide-react';
+import {Heart, ShoppingBag, ShoppingCart, X, ZoomIn} from 'lucide-react';
 import bottomSize from '../assets/products/common/bottomSize.jpg';
 import topSize from '../assets/products/common/topSize.jpg';
 import {useNavigate, useParams} from "react-router-dom";
@@ -164,6 +164,36 @@ const ProductDetail: React.FC = () => {
         }
     };
 
+    const handleBuyNow = () => {
+        setCartError('');
+
+        if (!selectedStock) {
+            setCartError('색상과 사이즈를 선택해주세요');
+            return;
+        }
+        if (!accessToken) {
+            navigate('/login');
+            return;
+        }
+
+        // 장바구니를 건드리지 않고 지금 고른 옵션/수량만 바로 결제로 넘김.
+        // (장바구니에 addToCart로 담으면 같은 옵션이 이미 있을 때 수량이 합쳐져서
+        //  장바구니에 있던 수량까지 같이 결제돼버리는 문제가 있었음)
+        navigate('/checkout', {
+            state: {
+                directItem: {
+                    stockId: selectedStock.stockId,
+                    quantity: cartQuantity,
+                    productName: productData.name,
+                    thumbnailUrl: productData.images[0]?.imageUrl ?? null,
+                    color: selectedColor,
+                    size: selectedSize,
+                    finalPrice: productData.finalPrice,
+                },
+            },
+        });
+    };
+
     const handleToggleRestockNotification = async () => {
         if (!accessToken) {
             navigate('/login');
@@ -256,9 +286,9 @@ const ProductDetail: React.FC = () => {
 
             {/* [왼쪽] 대형 이미지 영역 */}
             <div className="flex gap-6">
-                {/* 서브 이미지: 5개가 메인 높이와 일치하도록 높이값 계산 */}
-                <div className="flex flex-col justify-between w-[120px] shrink-0">
-                    {productData.images.map((img, i) => (
+                {/* 서브 이미지: 최대 5개까지, 위에서부터 채워짐 (justify-between으로 늘어나지 않게) */}
+                <div className="flex flex-col justify-start gap-3 w-[120px] shrink-0">
+                    {productData.images.slice(0, 5).map((img, i) => (
                         <div
                             key={i}
                             onMouseEnter={() => setMainImage(img.imageUrl)} // 클릭 대신 마우스만 올려도 바뀌게 하면 더 힙함
@@ -313,7 +343,6 @@ const ProductDetail: React.FC = () => {
                         <h1 className="font-display text-4xl font-semibold text-ink tracking-tight">{productData.name}</h1>
                     </div>
                     <div className="flex gap-2">
-                        <button className="p-3 rounded-full hover:bg-surface transition-colors"><Share2 className="w-5 h-5 text-ink-soft" /></button>
                         <button onClick={handleToggleWishlist} className="p-3 rounded-full hover:bg-surface transition-colors">
                             <Heart
                                 className={`w-5 h-5 ${wishlistItems.some((item) => item.productId === Number(productId)) ? 'text-coral fill-coral' : 'text-ink-soft'}`}
@@ -390,7 +419,10 @@ const ProductDetail: React.FC = () => {
 
                 {/* 버튼 세트 */}
                 <div className="grid grid-cols-2 gap-4 h-16">
-                    <button className="bg-coral text-white font-black text-xs tracking-[0.2em] uppercase rounded-full hover:bg-coral-deep transition-all flex items-center justify-center gap-2">
+                    <button
+                        onClick={handleBuyNow}
+                        className="bg-coral text-white font-black text-xs tracking-[0.2em] uppercase rounded-full hover:bg-coral-deep transition-all flex items-center justify-center gap-2"
+                    >
                         Buy Now
                     </button>
                     <button

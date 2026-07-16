@@ -38,6 +38,7 @@ interface AdminState {
     fetchOrders: (page: number, status?: OrderStatus) => Promise<void>;
     fetchOrderDetail: (orderId: number) => Promise<Order>;
     updateOrderStatus: (orderId: number, status: OrderStatus) => Promise<void>;
+    updateOrderStatusBulk: (orderIds: number[], status: OrderStatus) => Promise<void>;
 }
 
 const useAdminStore = create<AdminState>((set, get) => ({
@@ -95,6 +96,10 @@ const useAdminStore = create<AdminState>((set, get) => ({
 
     updateOrderStatus: async (orderId, status) => {
         await api.patch(`/admin/orders/${orderId}/status`, { status });
+    },
+
+    updateOrderStatusBulk: async (orderIds, status) => {
+        await api.patch('/admin/orders/status', { orderIds, status });
     },
 }));
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import useCartStore from '../store/cartStore';
@@ -9,6 +9,10 @@ const Cart: React.FC = () => {
     const accessToken = useAuthStore((state) => state.accessToken);
     const authChecked = useAuthStore((state) => state.authChecked);
     const { items, isLoading, fetchCart, updateQuantity, removeItem } = useCartStore();
+    const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+    // 지금까지 한 번이라도 봤던 cartItemId 목록. 수량 변경처럼 items가 갱신될 때마다
+    // "선택 안 된 상태"를 "새로 담긴 항목"으로 착각해 다시 체크해버리는 걸 막기 위해 씀
+    const knownIdsRef = useRef<Set<number>>(new Set());
 
     useEffect(() => {
         if (!authChecked) return;
@@ -19,11 +23,44 @@ const Cart: React.FC = () => {
         fetchCart();
     }, [authChecked, accessToken]);
 
-    const totalPrice = items.reduce((sum, item) => sum + item.finalPrice * item.quantity, 0);
+    // 장바구니가 갱신될 때: 삭제된 항목은 선택 해제하고, 진짜 새로 담긴 항목만 기본 선택 상태로 둠
+    // (수량 변경 등으로 기존 항목이 갱신되는 것과 "새로 담긴 항목"을 구분해야 함)
+    useEffect(() => {
+        const currentIds = new Set(items.map((item) => item.cartItemId));
+        setSelectedIds((prev) => {
+            const next = new Set([...prev].filter((id) => currentIds.has(id)));
+            items.forEach((item) => {
+                if (!knownIdsRef.current.has(item.cartItemId)) next.add(item.cartItemId);
+            });
+            return next;
+        });
+        knownIdsRef.current = currentIds;
+    }, [items]);
+
+    const toggleSelect = (cartItemId: number) => {
+        setSelectedIds((prev) => {
+            const next = new Set(prev);
+            if (next.has(cartItemId)) next.delete(cartItemId);
+            else next.add(cartItemId);
+            return next;
+        });
+    };
+
+    const allSelected = items.length > 0 && selectedIds.size === items.length;
+    const toggleSelectAll = () => {
+        setSelectedIds(allSelected ? new Set() : new Set(items.map((item) => item.cartItemId)));
+    };
+
+    const selectedItems = items.filter((item) => selectedIds.has(item.cartItemId));
+    const totalPrice = selectedItems.reduce((sum, item) => sum + item.finalPrice * item.quantity, 0);
 
     if (!authChecked || !accessToken) {
         return null;
     }
+
+    const handleCheckout = () => {
+        navigate('/checkout', { state: { cartItemIds: [...selectedIds] } });
+    };
 
     return (
         <div className="min-h-screen bg-canvas px-6 py-16">
@@ -48,9 +85,19 @@ const Cart: React.FC = () => {
 
                 {items.length > 0 && (
                     <>
+                        <label className="flex items-center gap-3 pb-4 cursor-pointer w-fit">
+                            <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} />
+                            <span className="text-sm font-bold text-ink-soft">전체 선택 ({selectedIds.size}/{items.length})</span>
+                        </label>
+
                         <div className="divide-y divide-line border-y border-ink">
                             {items.map((item) => (
                                 <div key={item.cartItemId} className="py-8 flex gap-6 items-center">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedIds.has(item.cartItemId)}
+                                        onChange={() => toggleSelect(item.cartItemId)}
+                                    />
                                     <div className="w-24 h-24 bg-canvas rounded-2xl overflow-hidden shrink-0">
                                         {item.thumbnailUrl && (
                                             <img
@@ -102,13 +149,14 @@ const Cart: React.FC = () => {
                         </div>
 
                         <div className="flex justify-between items-center mt-10">
-                            <span className="text-sm font-bold text-ink-soft">TOTAL</span>
+                            <span className="text-sm font-bold text-ink-soft">TOTAL ({selectedItems.length}개 선택)</span>
                             <span className="text-2xl font-black text-ink">{totalPrice.toLocaleString()} KRW</span>
                         </div>
 
                         <button
-                            onClick={() => navigate('/checkout')}
-                            className="w-full h-16 mt-8 bg-coral text-white font-black text-xs tracking-[0.2em] uppercase rounded-full hover:bg-coral-deep transition-all"
+                            onClick={handleCheckout}
+                            disabled={selectedIds.size === 0}
+                            className="w-full h-16 mt-8 bg-coral text-white font-black text-xs tracking-[0.2em] uppercase rounded-full hover:bg-coral-deep transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                         >
                             Checkout
                         </button>

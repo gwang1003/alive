@@ -28,9 +28,16 @@ export interface Order {
     items: OrderItem[];
 }
 
+export interface DirectOrderItem {
+    stockId: number;
+    quantity: number;
+}
+
 export interface OrderCreateRequest {
     recipientName: string;
     recipientPhone: string;
     deliveryAddress: string;
     deliveryMessage?: string;
+    cartItemIds?: number[];
+    directItem?: DirectOrderItem;
 }

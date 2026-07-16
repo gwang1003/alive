@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useCartStore from '../store/cartStore';
 import useOrderStore from '../store/orderStore';
 import useAuthStore from '../assets/authStore';
@@ -9,11 +9,46 @@ import PostcodeSearchModal from '../components/PostcodeSearchModal';
 
 const Checkout: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const accessToken = useAuthStore((state) => state.accessToken);
     const authChecked = useAuthStore((state) => state.authChecked);
     const { items, fetchCart } = useCartStore();
     const { createOrder } = useOrderStore();
     const { addresses, fetchAddresses } = useAddressStore();
+
+    type DirectItemState = {
+        stockId: number;
+        quantity: number;
+        productName: string;
+        thumbnailUrl: string | null;
+        color: string;
+        size: string;
+        finalPrice: number;
+    };
+    const navState = location.state as { cartItemIds?: number[]; directItem?: DirectItemState } | null;
+
+    // Buy Now로 들어온 경우(directItem): 장바구니를 전혀 참조하지 않고 그 옵션/수량만 표시·주문
+    // 장바구니에서 선택해서 들어온 경우(cartItemIds): 그 항목들만 주문 대상으로 좁힘
+    // 둘 다 없으면(직접 /checkout 진입 등) 기존처럼 장바구니 전체를 대상으로 함
+    const directItem = navState?.directItem;
+    const cartItemIds = navState?.cartItemIds;
+    const checkoutItems = directItem
+        ? [{
+            cartItemId: -1,
+            productId: 0,
+            productName: directItem.productName,
+            thumbnailUrl: directItem.thumbnailUrl,
+            color: directItem.color,
+            size: directItem.size,
+            price: directItem.finalPrice,
+            discountRate: null,
+            finalPrice: directItem.finalPrice,
+            quantity: directItem.quantity,
+            availableStock: directItem.quantity,
+        }]
+        : cartItemIds
+            ? items.filter((item) => cartItemIds.includes(item.cartItemId))
+            : items;
 
     const [form, setForm] = useState({ recipientName: '', recipientPhone: '', deliveryAddress: '', deliveryMessage: '' });
     const [selectedAddressId, setSelectedAddressId] = useState<number | 'new'>('new');
@@ -67,7 +102,7 @@ const Checkout: React.FC = () => {
         }
     };
 
-    const totalPrice = items.reduce((sum, item) => sum + item.finalPrice * item.quantity, 0);
+    const totalPrice = checkoutItems.reduce((sum, item) => sum + item.finalPrice * item.quantity, 0);
     const deliveryFee = totalPrice >= 50000 ? 0 : 3000;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -103,7 +138,11 @@ const Checkout: React.FC = () => {
         setError('');
         setSubmitting(true);
         try {
-            const order = await createOrder(form);
+            const order = await createOrder(
+                directItem
+                    ? { ...form, directItem: { stockId: directItem.stockId, quantity: directItem.quantity } }
+                    : { ...form, cartItemIds }
+            );
             await fetchCart();
             navigate(`/orders/${order.orderId}`);
         } catch (err: any) {
@@ -117,7 +156,7 @@ const Checkout: React.FC = () => {
         return null;
     }
 
-    if (items.length === 0) {
+    if (checkoutItems.length === 0) {
         return (
             <div className="min-h-screen bg-canvas flex flex-col items-center justify-center gap-6">
                 <p className="text-ink-soft">장바구니가 비어있습니다.</p>
@@ -265,7 +304,7 @@ const Checkout: React.FC = () => {
                     <div>
                         <h2 className="text-xs font-black text-ink-soft tracking-widest uppercase mb-6">주문 상품</h2>
                         <div className="space-y-4 divide-y divide-line">
-                            {items.map((item) => (
+                            {checkoutItems.map((item) => (
                                 <div key={item.cartItemId} className="flex justify-between items-center pt-4 first:pt-0">
                                     <div>
                                         <p className="text-sm font-bold text-ink">{item.productName}</p>
