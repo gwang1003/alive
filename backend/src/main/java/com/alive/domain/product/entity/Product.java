@@ -56,12 +56,15 @@ public class Product {
     private String material;
 
     @Column(name = "stock_quantity")
+    @Builder.Default
     private Integer stockQuantity = 0;
 
     @Column(name = "view_count")
+    @Builder.Default
     private Integer viewCount = 0;
 
     @Column(name = "is_active")
+    @Builder.Default
     private Boolean isActive = true;
 
     @CreationTimestamp
@@ -82,8 +85,7 @@ public class Product {
     private List<ProductImage> images = new ArrayList<>();
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private ModelInfo modelInfo = new ModelInfo();
+    private ModelInfo modelInfo;
 
     // 비즈니스 메서드
 

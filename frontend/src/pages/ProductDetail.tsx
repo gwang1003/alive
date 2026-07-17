@@ -80,6 +80,7 @@ const ProductDetail: React.FC = () => {
             addRecentlyViewed(Number(productId));
         }
         init();
+        window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     }, [productId]);
 
     useEffect(() => {
@@ -747,7 +748,7 @@ const ProductDetail: React.FC = () => {
                             <div className="flex flex-col gap-2">
                                 <div className="flex text-butter text-xs">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
                                 <span className="text-sm font-black text-ink">{review.userName}</span>
-                                <span className="text-xs text-ink-soft">{new Date(review.createdAt).toLocaleDateString('ko-KR')} | {review.size} 구매</span>
+                                <span className="text-xs text-ink-soft">{new Date(review.createdAt).toLocaleDateString('ko-KR')}{review.size ? ` | ${review.size} 구매` : ''}</span>
                             </div>
                             <div className="space-y-4">
                                 <p className="text-sm font-bold text-ink leading-relaxed">

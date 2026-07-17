@@ -40,7 +40,7 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
     };
 
     return (
-        <div className="group flex flex-col gap-4" onClick={productDetail}>
+        <div className="group flex flex-col gap-4 cursor-pointer" onClick={productDetail}>
             {/* 이미지 슬라이드 영역 */}
             <div className="relative aspect-[3/4] overflow-hidden bg-canvas rounded-2xl">
                 <Swiper

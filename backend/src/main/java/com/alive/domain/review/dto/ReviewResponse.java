@@ -31,8 +31,8 @@ public class ReviewResponse {
                 .userName(maskName(review.getUser().getName()))
                 .rating(review.getRating())
                 .content(review.getContent())
-                .color(review.getOrderItem().getColor())
-                .size(review.getOrderItem().getSize())
+                .color(review.getOrderItem() != null ? review.getOrderItem().getColor() : null)
+                .size(review.getOrderItem() != null ? review.getOrderItem().getSize() : null)
                 .createdAt(review.getCreatedAt())
                 .imageUrls(review.getImages().stream().map(ReviewImage::getImageUrl).toList())
                 .build();

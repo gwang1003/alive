@@ -28,5 +28,9 @@ public class WebConfig implements WebMvcConfigurer {
         // 이 하나의 매핑으로 전부 커버됨. 실제 저장 위치는 application.yml의 file.upload-dir 설정을 그대로 따름.
         registry.addResourceHandler("/api/products/**")
                 .addResourceLocations("file:///" + uploadDir + "/products/");
+        registry.addResourceHandler("/api/banners/**")
+                .addResourceLocations("file:///" + uploadDir + "/banners/");
+        registry.addResourceHandler("/api/reviews/**")
+                .addResourceLocations("file:///" + uploadDir + "/reviews/");
     }
 }

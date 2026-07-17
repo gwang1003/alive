@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -34,10 +35,11 @@ public class AdminProductController {
             @RequestPart(value = "mainImage", required = false) MultipartFile mainImage,
             @RequestPart(value = "thumbnails", required = false) List<MultipartFile> thumbnails,
             @RequestPart(value = "detailFiles", required = false) List<MultipartFile> detailFiles,
-            @RequestPart(value = "productData") String productDataJson
+            @RequestPart(value = "productData") MultipartFile productData
     ) {
         try {
-            // JSON 문자열을 DTO로 변환
+            // JSON 문자열을 DTO로 변환 (멀티파트 파트는 바이트로 직접 읽어 UTF-8로 디코딩)
+            String productDataJson = new String(productData.getBytes(), StandardCharsets.UTF_8);
             ProductCreateRequest request = objectMapper.readValue(
                     productDataJson,
                     ProductCreateRequest.class
