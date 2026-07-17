@@ -1,11 +1,15 @@
 package com.alive.domain.user.service;
 
 import com.alive.domain.user.dto.ChangePasswordRequest;
+import com.alive.domain.user.dto.FindEmailRequest;
+import com.alive.domain.user.dto.FindEmailResponse;
 import com.alive.domain.user.dto.LoginRequest;
 import com.alive.domain.user.dto.LoginResponse;
 import com.alive.domain.user.dto.RegisterRequest;
+import com.alive.domain.user.dto.ResetPasswordRequest;
 import com.alive.domain.user.dto.UpdateProfileRequest;
 import com.alive.domain.user.dto.UserResponse;
+import com.alive.domain.user.entity.AuthProvider;
 import com.alive.domain.user.entity.User;
 import com.alive.domain.user.entity.UserRole;
 import com.alive.domain.user.repository.UserRepository;
@@ -15,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -117,5 +123,59 @@ public class UserService {
         }
 
         user.changePassword(passwordEncoder.encode(request.getNewPassword()));
+    }
+
+    // 아이디 찾기: 이름 + 전화번호가 일치하는 회원의 이메일을 마스킹해서 반환
+    public FindEmailResponse findEmail(FindEmailRequest request) {
+        User user = userRepository.findByNameAndPhone(request.getName(), request.getPhone())
+                .orElseThrow(() -> new RuntimeException("일치하는 회원 정보가 없습니다"));
+
+        return FindEmailResponse.builder()
+                .maskedEmail(maskEmail(user.getEmail()))
+                .build();
+    }
+
+    // 비밀번호 찾기: 이메일 + 이름 + 전화번호로 본인확인 후 새 비밀번호로 즉시 재설정
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = userRepository.findByEmailAndNameAndPhone(
+                        request.getEmail(), request.getName(), request.getPhone())
+                .orElseThrow(() -> new RuntimeException("일치하는 회원 정보가 없습니다"));
+
+        user.changePassword(passwordEncoder.encode(request.getNewPassword()));
+    }
+
+    // 소셜 로그인: 이미 연동된 계정이면 그대로, 처음이면 새로 만들어서 반환
+    // (email이 null인 경우 카카오/네이버가 이메일 제공 동의를 안 받은 경우 - provider별 임시 이메일 생성)
+    @Transactional
+    public User findOrCreateOAuthUser(AuthProvider provider, String providerId, String email, String name) {
+        return userRepository.findByProviderAndProviderId(provider, providerId)
+                .orElseGet(() -> {
+                    String finalEmail = email != null ? email : provider.name().toLowerCase() + "_" + providerId + "@oauth.local";
+
+                    if (userRepository.existsByEmail(finalEmail)) {
+                        throw new RuntimeException("이미 다른 방식으로 가입된 이메일입니다. 이메일/비밀번호로 로그인해주세요.");
+                    }
+
+                    User user = User.builder()
+                            .email(finalEmail)
+                            // 소셜 로그인 계정은 비밀번호 로그인을 쓰지 않으므로 알 수 없는 임의값을 암호화해 채워둔다
+                            .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                            .name(name != null ? name : provider.name() + " 사용자")
+                            .role(UserRole.USER)
+                            .provider(provider)
+                            .providerId(providerId)
+                            .build();
+
+                    return userRepository.save(user);
+                });
+    }
+
+    private String maskEmail(String email) {
+        int atIndex = email.indexOf('@');
+        String local = email.substring(0, atIndex);
+        String domain = email.substring(atIndex);
+        String visible = local.length() <= 2 ? local.substring(0, 1) : local.substring(0, 2);
+        return visible + "***" + domain;
     }
 }

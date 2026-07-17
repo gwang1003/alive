@@ -15,4 +15,6 @@ public interface RestockNotificationRepository extends JpaRepository<RestockNoti
     boolean existsByUserUserIdAndProductStockStockId(Long userId, Long stockId);
 
     List<RestockNotification> findByProductStockStockIdAndNotifiedFalse(Long stockId);
+
+    List<RestockNotification> findByUserUserIdOrderByCreatedAtDesc(Long userId);
 }

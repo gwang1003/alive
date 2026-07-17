@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -52,6 +54,14 @@ public class RestockNotificationService {
     public boolean hasRequested(String email, Long stockId) {
         User user = getUser(email);
         return restockNotificationRepository.existsByUserUserIdAndProductStockStockId(user.getUserId(), stockId);
+    }
+
+    // 내 재입고 알림함 (신청 대기 중 + 재입고 완료 모두 최신순)
+    public List<RestockNotificationResponse> getMyNotifications(String email) {
+        User user = getUser(email);
+        return restockNotificationRepository.findByUserUserIdOrderByCreatedAtDesc(user.getUserId()).stream()
+                .map(RestockNotificationResponse::fromEntity)
+                .toList();
     }
 
     private User getUser(String email) {

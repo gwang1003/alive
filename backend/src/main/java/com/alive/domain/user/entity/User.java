@@ -39,6 +39,17 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;  // USER 또는 ADMIN
 
+    // 소셜 로그인 제공자 (LOCAL: 이메일/비밀번호 가입). 소셜 로그인 사용자는 password에
+    // 로그인에 사용되지 않는 임의값이 암호화되어 들어간다 (password 컬럼이 NOT NULL이라 비워둘 수 없음).
+    @Column(nullable = false, length = 20, columnDefinition = "varchar(20) default 'LOCAL'")
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private AuthProvider provider = AuthProvider.LOCAL;
+
+    // 소셜 로그인 제공자가 발급하는 사용자 고유 ID (LOCAL 가입 사용자는 null)
+    @Column(name = "provider_id", length = 100)
+    private String providerId;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

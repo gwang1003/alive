@@ -157,6 +157,13 @@ const MyPage: React.FC = () => {
                         <p className="text-sm font-black text-ink">1:1 문의</p>
                         <p className="text-xs text-ink-soft mt-1">문의 내역 확인</p>
                     </Link>
+                    <Link
+                        to="/notifications"
+                        className="border border-line rounded-2xl p-6 hover:border-coral transition-all"
+                    >
+                        <p className="text-sm font-black text-ink">재입고 알림함</p>
+                        <p className="text-xs text-ink-soft mt-1">신청한 재입고 알림 확인</p>
+                    </Link>
                 </div>
 
                 <section className="space-y-4">

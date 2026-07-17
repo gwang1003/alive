@@ -8,12 +8,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/restock-notifications")
 @RequiredArgsConstructor
 public class RestockNotificationController {
 
     private final RestockNotificationService restockNotificationService;
+
+    /**
+     * 내 재입고 알림함 (신청 대기 중 + 재입고 완료 모두)
+     * GET /api/restock-notifications
+     */
+    @GetMapping
+    public ResponseEntity<List<RestockNotificationResponse>> getMyNotifications() {
+        return ResponseEntity.ok(restockNotificationService.getMyNotifications(currentEmail()));
+    }
 
     /**
      * 재입고 알림 신청

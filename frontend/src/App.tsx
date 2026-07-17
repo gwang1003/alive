@@ -14,7 +14,7 @@ import Wishlist from "./pages/Wishlist";
 import AddressBook from "./pages/AddressBook";
 import MyPage from "./pages/MyPage";
 import ProductList from "./pages/ProductList";
-import axios from "./api/axios";
+import { refreshAuth } from "./api/axios";
 import useAuthStore from "./assets/authStore.tsx";
 import useCartStore from "./store/cartStore";
 import ProductForm from "./pages/admin/ProductForm.tsx";
@@ -28,6 +28,10 @@ import AdminInquiryList from "./pages/admin/AdminInquiryList";
 import Inquiry from "./pages/Inquiry";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFail from "./pages/PaymentFail";
+import FindEmail from "./pages/FindEmail";
+import ResetPassword from "./pages/ResetPassword";
+import OAuthCallback from "./pages/OAuthCallback";
+import Notifications from "./pages/Notifications";
 
 const App: React.FC = () => {
     const login = useAuthStore((state) => state.login);
@@ -37,10 +41,9 @@ const App: React.FC = () => {
     useEffect(() => {
         const initAuth = async () => {
             try {
-                // 백엔드의 재발급 엔드포인트 호출
+                // 백엔드의 재발급 엔드포인트 호출 (다른 곳에서 이미 진행 중이면 그 결과를 같이 사용)
                 // 이때 브라우저가 쿠키에 담긴 RefreshToken을 알아서 실어 보냅니다.
-                const response = await axios.post('/auth/refresh');
-                const { accessToken, user } = response.data;
+                const { accessToken, user } = await refreshAuth();
 
                 // Zustand 스토어 업데이트
                 login(accessToken, user);
@@ -64,6 +67,10 @@ const App: React.FC = () => {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
+                    <Route path="/find-email" element={<FindEmail />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route path="/oauth/callback" element={<OAuthCallback />} />
+                    <Route path="/notifications" element={<Notifications />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/payment/success" element={<PaymentSuccess />} />

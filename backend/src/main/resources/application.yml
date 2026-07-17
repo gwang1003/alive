@@ -43,3 +43,18 @@ toss:
   client-key: ***REMOVED***
   secret-key: ***REMOVED***
   confirm-url: https://api.tosspayments.com/v1/payments/confirm
+
+# 프론트엔드 주소 (소셜 로그인 완료 후 리다이렉트할 곳)
+app:
+  frontend-url: http://localhost:3000
+
+# 소셜 로그인 - 카카오/네이버 개발자센터에서 앱 등록 후 발급받은 키로 교체해야 실제로 동작함.
+# client-id/secret이 비어있는 동안은 인가 URL 생성 단계에서 명확한 에러를 던짐.
+oauth:
+  kakao:
+    client-id:
+    redirect-uri: http://localhost:8282/api/auth/oauth/kakao/callback
+  naver:
+    client-id:
+    client-secret:
+    redirect-uri: http://localhost:8282/api/auth/oauth/naver/callback

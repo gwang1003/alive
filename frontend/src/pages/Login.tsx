@@ -83,9 +83,9 @@ const Login: React.FC = () => {
 
                 {/* 보조 메뉴 */}
                 <div className="flex justify-center gap-6 text-[11px] font-bold text-ink-soft">
-                    <button className="hover:text-ink">아이디 찾기</button>
+                    <button className="hover:text-ink" onClick={() => navigate('/find-email')}>아이디 찾기</button>
                     <span className="text-line">|</span>
-                    <button className="hover:text-ink">비밀번호 찾기</button>
+                    <button className="hover:text-ink" onClick={() => navigate('/reset-password')}>비밀번호 찾기</button>
                     <span className="text-line">|</span>
                     <button
                         className="text-ink"
@@ -97,11 +97,17 @@ const Login: React.FC = () => {
 
                 {/* 소셜 로그인 (학습용으로 딱임) */}
                 <div className="pt-10 border-t border-line space-y-4">
-                    <button className="w-full h-14 bg-[#FEE500] text-ink font-bold text-[13px] rounded-full flex items-center justify-center gap-3">
+                    <button
+                        className="w-full h-14 bg-[#FEE500] text-ink font-bold text-[13px] rounded-full flex items-center justify-center gap-3"
+                        onClick={() => { window.location.href = '/api/auth/oauth/kakao/authorize'; }}
+                    >
                         {/* 카카오 아이콘 생략 */}
                         카카오 로그인
                     </button>
-                    <button className="w-full h-14 border border-line text-ink font-bold text-[13px] rounded-full flex items-center justify-center gap-3">
+                    <button
+                        className="w-full h-14 border border-line text-ink font-bold text-[13px] rounded-full flex items-center justify-center gap-3"
+                        onClick={() => { window.location.href = '/api/auth/oauth/naver/authorize'; }}
+                    >
                         네이버 로그인
                     </button>
                 </div>

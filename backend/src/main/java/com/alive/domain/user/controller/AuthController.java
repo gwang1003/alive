@@ -163,6 +163,27 @@ public class AuthController {
         return ResponseEntity.ok(available);
     }
 
+    /**
+     * 아이디(이메일) 찾기: 이름 + 전화번호로 본인확인 후 마스킹된 이메일 반환
+     * POST /api/auth/find-email
+     */
+    @PostMapping("/find-email")
+    public ResponseEntity<FindEmailResponse> findEmail(@Valid @RequestBody FindEmailRequest request) {
+        return ResponseEntity.ok(userService.findEmail(request));
+    }
+
+    /**
+     * 비밀번호 찾기: 이메일 + 이름 + 전화번호로 본인확인 후 새 비밀번호로 즉시 재설정
+     * POST /api/auth/reset-password
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        userService.resetPassword(request);
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", "비밀번호가 재설정되었습니다");
+        return ResponseEntity.ok(responseBody);
+    }
+
     // ========== Cookie 헬퍼 메서드 ==========
 
     /**
