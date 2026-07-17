@@ -26,6 +26,8 @@ import AdminOrderDetail from "./pages/admin/AdminOrderDetail";
 import AdminBannerList from "./pages/admin/AdminBannerList";
 import AdminInquiryList from "./pages/admin/AdminInquiryList";
 import Inquiry from "./pages/Inquiry";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFail from "./pages/PaymentFail";
 
 const App: React.FC = () => {
     const login = useAuthStore((state) => state.login);
@@ -64,6 +66,8 @@ const App: React.FC = () => {
                     <Route path="/signup" element={<Register />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/payment/success" element={<PaymentSuccess />} />
+                    <Route path="/payment/fail" element={<PaymentFail />} />
                     <Route path="/orders" element={<OrderHistory />} />
                     <Route path="/wishlist" element={<Wishlist />} />
                     <Route path="/addresses" element={<AddressBook />} />

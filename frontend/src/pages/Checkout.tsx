@@ -6,12 +6,14 @@ import useAuthStore from '../assets/authStore';
 import useAddressStore from '../store/addressStore';
 import { formatPhoneNumber } from '../utils/phone';
 import PostcodeSearchModal from '../components/PostcodeSearchModal';
+import { requestTossPayment } from '../utils/toss';
 
 const Checkout: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const accessToken = useAuthStore((state) => state.accessToken);
     const authChecked = useAuthStore((state) => state.authChecked);
+    const user = useAuthStore((state) => state.user);
     const { items, fetchCart } = useCartStore();
     const { createOrder } = useOrderStore();
     const { addresses, fetchAddresses } = useAddressStore();
@@ -144,7 +146,19 @@ const Checkout: React.FC = () => {
                     : { ...form, cartItemIds }
             );
             await fetchCart();
-            navigate(`/orders/${order.orderId}`);
+
+            const firstItemName = checkoutItems[0]?.productName ?? '주문 상품';
+            const orderName = checkoutItems.length > 1
+                ? `${firstItemName} 외 ${checkoutItems.length - 1}건`
+                : firstItemName;
+
+            await requestTossPayment({
+                orderId: order.orderNumber,
+                orderName,
+                amount: order.finalAmount,
+                customerName: user?.name ?? form.recipientName,
+                customerEmail: user?.email ?? '',
+            });
         } catch (err: any) {
             setError(err.response?.data?.message ?? '주문 중 오류가 발생했습니다.');
         } finally {

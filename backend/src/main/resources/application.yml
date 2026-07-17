@@ -37,3 +37,9 @@ server:
   # 파일 저장 경로
 file:
   upload-dir: D:/alive/uploads
+
+# 토스페이먼츠 (현재 테스트 키 - 문서 공개 테스트 키, 실결제 불가)
+toss:
+  client-key: ***REMOVED***
+  secret-key: ***REMOVED***
+  confirm-url: https://api.tosspayments.com/v1/payments/confirm
