@@ -8,12 +8,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * 전역 예외 처리기. 컨트롤러에서 발생한 예외를 잡아 일관된 ErrorResponse 형식으로 응답한다.
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
-     * @Valid 검증 실패 (요청 DTO의 필드 검증 오류)
+     * @Valid 검증 실패 (요청 DTO의 필드 검증 오류). HTTP 400 Bad Request로 응답한다.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
@@ -26,6 +29,9 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(HttpStatus.BAD_REQUEST.value(), message));
     }
 
+    /**
+     * 잘못된 인자로 인한 예외. HTTP 400 Bad Request로 응답한다.
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -34,7 +40,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 도메인 서비스 계층에서 던지는 비즈니스 예외
-     * (예: "상품을 찾을 수 없습니다", "이미 사용 중인 이메일입니다" 등)
+     * (예: "상품을 찾을 수 없습니다", "이미 사용 중인 이메일입니다" 등). HTTP 400 Bad Request로 응답한다.
      */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
@@ -45,6 +51,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 예상하지 못한 서버 오류. 상세 메시지는 클라이언트에 노출하지 않고 서버 로그에만 남긴다.
+     * HTTP 500 Internal Server Error로 응답한다.
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {

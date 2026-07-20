@@ -12,6 +12,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * 주문 항목 엔티티. 상품명/색상/사이즈/가격을 주문 시점 값으로 그대로 저장하는 "스냅샷" 패턴을 사용한다.
+ * 이는 이후 원본 상품(Product)이 수정되거나 삭제되어도 과거 주문 내역이 그대로 보존되도록 하기 위한 의도적 설계다.
+ */
 @Entity
 @Table(name = "order_items")
 @Getter

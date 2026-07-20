@@ -19,6 +19,7 @@ const STATUS_COLOR: Record<string, string> = {
     CANCELLED: '#E24F2C',
 };
 
+// 주문 완료/상세 조회 페이지 — 주문 정보 표시 및 취소 가능 상태면 주문 취소 처리
 const OrderDetail: React.FC = () => {
     const { orderId } = useParams();
     const navigate = useNavigate();
@@ -40,6 +41,7 @@ const OrderDetail: React.FC = () => {
         load();
     }, [orderId]);
 
+    // 확인창 후 주문 취소, 갱신된 주문 정보로 화면 업데이트
     const handleCancel = async () => {
         if (!window.confirm('이 주문을 취소하시겠습니까?')) return;
         setCancelError('');

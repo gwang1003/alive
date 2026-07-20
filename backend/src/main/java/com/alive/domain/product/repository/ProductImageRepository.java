@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 상품 이미지 리포지토리
+ */
 @Repository
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
 

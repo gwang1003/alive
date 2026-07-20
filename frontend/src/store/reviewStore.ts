@@ -16,6 +16,7 @@ interface ReviewState {
     uploadReviewImages: (reviewId: number, files: File[]) => Promise<Review>;
 }
 
+// 리뷰 스토어: 상품별 리뷰 목록/요약/작성가능 항목 조회 및 리뷰 작성·이미지 업로드를 담당
 const useReviewStore = create<ReviewState>((set) => ({
     reviews: [],
     totalPages: 0,
@@ -45,6 +46,7 @@ const useReviewStore = create<ReviewState>((set) => ({
         set({ summary: response.data });
     },
 
+    // 로그인한 사용자가 해당 상품에 대해 리뷰 작성 가능한 주문 항목 목록 조회
     fetchReviewableItems: async (productId) => {
         const response = await api.get<ReviewableOrderItem[]>(`/reviews/products/${productId}/reviewable-items`);
         set({ reviewableItems: response.data });
@@ -55,6 +57,7 @@ const useReviewStore = create<ReviewState>((set) => ({
         return response.data;
     },
 
+    // 작성된 리뷰에 이미지 파일들을 FormData(multipart)로 추가 업로드
     uploadReviewImages: async (reviewId, files) => {
         const formData = new FormData();
         files.forEach((file) => formData.append('files', file));

@@ -25,6 +25,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * 주문 도메인 서비스. 주문 생성/조회/취소와 관리자용 주문 관리를 담당한다.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -39,6 +42,10 @@ public class OrderService {
     private final ProductStockRepository productStockRepository;
     private final UserRepository userRepository;
 
+    /**
+     * 주문을 생성한다. 바로 구매(directItem) 또는 장바구니 항목으로 주문 항목을 채우고,
+     * 재고를 차감하며 5만원 미만이면 배송비를 부과한다.
+     */
     @Transactional
     public OrderResponse createOrder(String email, OrderCreateRequest request) {
         User user = getUser(email);
@@ -154,6 +161,9 @@ public class OrderService {
         return totalAmount;
     }
 
+    /**
+     * 사용자의 주문 목록을 최신순으로 조회한다.
+     */
     public List<OrderResponse> getMyOrders(String email) {
         User user = getUser(email);
         return orderRepository.findByUserUserIdOrderByOrderedAtDesc(user.getUserId()).stream()
@@ -161,6 +171,9 @@ public class OrderService {
                 .toList();
     }
 
+    /**
+     * 본인 소유 주문의 상세 정보를 조회한다.
+     */
     public OrderResponse getOrderDetail(String email, Long orderId) {
         User user = getUser(email);
         Order order = orderRepository.findByOrderIdAndUserUserId(orderId, user.getUserId())
@@ -168,6 +181,9 @@ public class OrderService {
         return OrderResponse.fromEntity(order);
     }
 
+    /**
+     * (관리자용) 전체 주문을 상태 필터와 페이징으로 조회한다.
+     */
     public Page<OrderResponse> getAdminOrders(OrderStatus status, Pageable pageable) {
         Page<Order> orders = status != null
                 ? orderRepository.findByStatus(status, pageable)
@@ -175,12 +191,18 @@ public class OrderService {
         return orders.map(OrderResponse::fromEntity);
     }
 
+    /**
+     * (관리자용) 소유자 제한 없이 주문 상세를 조회한다.
+     */
     public OrderResponse getAdminOrderDetail(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다"));
         return OrderResponse.fromEntity(order);
     }
 
+    /**
+     * (관리자용) 단건 주문의 상태를 변경한다.
+     */
     @Transactional
     public OrderResponse updateOrderStatus(Long orderId, OrderStatus status) {
         Order order = orderRepository.findById(orderId)
@@ -189,6 +211,9 @@ public class OrderService {
         return OrderResponse.fromEntity(order);
     }
 
+    /**
+     * (관리자용) 여러 주문의 상태를 한 번에 변경한다. 존재하지 않는 주문이 섞여 있으면 예외를 던진다.
+     */
     @Transactional
     public void updateOrderStatusBulk(List<Long> orderIds, OrderStatus status) {
         List<Order> orders = orderRepository.findAllById(orderIds);
@@ -198,6 +223,9 @@ public class OrderService {
         orders.forEach(order -> order.updateStatus(status));
     }
 
+    /**
+     * 주문을 취소한다. PENDING/PAID 상태만 취소 가능하며, 취소 시 차감했던 재고를 복원한다.
+     */
     @Transactional
     public OrderResponse cancelOrder(String email, Long orderId) {
         User user = getUser(email);

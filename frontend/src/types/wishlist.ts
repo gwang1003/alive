@@ -1,3 +1,4 @@
+// 찜(위시리스트)한 상품 항목
 export interface WishlistItem {
     wishlistId: number;
     productId: number;

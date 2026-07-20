@@ -25,6 +25,7 @@ const GENDER_OPTIONS = [
     { label: '공용', value: 'UNISEX' },
 ];
 
+// 카테고리/할인/검색 등 조건에 맞는 상품 목록을 필터·정렬·페이징하여 보여주는 공용 상품 리스트 페이지
 const ProductList: React.FC<ProductListProps> = ({ title, categoryId, defaultSort = 'createdAt,desc', discountedOnly = false }) => {
     const [searchParams] = useSearchParams();
     const [products, setProducts] = useState<ProductListItem[]>([]);
@@ -53,6 +54,7 @@ const ProductList: React.FC<ProductListProps> = ({ title, categoryId, defaultSor
         }
     }, [searchParams]);
 
+    // 필터/정렬/페이지 조건이 바뀔 때마다 상품 목록을 다시 조회 (할인 전용 페이지는 별도 엔드포인트 사용)
     useEffect(() => {
         const fetchProducts = async () => {
             setIsLoading(true);

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 카테고리 조회를 처리하는 공개 API 컨트롤러
+ */
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor

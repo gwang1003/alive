@@ -8,6 +8,7 @@ const STATUS_LABEL: Record<string, string> = {
     ANSWERED: '답변 완료',
 };
 
+// 관리자 1:1 문의 목록 조회 및 답변 등록 페이지
 const AdminInquiryList: React.FC = () => {
     const { adminInquiries, adminTotalPages, adminPage, isLoading, fetchAdminInquiries, answerInquiry } = useInquiryStore();
     const [statusFilter, setStatusFilter] = useState<InquiryStatus | ''>('');
@@ -19,11 +20,13 @@ const AdminInquiryList: React.FC = () => {
         fetchAdminInquiries(0, statusFilter || undefined);
     }, [statusFilter]);
 
+    // 문의 항목 펼침/접기 토글, 전환 시 답변 입력값 초기화
     const handleExpand = (inquiryId: number) => {
         setExpandedId(expandedId === inquiryId ? null : inquiryId);
         setAnswerText('');
     };
 
+    // 답변 등록 후 펼침 상태와 입력값 초기화
     const handleAnswer = async (inquiryId: number) => {
         if (!answerText.trim()) return;
         setSubmitting(true);

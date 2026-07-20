@@ -11,6 +11,7 @@ interface WishlistState {
     isWishlisted: (productId: number) => boolean;
 }
 
+// 찜(위시리스트) 스토어: 목록 조회, 추가/삭제 및 찜 여부 확인을 담당
 const useWishlistStore = create<WishlistState>((set, get) => ({
     items: [],
     isLoading: false,
@@ -35,6 +36,7 @@ const useWishlistStore = create<WishlistState>((set, get) => ({
         set({ items: get().items.filter(item => item.productId !== productId) });
     },
 
+    // API 호출 없이 로컬 상태만으로 찜 여부를 동기 판단
     isWishlisted: (productId) => get().items.some(item => item.productId === productId),
 }));
 

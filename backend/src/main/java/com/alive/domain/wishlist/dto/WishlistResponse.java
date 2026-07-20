@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * 위시리스트 응답 DTO
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,6 +25,9 @@ public class WishlistResponse {
     private BigDecimal finalPrice;
     private Integer discountRate;
 
+    /**
+     * Wishlist 엔티티를 응답 DTO로 변환한다.
+     */
     public static WishlistResponse fromEntity(Wishlist wishlist) {
         var product = wishlist.getProduct();
         String thumbnailUrl = product.getImages().stream()

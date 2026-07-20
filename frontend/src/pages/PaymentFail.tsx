@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+// TossPayments 결제창에서 실패/취소로 리다이렉트됐을 때 표시되는 페이지 (풀 페이지 리로드로 진입)
 const PaymentFail: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();

@@ -5,12 +5,14 @@ import useAuthStore from '../assets/authStore';
 
 const resolveImageSrc = (img: string | null) => (img ? `/api${img}` : null);
 
+// 로그인 회원이 신청한 품절 상품 재입고 알림 목록을 보여주고 취소할 수 있는 페이지
 const Notifications: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
     const authChecked = useAuthStore((state) => state.authChecked);
     const { notifications, fetchMyNotifications, cancelNotification } = useRestockStore();
 
+    // authChecked를 기다린 뒤 로그인 여부 확인하고 알림 목록을 불러온다
     useEffect(() => {
         if (!authChecked) return;
         if (!accessToken) {

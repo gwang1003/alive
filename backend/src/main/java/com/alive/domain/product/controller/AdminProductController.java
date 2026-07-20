@@ -17,6 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+/**
+ * 관리자용 상품 등록/수정/삭제/재고 관리 컨트롤러
+ */
 @RestController
 @RequestMapping("/api/admin/products")
 @RequiredArgsConstructor

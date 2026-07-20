@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 장바구니 관련 API 컨트롤러 (조회, 담기, 수량 변경, 삭제)
+ */
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor

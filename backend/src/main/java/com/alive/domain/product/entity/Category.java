@@ -9,6 +9,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 상품 카테고리 엔티티 (부모-자식 자기 참조로 계층 구조 표현)
+ */
 @Entity
 @Table(name = "categories")
 @Getter

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useAdminStore from '../../store/adminStore';
 import AdminNav from '../../components/AdminNav';
 
+// 관리자 상품 목록 조회, 활성/비활성 토글, 삭제, 등록 페이지 이동
 const AdminProductList: React.FC = () => {
     const navigate = useNavigate();
     const { products, productTotalPages, productPage, isLoading, fetchProducts, updateProduct, deleteProduct } = useAdminStore();

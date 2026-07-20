@@ -9,6 +9,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 배너 엔티티
+ */
 @Entity
 @Table(name = "banners")
 @Getter
@@ -43,6 +46,9 @@ public class Banner {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * 배너 정보 수정 (null인 필드는 변경하지 않음)
+     */
     public void update(String title, String linkUrl, Integer displayOrder, Boolean isActive) {
         if (title != null) this.title = title;
         if (linkUrl != null) this.linkUrl = linkUrl;

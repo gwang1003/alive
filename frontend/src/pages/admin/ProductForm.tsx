@@ -43,10 +43,12 @@ interface ProductState {
     // ... 나머지
 }
 
+// 관리자 상품 등록 페이지 — 옵션(색상/사이즈)별 재고, 이미지 에셋, 상세 뷰 블록, 모델 정보를 조합해 상품 생성
 const ProductForm: React.FC = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [submitError, setSubmitError] = useState('');
 
+    // 마운트 시 카테고리 목록 조회 (셀렉트 박스용)
     useEffect(() => {
         const loadCategories = async () => {
             try {

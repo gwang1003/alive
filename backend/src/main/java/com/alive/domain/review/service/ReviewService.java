@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * 상품 리뷰 서비스 (작성/조회/사진 첨부)
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -38,6 +41,9 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
 
+    /**
+     * 리뷰 작성. 배송 완료된 주문 항목에 대해서만, 항목당 1회만 작성 가능
+     */
     @Transactional
     public ReviewResponse createReview(String email, ReviewCreateRequest request) {
         User user = getUser(email);
@@ -62,11 +68,17 @@ public class ReviewService {
         return ReviewResponse.fromEntity(reviewRepository.save(review));
     }
 
+    /**
+     * 상품별 리뷰 목록 조회
+     */
     public Page<ReviewResponse> getProductReviews(Long productId, Pageable pageable) {
         return reviewRepository.findByProductProductId(productId, pageable)
                 .map(ReviewResponse::fromEntity);
     }
 
+    /**
+     * 상품별 리뷰 요약(평균 별점, 총 개수, 별점 분포) 계산
+     */
     public ReviewSummaryResponse getReviewSummary(Long productId) {
         List<Review> reviews = reviewRepository.findByProductProductId(productId);
 
@@ -85,6 +97,9 @@ public class ReviewService {
                 .build();
     }
 
+    /**
+     * 리뷰 사진 첨부. 본인 리뷰만 가능하며 리뷰당 최대 장수를 초과할 수 없음
+     */
     @Transactional
     public ReviewResponse uploadReviewImages(String email, Long reviewId, List<MultipartFile> files) {
         User user = getUser(email);
@@ -111,6 +126,9 @@ public class ReviewService {
         return ReviewResponse.fromEntity(review);
     }
 
+    /**
+     * 해당 상품에 대해 아직 리뷰를 작성하지 않은, 배송 완료된 내 주문 항목 목록 조회
+     */
     public List<ReviewableOrderItemResponse> getReviewableOrderItems(String email, Long productId) {
         User user = getUser(email);
         return orderItemRepository.findByOrderUserUserIdAndOrderStatusAndProductProductId(user.getUserId(), OrderStatus.DELIVERED, productId).stream()

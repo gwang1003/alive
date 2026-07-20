@@ -12,6 +12,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * RefreshToken의 생성/검증/삭제/만료정리를 담당하는 서비스. JWT 서명 검증은 JwtUtil에 위임하고
+ * 이 클래스는 DB 저장 상태(존재 여부, 만료 여부)까지 함께 확인한다.
+ */
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {

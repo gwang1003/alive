@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 주문 엔티티. 배송/결제 정보와 주문 항목(OrderItem) 목록을 가진다.
+ */
 @Entity
 @Table(name = "orders")
 @Getter
@@ -79,18 +82,30 @@ public class Order {
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    /**
+     * 주문 상태를 취소로 변경한다.
+     */
     public void cancel() {
         this.status = OrderStatus.CANCELLED;
     }
 
+    /**
+     * 주문 상태를 변경한다.
+     */
     public void updateStatus(OrderStatus status) {
         this.status = status;
     }
 
+    /**
+     * 주문 항목을 추가한다.
+     */
     public void addOrderItem(OrderItem orderItem) {
         this.orderItems.add(orderItem);
     }
 
+    /**
+     * 주문 금액(합계/할인/배송비/최종금액)을 갱신한다.
+     */
     public void updateAmounts(BigDecimal totalAmount, BigDecimal discountAmount, BigDecimal deliveryFee, BigDecimal finalAmount) {
         this.totalAmount = totalAmount;
         this.discountAmount = discountAmount;

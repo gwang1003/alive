@@ -13,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * 재입고 알림 신청/취소/조회 서비스. 실제 이메일·푸시 발송은 하지 않고, 재고가 0에서 양수로
+ * 바뀔 때 ProductService가 notified 플래그를 갱신하여 인앱 알림함으로 노출한다.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -22,6 +26,9 @@ public class RestockNotificationService {
     private final ProductStockRepository productStockRepository;
     private final UserRepository userRepository;
 
+    /**
+     * 품절 상품 옵션에 대해 재입고 알림을 신청한다. 재고가 있거나 이미 신청한 경우 예외를 던진다.
+     */
     @Transactional
     public RestockNotificationResponse requestNotification(String email, Long stockId) {
         User user = getUser(email);
@@ -43,6 +50,9 @@ public class RestockNotificationService {
         return RestockNotificationResponse.fromEntity(restockNotificationRepository.save(notification));
     }
 
+    /**
+     * 재입고 알림 신청을 취소한다.
+     */
     @Transactional
     public void cancelNotification(String email, Long stockId) {
         User user = getUser(email);
@@ -51,6 +61,9 @@ public class RestockNotificationService {
         restockNotificationRepository.delete(notification);
     }
 
+    /**
+     * 회원이 특정 옵션에 대해 이미 재입고 알림을 신청했는지 확인한다.
+     */
     public boolean hasRequested(String email, Long stockId) {
         User user = getUser(email);
         return restockNotificationRepository.existsByUserUserIdAndProductStockStockId(user.getUserId(), stockId);

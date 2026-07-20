@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import useBannerStore from '../../store/bannerStore';
 import AdminNav from '../../components/AdminNav';
 
+// 관리자 배너 등록/활성화 토글/삭제 목록 페이지
 const AdminBannerList: React.FC = () => {
     const { adminBanners, isLoading, fetchAdminBanners, createBanner, updateBanner, deleteBanner } = useBannerStore();
 
@@ -17,6 +18,7 @@ const AdminBannerList: React.FC = () => {
         fetchAdminBanners();
     }, []);
 
+    // 이미지 필수 검증 후 배너 등록, 성공 시 폼 초기화
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!image) {

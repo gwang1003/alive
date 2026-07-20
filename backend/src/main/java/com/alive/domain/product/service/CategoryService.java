@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 카테고리 조회 비즈니스 로직을 처리하는 서비스
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

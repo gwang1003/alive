@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * 배송지 CRUD 및 기본 배송지 관리 서비스
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -20,6 +23,9 @@ public class AddressService {
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
 
+    /**
+     * 회원의 배송지 목록을 조회한다.
+     */
     public List<AddressResponse> getMyAddresses(String email) {
         User user = getUser(email);
         return addressRepository.findByUserUserIdOrderByIsDefaultDescCreatedAtDesc(user.getUserId()).stream()
@@ -27,6 +33,9 @@ public class AddressService {
                 .toList();
     }
 
+    /**
+     * 배송지를 신규 등록한다. 기본 배송지로 지정되거나 첫 배송지인 경우 기존 배송지의 기본 표시를 해제한다.
+     */
     @Transactional
     public AddressResponse addAddress(String email, AddressRequest request) {
         User user = getUser(email);
@@ -50,6 +59,9 @@ public class AddressService {
         return AddressResponse.fromEntity(addressRepository.save(address));
     }
 
+    /**
+     * 배송지 정보를 수정한다. 기본 배송지로 변경 요청 시 setDefault를 함께 호출한다.
+     */
     @Transactional
     public AddressResponse updateAddress(String email, Long addressId, AddressRequest request) {
         User user = getUser(email);
@@ -66,6 +78,9 @@ public class AddressService {
         return AddressResponse.fromEntity(address);
     }
 
+    /**
+     * 배송지를 삭제한다.
+     */
     @Transactional
     public void deleteAddress(String email, Long addressId) {
         User user = getUser(email);
@@ -74,6 +89,9 @@ public class AddressService {
         addressRepository.delete(address);
     }
 
+    /**
+     * 지정한 배송지를 기본 배송지로 설정하고 나머지는 기본 표시를 해제한다.
+     */
     @Transactional
     public void setDefault(String email, Long addressId) {
         User user = getUser(email);

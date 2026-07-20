@@ -8,6 +8,7 @@ const LINKS = [
     { name: '문의 관리', path: '/admin/inquiries' },
 ];
 
+// 관리자 페이지 상단 탭 네비게이션(현재 경로에 따라 활성 탭 강조)
 const AdminNav: React.FC = () => {
     const location = useLocation();
 

@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import usePaymentStore from '../store/paymentStore';
 import useAuthStore from '../assets/authStore';
 
+// TossPayments 결제창에서 성공 리다이렉트로 진입하는 페이지 (풀 페이지 리로드) — 결제 승인을 서버에 요청한다
 const PaymentSuccess: React.FC = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();

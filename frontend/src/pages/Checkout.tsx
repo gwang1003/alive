@@ -8,6 +8,7 @@ import { formatPhoneNumber } from '../utils/phone';
 import PostcodeSearchModal from '../components/PostcodeSearchModal';
 import { requestTossPayment } from '../utils/toss';
 
+// 주문/결제 페이지 — 배송지 입력(저장된 배송지 선택 또는 신규 입력) 후 주문 생성 및 토스페이먼츠 결제 요청
 const Checkout: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -61,6 +62,7 @@ const Checkout: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
     const [showPostcodeSearch, setShowPostcodeSearch] = useState(false);
 
+    // 로그인 확인 후 장바구니/배송지 목록 조회, 미로그인 시 로그인 페이지로 이동
     useEffect(() => {
         if (!authChecked) return;
         if (!accessToken) {
@@ -71,6 +73,7 @@ const Checkout: React.FC = () => {
         fetchAddresses();
     }, [authChecked, accessToken]);
 
+    // 배송지 목록 로드 시 기본 배송지가 있으면 자동 선택 및 폼 채우기
     useEffect(() => {
         const defaultAddress = addresses.find((a) => a.isDefault);
         if (defaultAddress) {
@@ -84,6 +87,7 @@ const Checkout: React.FC = () => {
         }
     }, [addresses]);
 
+    // 저장된 배송지 선택 시 해당 정보로 폼 채우기, 'new' 선택 시 입력값 초기화
     const handleSelectAddress = (id: number | 'new') => {
         setSelectedAddressId(id);
         if (id === 'new') {
@@ -107,6 +111,7 @@ const Checkout: React.FC = () => {
     const totalPrice = checkoutItems.reduce((sum, item) => sum + item.finalPrice * item.quantity, 0);
     const deliveryFee = totalPrice >= 50000 ? 0 : 3000;
 
+    // input 통합 핸들러 — 연락처 필드는 자동 포맷팅 적용
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         if (name === 'recipientPhone') {
@@ -116,6 +121,7 @@ const Checkout: React.FC = () => {
         setForm(prev => ({ ...prev, [name]: value }));
     };
 
+    // 신규 배송지 우편번호 검색 완료 시 zipcode/address 반영 후 모달 닫기
     const handlePostcodeComplete = ({ zonecode, address }: { zonecode: string; address: string }) => {
         setNewZipcode(zonecode);
         setNewAddress(address);
@@ -126,6 +132,7 @@ const Checkout: React.FC = () => {
         setShowPostcodeSearch(false);
     };
 
+    // 상세주소 입력 시 조합된 전체 배송지 문자열도 함께 갱신
     const handleAddressDetailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const detail = e.target.value;
         setNewAddressDetail(detail);
@@ -135,6 +142,7 @@ const Checkout: React.FC = () => {
         }));
     };
 
+    // 주문 생성(directItem 또는 cartItemIds 기준) 후 토스페이먼츠 결제창 호출
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');

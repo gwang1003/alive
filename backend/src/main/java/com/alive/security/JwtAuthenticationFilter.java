@@ -15,12 +15,19 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * 매 요청마다 Authorization 헤더의 JWT AccessToken을 검증해 SecurityContext에 인증 정보를 채워주는 필터.
+ * 이미 인증되어 있거나 토큰이 없거나 유효하지 않으면 인증 없이 다음 필터로 넘어간다(예외를 던지지 않음).
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
+    /**
+     * 요청당 1회 실행: Bearer 토큰 추출 → 검증 → 인증 정보를 SecurityContext에 설정 → 다음 필터로 진행
+     */
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,

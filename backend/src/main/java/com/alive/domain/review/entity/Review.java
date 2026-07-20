@@ -15,6 +15,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 상품 리뷰 엔티티
+ */
 @Entity
 @Table(name = "reviews")
 @Getter
@@ -36,6 +39,7 @@ public class Review {
     @JoinColumn(name = "user_id")
     private User user;
 
+    // seed 데이터이거나 주문 항목이 이후 삭제된 경우가 있어 nullable
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id", unique = true)
     private OrderItem orderItem;

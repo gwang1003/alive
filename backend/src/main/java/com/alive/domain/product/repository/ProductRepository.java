@@ -13,6 +13,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 상품 조회/검색/필터링/통계용 리포지토리
+ */
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 

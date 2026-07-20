@@ -9,6 +9,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 상품 상세 설명 블록(텍스트/이미지) 엔티티
+ */
 @Entity
 @Table(name = "product_details")
 @Getter

@@ -8,6 +8,7 @@ import PostcodeSearchModal from '../components/PostcodeSearchModal';
 
 const EMPTY_FORM = { recipientName: '', phone: '', zipcode: '', address: '', addressDetail: '', isDefault: false };
 
+// 배송지 목록 조회/추가/수정/삭제 및 기본 배송지 설정 페이지
 const AddressBook: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -21,6 +22,7 @@ const AddressBook: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
     const [showPostcodeSearch, setShowPostcodeSearch] = useState(false);
 
+    // 로그인 확인 후 배송지 목록 조회, 미로그인 시 로그인 페이지로 이동
     useEffect(() => {
         if (!authChecked) return;
         if (!accessToken) {
@@ -34,6 +36,7 @@ const AddressBook: React.FC = () => {
         return null;
     }
 
+    // input 통합 핸들러 — 전화번호 필드는 자동 포맷팅 적용
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;
         if (name === 'phone') {
@@ -43,6 +46,7 @@ const AddressBook: React.FC = () => {
         setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     };
 
+    // 우편번호 검색 완료 시 zipcode/address 반영 후 모달 닫기
     const handlePostcodeComplete = ({ zonecode, address }: { zonecode: string; address: string }) => {
         setForm((prev) => ({ ...prev, zipcode: zonecode, address }));
         setShowPostcodeSearch(false);
@@ -69,6 +73,7 @@ const AddressBook: React.FC = () => {
         setShowForm(true);
     };
 
+    // 수정 모드(editingId 존재)면 updateAddress, 아니면 addAddress 호출
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');

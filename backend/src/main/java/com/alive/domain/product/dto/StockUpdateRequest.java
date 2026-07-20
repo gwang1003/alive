@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 옵션별 재고 수량 수정 요청 DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor

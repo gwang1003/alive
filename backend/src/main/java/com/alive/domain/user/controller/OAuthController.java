@@ -38,17 +38,26 @@ public class OAuthController {
     @Value("${jwt.refresh-token-expiration}")
     private Long refreshTokenExpiration;
 
+    /**
+     * 카카오 인가 화면으로 리다이렉트
+     */
     @GetMapping("/kakao/authorize")
     public void kakaoAuthorize(HttpServletResponse response) throws IOException {
         response.sendRedirect(oAuthService.buildKakaoAuthorizeUrl());
     }
 
+    /**
+     * 카카오 인가코드 콜백: 토큰 교환/프로필 조회 후 회원 조회·생성하고 로그인 처리
+     */
     @GetMapping("/kakao/callback")
     public void kakaoCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
         User user = oAuthService.handleKakaoCallback(code);
         issueTokensAndRedirect(user, response);
     }
 
+    /**
+     * 네이버 인가 화면으로 리다이렉트. CSRF 방지용 state 값을 생성해 쿠키에 저장한다.
+     */
     @GetMapping("/naver/authorize")
     public void naverAuthorize(HttpServletResponse response) throws IOException {
         String state = UUID.randomUUID().toString();
@@ -64,6 +73,9 @@ public class OAuthController {
         response.sendRedirect(oAuthService.buildNaverAuthorizeUrl(state));
     }
 
+    /**
+     * 네이버 인가코드 콜백: state 값 검증 후 토큰 교환/프로필 조회하여 로그인 처리
+     */
     @GetMapping("/naver/callback")
     public void naverCallback(
             @RequestParam String code,
@@ -80,6 +92,9 @@ public class OAuthController {
         issueTokensAndRedirect(user, response);
     }
 
+    /**
+     * RefreshToken을 발급해 HttpOnly 쿠키로 심고 프론트엔드 콜백 페이지로 리다이렉트
+     */
     private void issueTokensAndRedirect(User user, HttpServletResponse response) throws IOException {
         // AccessToken은 body로 내려줄 수 없는(브라우저 리다이렉트) 흐름이라, 일반 로그인과 동일하게
         // RefreshToken만 HttpOnly 쿠키로 심어두고 프론트가 /oauth/callback에서 /auth/refresh를 호출해
@@ -97,6 +112,9 @@ public class OAuthController {
         response.sendRedirect(frontendUrl + "/oauth/callback");
     }
 
+    /**
+     * 요청 쿠키 목록에서 이름으로 값을 찾아 반환 (없으면 null)
+     */
     private String extractCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;

@@ -5,6 +5,8 @@ import logo from '../assets/logo.png';
 import useCartStore from '../store/cartStore';
 import useAuthStore from '../assets/authStore';
 
+// 상단 헤더: 로고, 카테고리 내비게이션, 검색창(토글), 장바구니/찜/마이페이지 아이콘.
+// 로그인 여부(accessToken)와 관리자 여부에 따라 표시되는 링크가 달라진다.
 const Header: React.FC = () => {
     const navigate = useNavigate();
     const cartCount = useCartStore((state) => state.items.reduce((sum, item) => sum + item.quantity, 0));

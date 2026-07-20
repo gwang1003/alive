@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 상품 모델 착용 정보 응답 DTO
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

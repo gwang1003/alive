@@ -35,3 +35,6 @@ build/
 ### Runtime data (not source) ###
 backend/uploads/
 frontend/*.tsbuildinfo
+
+# understand-anything knowledge graph (tool-generated, local only)
+.ua/

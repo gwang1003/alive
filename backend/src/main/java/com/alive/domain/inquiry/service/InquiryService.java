@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * 1:1 문의 서비스 (등록/조회/답변)
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -23,6 +26,9 @@ public class InquiryService {
     private final InquiryRepository inquiryRepository;
     private final UserRepository userRepository;
 
+    /**
+     * 문의 등록
+     */
     @Transactional
     public InquiryResponse createInquiry(String email, InquiryCreateRequest request) {
         User user = getUser(email);
@@ -34,6 +40,9 @@ public class InquiryService {
         return InquiryResponse.fromEntity(inquiryRepository.save(inquiry));
     }
 
+    /**
+     * 내 문의 목록 조회
+     */
     public List<InquiryResponse> getMyInquiries(String email) {
         User user = getUser(email);
         return inquiryRepository.findByUserUserIdOrderByCreatedAtDesc(user.getUserId()).stream()
@@ -41,6 +50,9 @@ public class InquiryService {
                 .toList();
     }
 
+    /**
+     * 내 문의 상세 조회 (본인 소유 문의만 조회 가능)
+     */
     public InquiryResponse getMyInquiryDetail(String email, Long inquiryId) {
         User user = getUser(email);
         Inquiry inquiry = inquiryRepository.findByInquiryIdAndUserUserId(inquiryId, user.getUserId())
@@ -48,6 +60,9 @@ public class InquiryService {
         return InquiryResponse.fromEntity(inquiry);
     }
 
+    /**
+     * 관리자용 문의 목록 조회 (상태 필터, 없으면 전체 조회)
+     */
     public Page<InquiryResponse> getAdminInquiries(InquiryStatus status, Pageable pageable) {
         Page<Inquiry> inquiries = status != null
                 ? inquiryRepository.findByStatus(status, pageable)
@@ -55,6 +70,9 @@ public class InquiryService {
         return inquiries.map(InquiryResponse::fromEntity);
     }
 
+    /**
+     * 관리자 답변 등록
+     */
     @Transactional
     public InquiryResponse answerInquiry(Long inquiryId, String answer) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)

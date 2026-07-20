@@ -9,12 +9,14 @@ const resolveImageSrc = (img: string | null) => {
     return img.startsWith('/products/') ? `/api${img}` : img;
 };
 
+// 위시리스트 페이지 — 찜한 상품 그리드 표시, 상품 클릭 시 상세로 이동, X 클릭 시 찜 해제
 const Wishlist: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
     const authChecked = useAuthStore((state) => state.authChecked);
     const { items, isLoading, fetchWishlist, removeWishlist } = useWishlistStore();
 
+    // 로그인 확인 후 위시리스트 조회, 미로그인 시 로그인 페이지로 이동
     useEffect(() => {
         if (!authChecked) return;
         if (!accessToken) {

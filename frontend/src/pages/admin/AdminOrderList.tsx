@@ -15,6 +15,7 @@ const STATUS_LABEL: Record<string, string> = {
 const STATUS_OPTIONS: (OrderStatus | '')[] = ['', 'PENDING', 'PAID', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
 const STATUS_VALUES: OrderStatus[] = ['PENDING', 'PAID', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
 
+// 관리자 주문 목록 조회, 상태별 필터링, 선택 항목 일괄 상태 변경 페이지
 const AdminOrderList: React.FC = () => {
     const navigate = useNavigate();
     const { orders, orderTotalPages, orderPage, isLoading, fetchOrders, updateOrderStatusBulk } = useAdminStore();
@@ -42,6 +43,7 @@ const AdminOrderList: React.FC = () => {
         setSelectedIds(allSelected ? new Set() : new Set(orders.map((o) => o.orderId)));
     };
 
+    // 선택된 주문들에 대해 상태 일괄 변경 후 목록/선택 초기화
     const handleBulkUpdate = async () => {
         if (selectedIds.size === 0) return;
         setIsBulkUpdating(true);

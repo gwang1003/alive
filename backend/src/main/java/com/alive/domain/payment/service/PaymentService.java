@@ -24,6 +24,9 @@ import java.time.OffsetDateTime;
 import java.util.Base64;
 import java.util.Map;
 
+/**
+ * 결제 도메인 서비스. 토스페이먼츠(Toss Payments) 결제 승인 연동을 담당한다.
+ */
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
@@ -38,6 +41,10 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
 
+    /**
+     * 결제를 승인 처리한다. 클라이언트가 보낸 결제 금액을 서버에 저장된 주문 금액과 먼저 대조해
+     * 위변조를 막은 뒤, 토스페이먼츠 실제 승인(confirm) API를 호출하고 결과를 저장하며 주문을 결제완료로 변경한다.
+     */
     @Transactional
     public PaymentResponse confirmPayment(String email, PaymentConfirmRequest request) {
         User user = userRepository.findByEmail(email)
@@ -73,6 +80,7 @@ public class PaymentService {
         return PaymentResponse.fromEntity(payment);
     }
 
+    // 토스페이먼츠 결제 승인 API를 호출하여 결과를 받아온다.
     private TossConfirmResponse requestTossConfirm(PaymentConfirmRequest request) {
         String encodedAuth = Base64.getEncoder().encodeToString((tossSecretKey + ":").getBytes(StandardCharsets.UTF_8));
 

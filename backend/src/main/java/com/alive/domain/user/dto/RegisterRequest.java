@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 회원가입 요청 DTO (이메일, 비밀번호, 이름, 전화번호)
+ */
 @Getter
 @Setter
 @NoArgsConstructor

@@ -12,6 +12,9 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+/**
+ * 상품 수정 요청 DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor

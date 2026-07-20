@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * 사용자용 배너 조회 API 컨트롤러
+ */
 @RestController
 @RequestMapping("/api/banners")
 @RequiredArgsConstructor

@@ -4,6 +4,7 @@ interface CrayonUnderlineProps {
     className?: string;
 }
 
+// 크레용으로 그은 듯한 손그림 밑줄 SVG 장식 요소
 const CrayonUnderline: React.FC<CrayonUnderlineProps> = ({ className = '' }) => (
     <svg
         viewBox="0 0 220 20"

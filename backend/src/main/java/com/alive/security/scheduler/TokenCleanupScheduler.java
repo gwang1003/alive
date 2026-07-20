@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+/**
+ * 만료된 RefreshToken을 주기적으로 정리하는 스케줄러.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j

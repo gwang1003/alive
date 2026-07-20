@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import aliveLogo from '../assets/logo.png';
 import axios from '../api/axios';
 
+// 이름+전화번호로 본인확인 후 마스킹된 이메일을 보여주는 아이디 찾기 페이지 (별도 인증 없이 필드 매칭만 수행)
 const FindEmail: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ name: '', phone: '' });
@@ -15,6 +16,7 @@ const FindEmail: React.FC = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // 이름+전화번호로 회원을 조회해 마스킹된 이메일을 받아온다
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');

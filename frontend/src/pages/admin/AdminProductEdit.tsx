@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAdminStore, { AdminProductStock } from '../../store/adminStore';
 
+// 관리자 상품 수정 페이지 — 기본 정보 수정 및 옵션별(색상/사이즈) 재고 수정
 const AdminProductEdit: React.FC = () => {
     const navigate = useNavigate();
     const { productId } = useParams();
@@ -21,6 +22,7 @@ const AdminProductEdit: React.FC = () => {
     const [savedStockId, setSavedStockId] = useState<number | null>(null);
     const [stockError, setStockError] = useState('');
 
+    // 상품 상세 조회 후 폼 값과 옵션별 재고 초안(stockDrafts)을 함께 초기화
     useEffect(() => {
         const load = async () => {
             const detail = await fetchProductDetail(Number(productId));
@@ -36,6 +38,7 @@ const AdminProductEdit: React.FC = () => {
         load();
     }, [productId]);
 
+    // 상품 기본 정보 저장 후 목록으로 이동
     const handleSubmit = async () => {
         setError('');
         try {
@@ -52,6 +55,7 @@ const AdminProductEdit: React.FC = () => {
         }
     };
 
+    // 재고 수량 초안을 검증(0 이상 숫자) 후 개별 저장
     const handleStockSave = async (stockId: number) => {
         setStockError('');
         setSavedStockId(null);

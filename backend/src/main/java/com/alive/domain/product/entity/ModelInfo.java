@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 상품 착용 모델 정보 엔티티 (상품과 1:1 관계)
+ */
 @Entity
 @Table(name = "model_info")
 @Getter

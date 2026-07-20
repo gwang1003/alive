@@ -18,6 +18,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+/**
+ * Spring Security 설정. JWT 기반 무상태(stateless) 인증, 엔드포인트별 접근 권한, CORS 정책을 구성한다.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -26,11 +29,18 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    /**
+     * 비밀번호 암호화에 사용할 BCrypt 인코더 빈
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * 보안 필터 체인 구성: CSRF 비활성화, 세션 미사용, 경로별 인가 규칙 설정,
+     * JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 앞에 등록
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -66,6 +76,9 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * CORS 설정: 허용 origin/method/header 및 쿠키(자격증명) 전송 허용
+     */
     // ⭐ CORS 설정 (Cookie 허용)
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

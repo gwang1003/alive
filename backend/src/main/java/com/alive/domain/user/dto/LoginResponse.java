@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 로그인 응답 DTO. refreshToken 필드는 컨트롤러에서 쿠키로 옮기고 응답 본문에서는 제외한다.
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

@@ -8,6 +8,7 @@ const STATUS_LABEL: Record<string, string> = {
     ANSWERED: '답변 완료',
 };
 
+// 로그인 회원의 1:1 문의 목록 조회 및 신규 문의 등록 페이지
 const Inquiry: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -21,6 +22,7 @@ const Inquiry: React.FC = () => {
     const [submitting, setSubmitting] = useState(false);
     const [expandedId, setExpandedId] = useState<number | null>(null);
 
+    // authChecked(초기 인증 복원 완료)를 기다린 뒤 로그인 여부를 확인하고 문의 목록을 불러온다
     useEffect(() => {
         if (!authChecked) return;
         if (!accessToken) {
@@ -34,6 +36,7 @@ const Inquiry: React.FC = () => {
         return null;
     }
 
+    // 새 문의를 등록하고 폼을 초기화한다
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');

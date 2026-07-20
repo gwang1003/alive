@@ -16,6 +16,10 @@ import org.springframework.web.client.RestClient;
 import java.nio.charset.StandardCharsets;
 import java.net.URLEncoder;
 
+/**
+ * 카카오/네이버 OAuth 인가코드 흐름을 처리하는 서비스.
+ * 인가 URL 생성, 콜백에서 받은 code를 토큰으로 교환, 프로필 조회 후 회원 조회/생성까지 담당한다.
+ */
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
@@ -40,6 +44,9 @@ public class OAuthService {
     @Value("${oauth.naver.redirect-uri}")
     private String naverRedirectUri;
 
+    /**
+     * 카카오 인가 화면 URL 생성 (client-id 미설정 시 예외 발생)
+     */
     public String buildKakaoAuthorizeUrl() {
         requireConfigured(kakaoClientId, "카카오");
         return "https://kauth.kakao.com/oauth/authorize"
@@ -48,6 +55,9 @@ public class OAuthService {
                 + "&response_type=code";
     }
 
+    /**
+     * 네이버 인가 화면 URL 생성 (client-id 미설정 시 예외 발생)
+     */
     public String buildNaverAuthorizeUrl(String state) {
         requireConfigured(naverClientId, "네이버");
         return "https://nid.naver.com/oauth2.0/authorize"
@@ -57,6 +67,9 @@ public class OAuthService {
                 + "&state=" + encode(state);
     }
 
+    /**
+     * 카카오 인가코드를 액세스 토큰으로 교환하고 프로필을 조회하여 회원을 조회/생성한다.
+     */
     public User handleKakaoCallback(String code) {
         RestClient restClient = RestClient.create();
 
@@ -90,6 +103,9 @@ public class OAuthService {
         return userService.findOrCreateOAuthUser(AuthProvider.KAKAO, String.valueOf(profile.getId()), email, nickname);
     }
 
+    /**
+     * 네이버 인가코드를 액세스 토큰으로 교환하고 프로필을 조회하여 회원을 조회/생성한다.
+     */
     public User handleNaverCallback(String code, String state) {
         RestClient restClient = RestClient.create();
 

@@ -4,6 +4,7 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 import useCartStore from '../store/cartStore';
 import useAuthStore from '../assets/authStore';
 
+// 장바구니 페이지 — 항목 선택/수량 변경/삭제 및 결제 페이지로 이동
 const Cart: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -58,6 +59,7 @@ const Cart: React.FC = () => {
         return null;
     }
 
+    // 선택된 항목 ID만 넘겨서 체크아웃 페이지로 이동
     const handleCheckout = () => {
         navigate('/checkout', { state: { cartItemIds: [...selectedIds] } });
     };

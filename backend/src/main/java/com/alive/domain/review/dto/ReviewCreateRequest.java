@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 리뷰 작성 요청 DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor

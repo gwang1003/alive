@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import aliveLogo from '../assets/logo.png';
 import axios from '../api/axios';
 
+// 이름+이메일+전화번호로 본인확인 후 새 비밀번호로 재설정하는 페이지 (별도 인증 없이 필드 매칭만 수행)
 const ResetPassword: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: '', name: '', phone: '', newPassword: '' });
@@ -16,6 +17,7 @@ const ResetPassword: React.FC = () => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // 새 비밀번호 확인 일치 검증 후 본인확인 정보와 함께 비밀번호 재설정을 요청한다
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');

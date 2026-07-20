@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import {user} from "../types/user.ts";
 
+// 인증 상태 store의 shape 정의
 interface AuthState {
     accessToken: string | null;
     user: user | null;
@@ -14,6 +15,7 @@ interface AuthState {
     setAuthChecked: () => void;
 }
 
+// Zustand 기반 인증 스토어: accessToken/user, 로그인·로그아웃 액션을 전역으로 관리
 const useAuthStore = create<AuthState>((set) => ({
     accessToken: null,
     user: null,

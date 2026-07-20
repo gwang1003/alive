@@ -9,6 +9,9 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+/**
+ * 토스페이먼츠 결제 승인 요청 DTO. amount는 서버에서 주문 금액과 대조 검증된다.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

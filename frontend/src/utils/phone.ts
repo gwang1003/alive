@@ -1,3 +1,4 @@
+// 숫자 문자열을 전화번호 형식(지역번호/휴대폰)으로 하이픈 포맷팅
 export function formatPhoneNumber(value: string): string {
     const digits = value.replace(/\D/g, '').slice(0, 11);
 

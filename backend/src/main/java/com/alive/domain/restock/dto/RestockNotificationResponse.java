@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * 재입고 알림 응답 DTO. notified는 실제 발송 여부가 아니라 재입고 완료로 표시되었는지를 나타낸다.
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +28,9 @@ public class RestockNotificationResponse {
     private String size;
     private LocalDateTime createdAt;
 
+    /**
+     * RestockNotification 엔티티를 응답 DTO로 변환한다. 상품 대표 이미지를 함께 채운다.
+     */
     public static RestockNotificationResponse fromEntity(RestockNotification entity) {
         var stock = entity.getProductStock();
         var product = stock.getProduct();

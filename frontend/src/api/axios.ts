@@ -2,6 +2,7 @@ import axios from 'axios';
 import useAuthStore from "../assets/authStore.tsx";
 import useCartStore from "../store/cartStore";
 
+// 공통 axios 인스턴스: 액세스 토큰 자동 첨부, 401 발생 시 토큰 재발급 후 원 요청 재시도까지 처리
 const api = axios.create({
     baseURL: '/api', // Vite 프록시 설정을 통해 8080으로 전달됩니다.
     headers: {

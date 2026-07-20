@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * 문의 조회 응답 DTO
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +27,9 @@ public class InquiryResponse {
     private LocalDateTime answeredAt;
     private String userName;
 
+    /**
+     * Inquiry 엔티티를 응답 DTO로 변환
+     */
     public static InquiryResponse fromEntity(Inquiry inquiry) {
         return InquiryResponse.builder()
                 .inquiryId(inquiry.getInquiryId())

@@ -10,6 +10,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * 주문 상태 일괄 변경 요청 DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor

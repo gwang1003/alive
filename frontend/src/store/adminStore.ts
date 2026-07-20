@@ -50,6 +50,7 @@ interface AdminState {
     updateOrderStatusBulk: (orderIds: number[], status: OrderStatus) => Promise<void>;
 }
 
+// 관리자 페이지 스토어: 상품 목록/상세/재고 관리와 주문 목록/상세/상태 변경을 담당
 const useAdminStore = create<AdminState>((set, get) => ({
     products: [],
     productTotalPages: 0,
@@ -81,6 +82,7 @@ const useAdminStore = create<AdminState>((set, get) => ({
         await get().fetchProducts(get().productPage);
     },
 
+    // 특정 옵션(색상/사이즈)의 재고 수량만 수정
     updateStock: async (productId, stockId, quantity) => {
         const response = await api.patch<AdminProductStock>(
             `/admin/products/${productId}/stocks/${stockId}`,
@@ -111,10 +113,12 @@ const useAdminStore = create<AdminState>((set, get) => ({
         return response.data;
     },
 
+    // 목록은 재조회하지 않음 - 호출부에서 필요 시 fetchOrders로 갱신
     updateOrderStatus: async (orderId, status) => {
         await api.patch(`/admin/orders/${orderId}/status`, { status });
     },
 
+    // 여러 주문의 상태를 한 번에 변경
     updateOrderStatusBulk: async (orderIds, status) => {
         await api.patch('/admin/orders/status', { orderIds, status });
     },

@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * 결제 승인 결과 응답 DTO
+ */
 @Getter
 @Builder
 @NoArgsConstructor
@@ -22,6 +25,9 @@ public class PaymentResponse {
     private String receiptUrl;
     private LocalDateTime approvedAt;
 
+    /**
+     * Payment 엔티티를 응답 DTO로 변환한다.
+     */
     public static PaymentResponse fromEntity(Payment payment) {
         return PaymentResponse.builder()
                 .orderId(payment.getOrder().getOrderId())

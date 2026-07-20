@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * 상품 목록/상세/검색 등 조회를 처리하는 공개 API 컨트롤러
+ */
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor

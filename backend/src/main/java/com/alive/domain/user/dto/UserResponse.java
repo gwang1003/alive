@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * 사용자 정보 응답 DTO (비밀번호 등 민감정보 제외)
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 옵션(색상/사이즈)별 재고 응답 DTO
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

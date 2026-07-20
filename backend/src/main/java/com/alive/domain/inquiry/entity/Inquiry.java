@@ -10,6 +10,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 1:1 문의 엔티티
+ */
 @Entity
 @Table(name = "inquiries")
 @Getter
@@ -48,6 +51,9 @@ public class Inquiry {
     @Column(name = "answered_at")
     private LocalDateTime answeredAt;
 
+    /**
+     * 답변 등록 및 상태를 답변완료로 변경
+     */
     public void answer(String answer) {
         this.answer = answer;
         this.status = InquiryStatus.ANSWERED;

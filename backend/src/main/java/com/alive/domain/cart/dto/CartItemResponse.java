@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * 장바구니 항목 응답 DTO
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,6 +30,9 @@ public class CartItemResponse {
     private Integer quantity;
     private Integer availableStock;
 
+    /**
+     * CartItem 엔티티를 응답 DTO로 변환 (상품 썸네일, 가격 정보 포함)
+     */
     public static CartItemResponse fromEntity(CartItem cartItem) {
         Product product = cartItem.getProductStock().getProduct();
         String thumbnailUrl = product.getImages().stream()

@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 사용자 주문 API 컨트롤러 (생성, 목록/상세 조회, 취소)
+ */
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor

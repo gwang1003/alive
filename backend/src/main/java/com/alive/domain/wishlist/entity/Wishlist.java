@@ -11,6 +11,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 위시리스트(찜) 엔티티. 회원-상품 조합은 유니크 제약으로 중복 등록을 막는다.
+ */
 @Entity
 @Table(name = "wishlists", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "product_id"}))
 @Getter

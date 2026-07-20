@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 바로 구매(Buy Now) 시 지정하는 단일 옵션/수량 요청 DTO. 장바구니를 거치지 않는다.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

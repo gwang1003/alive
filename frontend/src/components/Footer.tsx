@@ -1,6 +1,7 @@
 import React from 'react';
 import aliveLogo from '../assets/logo.png';
 
+// 사이트 하단 푸터: 로고/약관 링크, 사업자 정보, 저작권 표시를 렌더링
 const Footer: React.FC = () => {
     return (
         <footer className="bg-ink text-canvas/60 pt-4 pb-4 border-t border-canvas/10">

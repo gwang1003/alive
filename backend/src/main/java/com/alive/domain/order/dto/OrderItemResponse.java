@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * 주문 항목 응답 DTO
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +27,9 @@ public class OrderItemResponse {
     private Integer quantity;
     private BigDecimal subtotal;
 
+    /**
+     * OrderItem 엔티티를 응답 DTO로 변환한다.
+     */
     public static OrderItemResponse fromEntity(OrderItem item) {
         String thumbnailUrl = item.getProduct() != null
                 ? item.getProduct().getImages().stream()

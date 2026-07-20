@@ -20,6 +20,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 상품 조회/등록/수정/삭제 및 재고 관리 비즈니스 로직을 처리하는 서비스
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -363,11 +366,17 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 상품 이미지의 파일 시스템 경로 조합
+     */
     public String getImageUrl(String imageUrl) {
         String fileUrl = fileDir + File.separator + "products" + File.separator + imageUrl;
         return fileUrl;
     }
 
+    /**
+     * 상품 썸네일 이미지의 파일 시스템 경로 조합
+     */
     public String getThumbnailsImageUrl(String imageUrl) {
         String fileUrl = fileDir + File.separator + "products" + File.separator + "thumbnails" + File.separator + imageUrl;
         return fileUrl;

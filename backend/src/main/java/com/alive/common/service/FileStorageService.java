@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+/**
+ * 이미지 파일을 로컬 디스크(uploadDir)에 저장/삭제하는 서비스. 확장자·컨텐츠 타입을 검증한다.
+ */
 @Service
 public class FileStorageService {
 

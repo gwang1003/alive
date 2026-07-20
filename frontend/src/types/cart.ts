@@ -1,3 +1,4 @@
+// 장바구니 담긴 상품 옵션 항목
 export interface CartItem {
     cartItemId: number;
     productId: number;

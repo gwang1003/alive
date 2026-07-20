@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * RefreshToken 엔티티. 사용자 1명당 하나의 RefreshToken을 저장한다.
+ */
 @Entity
 @Table(name = "refresh_tokens")
 @Getter

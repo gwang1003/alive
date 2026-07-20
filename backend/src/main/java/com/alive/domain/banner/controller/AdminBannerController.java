@@ -13,6 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * 관리자 배너 관리 API 컨트롤러 (조회/등록/수정/삭제)
+ */
 @RestController
 @RequestMapping("/api/admin/banners")
 @RequiredArgsConstructor

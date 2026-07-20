@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
+/**
+ * 상품 리뷰 요약 응답 DTO (평균 별점, 총 개수, 별점별 개수)
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

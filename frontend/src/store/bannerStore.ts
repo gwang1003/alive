@@ -13,6 +13,7 @@ interface BannerState {
     deleteBanner: (bannerId: number) => Promise<void>;
 }
 
+// 배너 관리 스토어: 노출용 배너 목록과 관리자용 배너 CRUD를 담당
 const useBannerStore = create<BannerState>((set, get) => ({
     banners: [],
     adminBanners: [],
@@ -33,6 +34,7 @@ const useBannerStore = create<BannerState>((set, get) => ({
         }
     },
 
+    // 이미지 파일을 포함해 FormData(multipart)로 배너 생성
     createBanner: async (title, linkUrl, displayOrder, image) => {
         const formData = new FormData();
         formData.append('title', title);

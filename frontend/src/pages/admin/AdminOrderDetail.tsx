@@ -13,6 +13,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 const STATUS_VALUES: OrderStatus[] = ['PENDING', 'PAID', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
 
+// 관리자 주문 상세 조회 및 주문 상태 변경 페이지
 const AdminOrderDetail: React.FC = () => {
     const navigate = useNavigate();
     const { orderId } = useParams();
@@ -23,6 +24,7 @@ const AdminOrderDetail: React.FC = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [message, setMessage] = useState('');
 
+    // 주문 상세 조회 후 현재 상태를 상태 선택값에도 동기화
     const load = async () => {
         const detail = await fetchOrderDetail(Number(orderId));
         setOrder(detail);
@@ -33,6 +35,7 @@ const AdminOrderDetail: React.FC = () => {
         load();
     }, [orderId]);
 
+    // 상태 변경 요청 후 최신 주문 정보 다시 조회
     const handleUpdateStatus = async () => {
         setIsUpdating(true);
         setMessage('');

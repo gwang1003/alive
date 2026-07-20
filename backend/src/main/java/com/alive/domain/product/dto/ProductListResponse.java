@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * 상품 목록 조회 응답 DTO (간단한 정보만 포함)
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

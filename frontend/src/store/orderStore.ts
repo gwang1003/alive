@@ -11,6 +11,7 @@ interface OrderState {
     cancelOrder: (orderId: number) => Promise<Order>;
 }
 
+// 주문 스토어: 주문 생성/목록조회/상세조회/취소를 담당
 const useOrderStore = create<OrderState>((set, get) => ({
     orders: [],
     isLoading: false,
@@ -35,6 +36,7 @@ const useOrderStore = create<OrderState>((set, get) => ({
         return response.data;
     },
 
+    // 취소 후 전체 재조회 대신 로컬 목록에서 해당 주문만 교체
     cancelOrder: async (orderId) => {
         const response = await api.patch<Order>(`/orders/${orderId}/cancel`);
         set({ orders: get().orders.map((o) => (o.orderId === orderId ? response.data : o)) });

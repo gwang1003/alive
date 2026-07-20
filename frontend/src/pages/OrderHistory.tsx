@@ -19,12 +19,14 @@ const STATUS_COLOR: Record<string, string> = {
     CANCELLED: '#E24F2C',
 };
 
+// 주문내역 목록 페이지 — 주문 클릭 시 상세로 이동, 취소 가능 주문은 목록에서 바로 취소
 const OrderHistory: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
     const authChecked = useAuthStore((state) => state.authChecked);
     const { orders, isLoading, fetchOrders, cancelOrder } = useOrderStore();
 
+    // 로그인 확인 후 주문 목록 조회, 미로그인 시 로그인 페이지로 이동
     useEffect(() => {
         if (!authChecked) return;
         if (!accessToken) {
@@ -38,6 +40,7 @@ const OrderHistory: React.FC = () => {
         return null;
     }
 
+    // 주문 취소 — 카드 클릭(상세 이동)으로 이벤트가 전파되지 않도록 stopPropagation
     const handleCancel = async (e: React.MouseEvent, orderId: number) => {
         e.stopPropagation();
         if (!window.confirm('이 주문을 취소하시겠습니까?')) return;

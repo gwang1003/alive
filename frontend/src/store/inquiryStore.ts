@@ -15,6 +15,7 @@ interface InquiryState {
     answerInquiry: (inquiryId: number, answer: string) => Promise<void>;
 }
 
+// 상품 문의 스토어: 사용자 문의 목록/등록과 관리자 문의 목록/답변 처리를 담당
 const useInquiryStore = create<InquiryState>((set, get) => ({
     inquiries: [],
     adminInquiries: [],

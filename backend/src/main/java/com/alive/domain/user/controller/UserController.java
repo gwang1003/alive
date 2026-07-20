@@ -11,6 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 로그인한 사용자 본인의 정보 조회/수정, 비밀번호 변경을 처리하는 컨트롤러.
+ */
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor

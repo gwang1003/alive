@@ -10,6 +10,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 회원 엔티티. 이메일/비밀번호 가입과 카카오/네이버 소셜 로그인 가입을 모두 표현한다.
+ */
 @Entity
 @Table(name = "users")
 @Getter
@@ -58,11 +61,17 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    /**
+     * 이름/전화번호 수정
+     */
     public void updateProfile(String name, String phone) {
         this.name = name;
         this.phone = phone;
     }
 
+    /**
+     * 암호화된 비밀번호로 교체
+     */
     public void changePassword(String encodedPassword) {
         this.password = encodedPassword;
     }

@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 비밀번호 찾기(재설정) 요청 DTO (이메일 + 이름 + 전화번호로 본인확인 후 새 비밀번호 설정)
+ */
 @Getter
 @Setter
 @NoArgsConstructor

@@ -6,12 +6,18 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * CORS 및 정적 리소스(업로드 파일) 서빙 설정.
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+    /**
+     * 프론트엔드 개발 서버 origin에 대해 /api/** 요청의 CORS를 허용
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
@@ -22,6 +28,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .maxAge(3600);
     }
 
+    /**
+     * 업로드 디렉터리(products/banners/reviews)를 정적 리소스 URL로 매핑
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // FileStorageService가 "/products", "/products/thumbnails", "/products/details" 하위로 저장하므로

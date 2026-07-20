@@ -11,6 +11,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * 결제 엔티티. 주문 1건당 결제 1건(1:1)이며, 토스페이먼츠 승인 결과를 저장한다.
+ */
 @Entity
 @Table(name = "payments")
 @Getter

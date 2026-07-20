@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 상품 이미지 응답 DTO
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

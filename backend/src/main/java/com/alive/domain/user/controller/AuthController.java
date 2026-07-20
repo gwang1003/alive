@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 이메일/비밀번호 기반 회원가입, 로그인, 토큰 갱신, 로그아웃, 아이디/비밀번호 찾기를 처리하는 컨트롤러.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

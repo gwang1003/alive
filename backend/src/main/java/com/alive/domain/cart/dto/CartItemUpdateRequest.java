@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 장바구니 항목 수량 변경 요청 DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor

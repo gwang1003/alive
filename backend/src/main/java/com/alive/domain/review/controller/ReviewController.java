@@ -19,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+/**
+ * 상품 리뷰 API 컨트롤러 (조회/작성/사진 첨부)
+ */
 @RestController
 @RequestMapping("/api/reviews")
 @RequiredArgsConstructor

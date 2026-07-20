@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 아이디(이메일) 찾기 요청 DTO (이름 + 전화번호로 본인확인)
+ */
 @Getter
 @Setter
 @NoArgsConstructor

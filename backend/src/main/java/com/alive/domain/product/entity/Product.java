@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 상품 엔티티 (카테고리, 재고, 이미지, 모델 정보와 연관관계를 가지는 상품 도메인의 중심 엔티티)
+ */
 @Entity
 @Table(name = "products")
 @Getter
@@ -120,10 +123,16 @@ public class Product {
         if (isActive != null) this.isActive = isActive;
     }
 
+    /**
+     * 전체 재고 수량 갱신
+     */
     public void updateStockQuantity(Integer stockQuantity) {
         this.stockQuantity = stockQuantity;
     }
 
+    /**
+     * 카테고리 변경
+     */
     public void updateCategory(Category category) {
         this.category = category;
     }

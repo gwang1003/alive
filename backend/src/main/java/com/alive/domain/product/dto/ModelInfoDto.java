@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 상품 모델 착용 정보(키/몸무게/착용 사이즈 등) DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor

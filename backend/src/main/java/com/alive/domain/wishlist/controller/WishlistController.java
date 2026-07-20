@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 위시리스트(찜) 조회/추가/삭제 API 컨트롤러
+ */
 @RestController
 @RequestMapping("/api/wishlist")
 @RequiredArgsConstructor

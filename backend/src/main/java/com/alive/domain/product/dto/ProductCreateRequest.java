@@ -10,6 +10,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * 상품 등록 요청 DTO (기본 정보, 모델 정보, 옵션, 재고, 상세 블록 포함)
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -47,6 +50,9 @@ public class ProductCreateRequest {
 
     // ========== 내부 DTO 클래스 ==========
 
+    /**
+     * 모델 착용 정보 (등록 요청용 내부 DTO)
+     */
     @Getter
     @Setter
     @NoArgsConstructor
@@ -68,6 +74,9 @@ public class ProductCreateRequest {
         private Integer wearingSize;
     }
 
+    /**
+     * 색상/사이즈 옵션 목록 (등록 요청용 내부 DTO)
+     */
     @Getter
     @Setter
     @NoArgsConstructor
@@ -80,6 +89,9 @@ public class ProductCreateRequest {
         private List<String> sizes;
     }
 
+    /**
+     * 색상/사이즈 조합별 초기 재고 (등록 요청용 내부 DTO)
+     */
     @Getter
     @Setter
     @NoArgsConstructor
@@ -95,6 +107,9 @@ public class ProductCreateRequest {
         private Integer quantity;
     }
 
+    /**
+     * 상세 설명 블록(텍스트/이미지) (등록 요청용 내부 DTO)
+     */
     @Getter
     @Setter
     @NoArgsConstructor

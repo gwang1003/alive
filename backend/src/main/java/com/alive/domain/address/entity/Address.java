@@ -10,6 +10,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 회원 배송지 엔티티
+ */
 @Entity
 @Table(name = "addresses")
 @Getter
@@ -50,6 +53,9 @@ public class Address {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * 배송지 정보(받는 분, 연락처, 주소 등)를 갱신한다.
+     */
     public void update(String recipientName, String phone, String zipcode, String address, String addressDetail) {
         this.recipientName = recipientName;
         this.phone = phone;
@@ -58,10 +64,16 @@ public class Address {
         this.addressDetail = addressDetail;
     }
 
+    /**
+     * 기본 배송지로 표시한다.
+     */
     public void markDefault() {
         this.isDefault = true;
     }
 
+    /**
+     * 기본 배송지 표시를 해제한다.
+     */
     public void unmarkDefault() {
         this.isDefault = false;
     }

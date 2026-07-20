@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * 사용자(User) 엔티티에 대한 JPA 리포지토리
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 

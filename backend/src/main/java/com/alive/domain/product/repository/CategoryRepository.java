@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * 카테고리 조회용 리포지토리
+ */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 

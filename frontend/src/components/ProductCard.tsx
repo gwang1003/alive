@@ -22,6 +22,8 @@ interface ProductProps {
 // 백엔드가 내려주는 이미지는 "/products/..." 형태의 상대 경로라 "/api"를 붙여줘야 함
 const resolveImageSrc = (img: string) => (img.startsWith('/products/') ? `/api${img}` : img);
 
+// 상품 목록에 쓰이는 카드: 이미지 슬라이더, 태그 뱃지, 가격/할인율 표시.
+// 클릭 시 상세 페이지로 이동하되, Swiper 좌우 화살표/페이지네이션 클릭은 예외 처리.
 const ProductCard: React.FC<ProductProps> = ({ product }) => {
     const navigate = useNavigate();
     const productDetail = (e: React.MouseEvent) => {

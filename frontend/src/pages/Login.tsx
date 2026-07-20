@@ -8,6 +8,7 @@ import useCartStore from "../store/cartStore";
 
 
 
+// 이메일/비밀번호 로그인 페이지 (카카오/네이버 소셜 로그인 진입점 포함)
 const Login: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -19,6 +20,7 @@ const Login: React.FC = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    // 로그인 요청 후 accessToken을 스토어에 저장하고 장바구니를 불러온 뒤 홈으로 이동
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {

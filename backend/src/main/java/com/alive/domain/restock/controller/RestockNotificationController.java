@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 재입고 알림 신청/취소/조회 API 컨트롤러. 실제 이메일/푸시 발송 없이 인앱 알림함 형태로 제공된다.
+ */
 @RestController
 @RequestMapping("/api/restock-notifications")
 @RequiredArgsConstructor

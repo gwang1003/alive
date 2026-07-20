@@ -11,6 +11,7 @@ import useWishlistStore from "../store/wishlistStore";
 import { addRecentlyViewed } from "../utils/recentlyViewed";
 import useRestockStore from "../store/restockStore";
 
+// 상품 상세 페이지: 이미지/옵션/구매(장바구니, 바로구매), 위시리스트, 재입고 알림, 리뷰 작성/조회, 추천상품을 모두 다룬다
 const ProductDetail: React.FC = () => {
     // 스크롤 이동을 위한 레퍼런스 생성 (Java의 참조 변수와 비슷합니다)
     const detailRef = useRef<HTMLDivElement>(null);
@@ -65,6 +66,7 @@ const ProductDetail: React.FC = () => {
     const [reviewSubmitting, setReviewSubmitting] = useState(false);
     const [reviewImageFiles, setReviewImageFiles] = useState<File[]>([]);
 
+    // productId가 바뀔 때마다 상품 상세를 다시 조회하고 옵션 선택 상태를 초기화한다
     useEffect(() => {
         const init = async() => {
             const response = await axios.get(`/products/${productId}`)
@@ -83,12 +85,14 @@ const ProductDetail: React.FC = () => {
         window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     }, [productId]);
 
+    // 페이지/정렬 변경 시 리뷰 목록과 리뷰 요약(평점 통계)을 다시 조회
     useEffect(() => {
         if (!productId) return;
         fetchReviews(Number(productId), reviewPage, `${reviewSort},desc`);
         fetchReviewSummary(Number(productId));
     }, [productId, reviewPage, reviewSort]);
 
+    // 로그인 상태일 때만 "리뷰 작성 가능한 구매 내역"을 조회
     useEffect(() => {
         if (!productId || !accessToken) return;
         fetchReviewableItems(Number(productId));
@@ -99,6 +103,7 @@ const ProductDetail: React.FC = () => {
         fetchWishlist();
     }, [accessToken]);
 
+    // 같은 카테고리의 다른 상품을 추천상품으로 조회 (현재 보고 있는 상품은 제외)
     useEffect(() => {
         if (!productData?.categoryId) return;
         const fetchRelated = async () => {
@@ -112,6 +117,7 @@ const ProductDetail: React.FC = () => {
         fetchRelated();
     }, [productData?.categoryId, productId]);
 
+    // 선택된 색상/사이즈 옵션이 품절이면 이미 재입고 알림을 신청했는지 확인
     useEffect(() => {
         if (!accessToken || !productData) {
             setRestockRequested(false);
@@ -145,6 +151,7 @@ const ProductDetail: React.FC = () => {
     const availableSizes = [...new Set(stocks.map((s) => s.size))];
     const selectedStock = stocks.find((s) => s.color === selectedColor && s.size === selectedSize);
 
+    // 선택한 옵션/수량을 장바구니에 담는다 (미로그인 시 로그인 페이지로 이동)
     const handleAddToCart = async () => {
         setCartError('');
 
@@ -195,6 +202,7 @@ const ProductDetail: React.FC = () => {
         });
     };
 
+    // 선택한 옵션에 대한 재입고 알림 신청/취소를 토글한다
     const handleToggleRestockNotification = async () => {
         if (!accessToken) {
             navigate('/login');
@@ -217,6 +225,7 @@ const ProductDetail: React.FC = () => {
         }
     };
 
+    // 현재 상품의 위시리스트 등록/해제를 토글한다
     const handleToggleWishlist = async () => {
         if (!accessToken) {
             navigate('/login');
@@ -230,6 +239,7 @@ const ProductDetail: React.FC = () => {
         }
     };
 
+    // 리뷰 작성 폼을 열고 리뷰 가능 상품이 하나뿐이면 자동 선택한다
     const handleOpenReviewForm = () => {
         if (!accessToken) {
             navigate('/login');
@@ -244,6 +254,7 @@ const ProductDetail: React.FC = () => {
         setShowReviewForm(true);
     };
 
+    // 리뷰를 등록하고(이미지 첨부 시 업로드까지) 리뷰 목록/요약/작성가능목록을 다시 불러온다
     const handleSubmitReview = async () => {
         setReviewSubmitError('');
 

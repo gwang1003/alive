@@ -12,6 +12,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 장바구니 항목 엔티티. 사용자-재고(옵션) 조합은 유니크 제약으로 중복 담기를 방지한다.
+ */
 @Entity
 @Table(name = "cart_items", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "stock_id"})
@@ -46,6 +49,9 @@ public class CartItem {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    /**
+     * 장바구니 항목 수량을 변경한다.
+     */
     public void updateQuantity(Integer quantity) {
         this.quantity = quantity;
     }

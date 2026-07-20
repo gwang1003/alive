@@ -9,6 +9,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 상품의 색상/사이즈 옵션별 재고 엔티티
+ */
 @Entity
 @Table(name = "product_stocks")
 @Getter

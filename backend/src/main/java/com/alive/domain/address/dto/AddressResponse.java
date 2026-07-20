@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 배송지 응답 DTO
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +23,9 @@ public class AddressResponse {
     private String addressDetail;
     private Boolean isDefault;
 
+    /**
+     * Address 엔티티를 AddressResponse로 변환한다.
+     */
     public static AddressResponse fromEntity(Address address) {
         return AddressResponse.builder()
                 .addressId(address.getAddressId())

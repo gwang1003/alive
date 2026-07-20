@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * RefreshToken 엔티티에 대한 JPA 리포지토리
+ */
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 

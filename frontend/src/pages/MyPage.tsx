@@ -14,6 +14,7 @@ interface Profile {
     createdAt: string;
 }
 
+// 마이페이지: 회원정보/비밀번호 수정, 로그아웃, 주문/배송지/위시리스트 등 하위 메뉴 진입점
 const MyPage: React.FC = () => {
     const navigate = useNavigate();
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -32,6 +33,7 @@ const MyPage: React.FC = () => {
     const [passwordSuccess, setPasswordSuccess] = useState('');
     const [savingPassword, setSavingPassword] = useState(false);
 
+    // authChecked를 기다린 뒤 로그인 여부 확인하고 프로필을 조회해 폼에 채운다
     useEffect(() => {
         if (!authChecked) return;
         if (!accessToken) {
@@ -57,6 +59,7 @@ const MyPage: React.FC = () => {
         setProfileForm((prev) => ({ ...prev, [name]: value }));
     };
 
+    // 이름/전화번호 수정사항을 서버에 반영한다
     const handleProfileSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setProfileError('');
@@ -78,6 +81,7 @@ const MyPage: React.FC = () => {
         setPasswordForm((prev) => ({ ...prev, [name]: value }));
     };
 
+    // 새 비밀번호 확인 일치 검증 후 비밀번호 변경 요청을 보낸다
     const handlePasswordSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setPasswordError('');
@@ -103,6 +107,7 @@ const MyPage: React.FC = () => {
         }
     };
 
+    // 서버 로그아웃 성공 여부와 무관하게 클라이언트 인증/장바구니 상태를 정리하고 로그인 페이지로 이동
     const handleLogout = async () => {
         try {
             await axios.post('/auth/logout');

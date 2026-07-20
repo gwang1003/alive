@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 단건 주문 상태 변경 요청 DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor

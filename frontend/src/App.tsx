@@ -33,6 +33,8 @@ import ResetPassword from "./pages/ResetPassword";
 import OAuthCallback from "./pages/OAuthCallback";
 import Notifications from "./pages/Notifications";
 
+// 라우터 루트. 마운트 시 /auth/refresh를 호출해 로그인 상태를 복원하고(authChecked 플래그로 완료 시점 표시),
+// 성공하면 장바구니도 함께 불러온다.
 const App: React.FC = () => {
     const login = useAuthStore((state) => state.login);
     const setAuthChecked = useAuthStore((state) => state.setAuthChecked);
@@ -65,22 +67,26 @@ const App: React.FC = () => {
                 <Routes>
                     {/* 메인 페이지: 신상품 목록 표시 */}
                     <Route path="/" element={<Home />} />
+                    {/* 인증/계정 관련 페이지 */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
                     <Route path="/find-email" element={<FindEmail />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/oauth/callback" element={<OAuthCallback />} />
                     <Route path="/notifications" element={<Notifications />} />
+                    {/* 장바구니/결제 플로우 */}
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/payment/success" element={<PaymentSuccess />} />
                     <Route path="/payment/fail" element={<PaymentFail />} />
+                    {/* 마이페이지 관련 (주문/찜/배송지/문의) */}
                     <Route path="/orders" element={<OrderHistory />} />
                     <Route path="/wishlist" element={<Wishlist />} />
                     <Route path="/addresses" element={<AddressBook />} />
                     <Route path="/mypage" element={<MyPage />} />
                     <Route path="/inquiries" element={<Inquiry />} />
                     <Route path="/orders/:orderId" element={<OrderDetail />} />
+                    {/* 상품 상세 및 카테고리/조건별 목록 페이지 */}
                     <Route path="/product/detail/:productId" element={<ProductDetail />} />
                     <Route path="/new" element={<ProductList title="신상품" defaultSort="createdAt,desc" />} />
                     <Route path="/best" element={<ProductList title="베스트" defaultSort="viewCount,desc" />} />
@@ -90,6 +96,7 @@ const App: React.FC = () => {
                     <Route path="/sets" element={<ProductList title="세트" categoryId={5} />} />
                     <Route path="/sale" element={<ProductList title="세일" discountedOnly />} />
                     <Route path="/search" element={<ProductList title="검색결과" />} />
+                    {/* 관리자 전용 페이지: AdminRoute로 감싸 ADMIN 권한을 체크 */}
                     <Route path="/admin/products" element={<AdminRoute><AdminProductList /></AdminRoute>} />
                     <Route path="/admin/products/new" element={<AdminRoute><ProductForm /></AdminRoute>} />
                     <Route path="/admin/products/:productId/edit" element={<AdminRoute><AdminProductEdit /></AdminRoute>} />

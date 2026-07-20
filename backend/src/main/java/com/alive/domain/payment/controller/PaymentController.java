@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 결제 API 컨트롤러. 토스페이먼츠 결제 승인 요청을 처리한다.
+ */
 @RestController
 @RequestMapping("/api/payments")
 @RequiredArgsConstructor

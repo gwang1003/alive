@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * 상품 옵션(색상/사이즈) DTO
+ */
 @Getter
 @Setter
 @NoArgsConstructor

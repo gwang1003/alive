@@ -8,6 +8,7 @@ import axios from "../api/axios.ts";
 import { getRecentlyViewedIds } from '../utils/recentlyViewed';
 import useBannerStore from '../store/bannerStore';
 
+// 홈 화면: 히어로 배너, 신상품/인기상품/최근 본 상품 섹션을 보여준다
 const Home: React.FC = () => {
     const [products, setProducts] = useState([]);
     const [bestProducts, setBestProducts] = useState([]);
@@ -16,6 +17,7 @@ const Home: React.FC = () => {
     const fetchBanners = useBannerStore((state) => state.fetchBanners);
     const heroBanner = banners[0];
 
+    // 신상품/인기상품/배너/최근 본 상품을 각각 독립적으로 조회 (한쪽이 실패해도 나머지는 표시)
     useEffect(() => {
         const init = async () => {
             try {

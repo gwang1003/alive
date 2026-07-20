@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 상품 상세 조회 응답 DTO (이미지/재고/모델 정보 포함)
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

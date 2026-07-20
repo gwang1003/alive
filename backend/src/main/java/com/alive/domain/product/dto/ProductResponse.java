@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * 상품 등록/수정 결과 응답 DTO
+ */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

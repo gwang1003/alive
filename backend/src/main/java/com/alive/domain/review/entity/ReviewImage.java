@@ -9,6 +9,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 리뷰 첨부 이미지 엔티티
+ */
 @Entity
 @Table(name = "review_images")
 @Getter

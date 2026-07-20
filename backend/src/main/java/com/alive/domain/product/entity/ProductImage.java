@@ -9,6 +9,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * 상품 이미지 엔티티 (메인/썸네일 및 표시 순서 관리)
+ */
 @Entity
 @Table(name = "product_images")
 @Getter

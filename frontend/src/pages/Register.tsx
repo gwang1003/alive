@@ -4,6 +4,7 @@ import aliveLogo from '../assets/logo.png';
 import axios from "../api/axios";
 import { formatPhoneNumber } from '../utils/phone';
 
+// 회원가입 페이지: 이메일 중복확인, 비밀번호 확인, 약관 동의를 거쳐 계정을 생성한다
 const Register: React.FC = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -29,6 +30,7 @@ const Register: React.FC = () => {
         }
     };
 
+    // 입력한 이메일의 중복 여부를 서버에 확인 요청한다
     const handleCheckEmail = async () => {
         if (!formData.email) {
             setError('이메일을 먼저 입력해주세요.');
@@ -52,6 +54,7 @@ const Register: React.FC = () => {
         }
     };
 
+    // 비밀번호 일치 및 약관 동의를 검증한 뒤 회원가입을 요청한다
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');

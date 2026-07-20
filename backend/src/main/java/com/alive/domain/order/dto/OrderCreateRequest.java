@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * 주문 생성 요청 DTO. 장바구니 전체/일부 주문 또는 바로 구매(directItem) 방식을 지원한다.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

@@ -12,6 +12,7 @@ interface AddressState {
     setDefault: (addressId: number) => Promise<void>;
 }
 
+// 배송지 관리 스토어: 배송지 목록 조회 및 추가/수정/삭제, 기본 배송지 설정
 const useAddressStore = create<AddressState>((set, get) => ({
     addresses: [],
     isLoading: false,

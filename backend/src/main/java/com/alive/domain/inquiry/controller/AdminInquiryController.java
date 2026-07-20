@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 관리자 문의 관리 API 컨트롤러 (조회/답변)
+ */
 @RestController
 @RequestMapping("/api/admin/inquiries")
 @RequiredArgsConstructor

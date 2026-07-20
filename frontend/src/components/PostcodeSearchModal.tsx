@@ -6,6 +6,7 @@ interface PostcodeSearchModalProps {
     onClose: () => void;
 }
 
+// 다음 우편번호 검색 위젯을 모달로 띄워 주소 선택 결과를 상위로 전달
 const PostcodeSearchModal: React.FC<PostcodeSearchModalProps> = ({ onComplete, onClose }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [error, setError] = useState('');
