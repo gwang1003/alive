@@ -21,7 +21,8 @@ public class RefreshToken {
     @Column(name = "token_id")
     private Long tokenId;
 
-    @Column(nullable = false, unique = true)
+    // JWT는 클레임(이메일 등) 길이에 따라 기본 varchar(255)를 쉽게 넘어선다
+    @Column(nullable = false, unique = true, length = 1000)
     private String token;
 
     @Column(nullable = false)

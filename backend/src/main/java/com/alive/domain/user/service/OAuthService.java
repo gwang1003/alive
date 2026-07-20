@@ -25,6 +25,9 @@ public class OAuthService {
     @Value("${oauth.kakao.client-id:}")
     private String kakaoClientId;
 
+    @Value("${oauth.kakao.client-secret:}")
+    private String kakaoClientSecret;
+
     @Value("${oauth.kakao.redirect-uri}")
     private String kakaoRedirectUri;
 
@@ -57,13 +60,19 @@ public class OAuthService {
     public User handleKakaoCallback(String code) {
         RestClient restClient = RestClient.create();
 
+        String tokenRequestBody = "grant_type=authorization_code"
+                + "&client_id=" + kakaoClientId
+                + "&redirect_uri=" + encode(kakaoRedirectUri)
+                + "&code=" + code;
+        // 카카오 앱에 "Client Secret 코드 사용"이 켜져 있으면 없이는 KOE010(invalid_client)로 거부된다
+        if (kakaoClientSecret != null && !kakaoClientSecret.isBlank()) {
+            tokenRequestBody += "&client_secret=" + kakaoClientSecret;
+        }
+
         KakaoTokenResponse tokenResponse = restClient.post()
                 .uri("https://kauth.kakao.com/oauth/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body("grant_type=authorization_code"
-                        + "&client_id=" + kakaoClientId
-                        + "&redirect_uri=" + encode(kakaoRedirectUri)
-                        + "&code=" + code)
+                .body(tokenRequestBody)
                 .retrieve()
                 .body(KakaoTokenResponse.class);
 

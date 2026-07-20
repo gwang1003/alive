@@ -52,9 +52,10 @@ app:
 # client-id/secret이 비어있는 동안은 인가 URL 생성 단계에서 명확한 에러를 던짐.
 oauth:
   kakao:
-    client-id:
+    client-id: ***REMOVED***
+    client-secret: ***REMOVED***
     redirect-uri: http://localhost:8282/api/auth/oauth/kakao/callback
   naver:
-    client-id:
-    client-secret:
+    client-id: ***REMOVED***
+    client-secret: ***REMOVED***
     redirect-uri: http://localhost:8282/api/auth/oauth/naver/callback
