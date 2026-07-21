@@ -61,6 +61,12 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!-- Mail: 이메일 발송 (재입고 알림·회원가입 인증 등) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
         <!-- Lombok: Getter, Setter 등 자동 생성 -->
         <dependency>
             <groupId>org.projectlombok</groupId>

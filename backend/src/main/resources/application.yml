@@ -25,6 +25,21 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  # 이메일 발송 (Gmail SMTP)
+  # 앱 비밀번호: Google 계정 > 보안 > 2단계 인증 활성화 > 앱 비밀번호 발급.
+  # 발급받은 16자리를 환경변수 MAIL_PASSWORD로 주입(권장)하거나 아래 password에 직접 입력.
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:gwang1003@gmail.com}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 # JWT ??
 jwt:
   secret: ***REMOVED***
