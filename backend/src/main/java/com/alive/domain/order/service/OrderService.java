@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,7 +79,8 @@ public class OrderService {
 
     // Buy Now: 장바구니를 전혀 건드리지 않고 지정된 옵션/수량만 바로 주문
     private BigDecimal addDirectItem(Order order, DirectOrderItemRequest directItem) {
-        ProductStock stock = productStockRepository.findById(directItem.getStockId())
+        // 비관적 락으로 재고 행을 잠근 뒤 검증·차감 (동시 주문 Lost Update 방지)
+        ProductStock stock = productStockRepository.findByIdForUpdate(directItem.getStockId())
                 .orElseThrow(() -> new RuntimeException("상품 옵션을 찾을 수 없습니다"));
 
         if (directItem.getQuantity() > stock.getQuantity()) {
@@ -126,10 +128,17 @@ public class OrderService {
             }
         }
 
+        // 데드락 방지: 여러 옵션의 재고 행을 잠글 때 항상 stockId 오름차순으로 잠근다
+        cartItems = cartItems.stream()
+                .sorted(Comparator.comparing(item -> item.getProductStock().getStockId()))
+                .toList();
+
         BigDecimal totalAmount = BigDecimal.ZERO;
 
         for (CartItem cartItem : cartItems) {
-            ProductStock stock = cartItem.getProductStock();
+            // 비관적 락으로 재고 행을 잠근 뒤 검증·차감 (동시 주문 Lost Update 방지)
+            ProductStock stock = productStockRepository.findByIdForUpdate(cartItem.getProductStock().getStockId())
+                    .orElseThrow(() -> new RuntimeException("상품 옵션을 찾을 수 없습니다"));
 
             if (cartItem.getQuantity() > stock.getQuantity()) {
                 throw new RuntimeException("재고가 부족합니다: " + stock.getProduct().getName());
@@ -239,8 +248,14 @@ public class OrderService {
             throw new RuntimeException("배송이 시작된 주문은 취소할 수 없습니다");
         }
 
-        for (OrderItem item : order.getOrderItems()) {
-            ProductStock stock = item.getProductStock();
+        // 데드락 방지를 위해 stockId 오름차순으로 정렬한 뒤, 비관적 락으로 잠그고 재고 복원
+        List<OrderItem> itemsToRestore = order.getOrderItems().stream()
+                .sorted(Comparator.comparing(item -> item.getProductStock().getStockId()))
+                .toList();
+
+        for (OrderItem item : itemsToRestore) {
+            ProductStock stock = productStockRepository.findByIdForUpdate(item.getProductStock().getStockId())
+                    .orElseThrow(() -> new RuntimeException("상품 옵션을 찾을 수 없습니다"));
             stock.updateQuantity(stock.getQuantity() + item.getQuantity());
         }
 
