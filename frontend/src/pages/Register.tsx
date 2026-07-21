@@ -77,8 +77,8 @@ const Register: React.FC = () => {
                 phone: formData.phone || undefined,
             });
 
-            alert('회원가입이 완료되었습니다. 로그인해주세요.');
-            navigate('/login');
+            alert('가입하신 이메일로 인증코드를 보냈습니다. 인증을 완료해주세요.');
+            navigate('/verify-email', { state: { email: formData.email } });
         } catch (err: any) {
             console.error('회원가입 실패:', err);
             setError(err.response?.data?.message ?? '회원가입 중 오류가 발생했습니다.');

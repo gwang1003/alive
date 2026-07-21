@@ -35,8 +35,15 @@ const Login: React.FC = () => {
 
             // 3. 페이지 이동 (성공 시에만 이동하도록 try-catch 안으로)
             navigate('/');
-        } catch (error) {
+        } catch (error: any) {
             console.error("로그인 실패:", error);
+            // 이메일 미인증으로 막힌 경우엔 인증 화면으로 유도
+            const message = error.response?.data?.message;
+            if (typeof message === 'string' && message.includes('이메일 인증')) {
+                alert(message);
+                navigate('/verify-email', { state: { email: formData.email } });
+                return;
+            }
             alert("로그인 정보를 확인해주세요.");
         }
     };

@@ -32,6 +32,7 @@ import FindEmail from "./pages/FindEmail";
 import ResetPassword from "./pages/ResetPassword";
 import OAuthCallback from "./pages/OAuthCallback";
 import Notifications from "./pages/Notifications";
+import VerifyEmail from "./pages/VerifyEmail";
 
 // 라우터 루트. 마운트 시 /auth/refresh를 호출해 로그인 상태를 복원하고(authChecked 플래그로 완료 시점 표시),
 // 성공하면 장바구니도 함께 불러온다.
@@ -70,6 +71,7 @@ const App: React.FC = () => {
                     {/* 인증/계정 관련 페이지 */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Register />} />
+                    <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/find-email" element={<FindEmail />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/oauth/callback" element={<OAuthCallback />} />
