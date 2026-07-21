@@ -54,14 +54,4 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
     }
-
-    /**
-     * 관리자 전용 API (테스트)
-     * GET /api/users/admin-only
-     * ADMIN 권한 필요
-     */
-    @GetMapping("/admin-only")
-    public ResponseEntity<String> adminOnly() {
-        return ResponseEntity.ok("관리자만 볼 수 있는 정보입니다");
-    }
 }
