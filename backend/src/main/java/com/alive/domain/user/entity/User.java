@@ -53,6 +53,12 @@ public class User {
     @Column(name = "provider_id", length = 100)
     private String providerId;
 
+    // 이메일 인증 완료 여부. 기존 계정과 소셜 계정은 true(컬럼 default)로 두고,
+    // 신규 로컬 가입만 false로 시작해 6자리 코드 인증 후 true로 전환한다.
+    @Column(name = "email_verified", nullable = false, columnDefinition = "boolean default true")
+    @Builder.Default
+    private boolean emailVerified = true;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -74,5 +80,12 @@ public class User {
      */
     public void changePassword(String encodedPassword) {
         this.password = encodedPassword;
+    }
+
+    /**
+     * 이메일 인증 완료 처리
+     */
+    public void verifyEmail() {
+        this.emailVerified = true;
     }
 }

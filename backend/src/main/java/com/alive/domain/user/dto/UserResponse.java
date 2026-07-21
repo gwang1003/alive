@@ -21,6 +21,7 @@ public class UserResponse {
     private String name;
     private String phone;
     private String role;
+    private boolean emailVerified;
     private LocalDateTime createdAt;
 
     // Entity를 DTO로 변환하는 정적 메서드
@@ -31,6 +32,7 @@ public class UserResponse {
                 .name(user.getName())
                 .phone(user.getPhone())
                 .role(user.getRole().name())
+                .emailVerified(user.isEmailVerified())
                 .createdAt(user.getCreatedAt())
                 .build();
     }

@@ -167,6 +167,30 @@ public class AuthController {
     }
 
     /**
+     * 이메일 인증 (가입 시 받은 6자리 코드 확인)
+     * POST /api/auth/verify-email
+     */
+    @PostMapping("/verify-email")
+    public ResponseEntity<Map<String, String>> verifyEmail(@Valid @RequestBody VerifyEmailRequest request) {
+        userService.verifyEmail(request.getEmail(), request.getCode());
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", "이메일 인증이 완료되었습니다");
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
+     * 이메일 인증코드 재발송
+     * POST /api/auth/resend-verification
+     */
+    @PostMapping("/resend-verification")
+    public ResponseEntity<Map<String, String>> resendVerification(@Valid @RequestBody ResendVerificationRequest request) {
+        userService.resendVerification(request.getEmail());
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", "인증코드를 재발송했습니다");
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
      * 아이디(이메일) 찾기: 이름 + 전화번호로 본인확인 후 마스킹된 이메일 반환
      * POST /api/auth/find-email
      */
