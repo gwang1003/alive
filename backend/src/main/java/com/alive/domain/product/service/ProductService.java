@@ -1,5 +1,6 @@
 package com.alive.domain.product.service;
 
+import com.alive.common.notification.NotificationSender;
 import com.alive.common.service.FileStorageService;
 import com.alive.domain.product.dto.*;
 import com.alive.domain.product.entity.*;
@@ -31,6 +32,9 @@ public class ProductService {
     @Value("${file.upload-dir}")
     private String fileDir;
 
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
+
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
@@ -39,6 +43,7 @@ public class ProductService {
     private final ProductDetailRepository productDetailRepository;
     private final FileStorageService fileStorageService;
     private final RestockNotificationRepository restockNotificationRepository;
+    private final NotificationSender notificationSender;
 
 
     // ========== 상품 조회 (일반 사용자) ==========
@@ -286,8 +291,8 @@ public class ProductService {
     }
 
     /**
-     * 옵션(색상/사이즈)별 재고 수량 수정. 0 → 양수로 바뀌면 재입고 알림 신청자에게 알림 플래그를 세움
-     * (실제 이메일/푸시 발송은 범위 밖 — 추후 알림 시스템과 함께 처리)
+     * 옵션(색상/사이즈)별 재고 수량 수정. 0 → 양수로 바뀌면 재입고 알림 신청자에게
+     * 인앱 알림 플래그(notified)를 세우고 이메일도 실제로 발송한다.
      */
     @Transactional
     public ProductStockResponse updateStock(Long productId, Long stockId, StockUpdateRequest request) {
@@ -303,10 +308,33 @@ public class ProductService {
 
         if (wasOutOfStock && request.getStockQuantity() > 0) {
             List<RestockNotification> pending = restockNotificationRepository.findByProductStockStockIdAndNotifiedFalse(stockId);
-            pending.forEach(RestockNotification::markNotified);
+            pending.forEach(notification -> {
+                notification.markNotified();
+                sendRestockEmail(notification, stock);
+            });
         }
 
         return ProductStockResponse.fromEntity(stock);
+    }
+
+    // 재입고 알림 이메일 발송 (실제 전송은 EmailNotificationSender가 @Async로 처리)
+    private void sendRestockEmail(RestockNotification notification, ProductStock stock) {
+        String productName = stock.getProduct().getName();
+        String subject = "[alive] 재입고 알림: " + productName;
+        String content = String.format(
+                "%s님, 신청하신 상품이 재입고되었습니다.%n%n" +
+                "상품: %s%n" +
+                "옵션: %s / %s%n%n" +
+                "지금 확인하기: %s/product/detail/%d%n%n" +
+                "감사합니다.%n- alive",
+                notification.getUser().getName(),
+                productName,
+                stock.getColor(),
+                stock.getSize(),
+                frontendUrl,
+                stock.getProduct().getProductId()
+        );
+        notificationSender.send(notification.getUser().getEmail(), subject, content);
     }
 
     /**
