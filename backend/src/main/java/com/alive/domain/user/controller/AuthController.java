@@ -200,12 +200,25 @@ public class AuthController {
     }
 
     /**
-     * 비밀번호 찾기: 이메일 + 이름 + 전화번호로 본인확인 후 새 비밀번호로 즉시 재설정
-     * POST /api/auth/reset-password
+     * 비밀번호 재설정 링크 요청: 이메일로 30분짜리 재설정 링크를 발송
+     * POST /api/auth/password-reset/request
+     * (계정 존재 여부를 노출하지 않도록 항상 동일한 성공 응답을 반환)
      */
-    @PostMapping("/reset-password")
-    public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-        userService.resetPassword(request);
+    @PostMapping("/password-reset/request")
+    public ResponseEntity<Map<String, String>> requestPasswordReset(@Valid @RequestBody PasswordResetLinkRequest request) {
+        userService.requestPasswordReset(request);
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", "비밀번호 재설정 링크를 이메일로 보냈습니다. 메일함을 확인해주세요.");
+        return ResponseEntity.ok(responseBody);
+    }
+
+    /**
+     * 비밀번호 재설정 확인: 메일 링크의 토큰과 새 비밀번호로 재설정
+     * POST /api/auth/password-reset/confirm
+     */
+    @PostMapping("/password-reset/confirm")
+    public ResponseEntity<Map<String, String>> confirmPasswordReset(@Valid @RequestBody PasswordResetConfirmRequest request) {
+        userService.confirmPasswordReset(request);
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("message", "비밀번호가 재설정되었습니다");
         return ResponseEntity.ok(responseBody);

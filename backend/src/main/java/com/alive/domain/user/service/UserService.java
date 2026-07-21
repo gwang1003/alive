@@ -5,20 +5,24 @@ import com.alive.domain.user.dto.FindEmailRequest;
 import com.alive.domain.user.dto.FindEmailResponse;
 import com.alive.domain.user.dto.LoginRequest;
 import com.alive.domain.user.dto.LoginResponse;
+import com.alive.domain.user.dto.PasswordResetConfirmRequest;
+import com.alive.domain.user.dto.PasswordResetLinkRequest;
 import com.alive.domain.user.dto.RegisterRequest;
-import com.alive.domain.user.dto.ResetPasswordRequest;
 import com.alive.domain.user.dto.UpdateProfileRequest;
 import com.alive.domain.user.dto.UserResponse;
 import com.alive.domain.user.entity.AuthProvider;
 import com.alive.domain.user.entity.EmailVerificationCode;
+import com.alive.domain.user.entity.PasswordResetToken;
 import com.alive.domain.user.entity.User;
 import com.alive.domain.user.entity.UserRole;
 import com.alive.domain.user.repository.EmailVerificationCodeRepository;
+import com.alive.domain.user.repository.PasswordResetTokenRepository;
 import com.alive.domain.user.repository.UserRepository;
 import com.alive.common.notification.NotificationSender;
 import com.alive.security.JwtUtil;
 import com.alive.security.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +40,17 @@ import java.util.UUID;
 public class UserService {
 
     private static final int CODE_EXPIRY_MINUTES = 10;
+    private static final int RESET_TOKEN_EXPIRY_MINUTES = 30;
+
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;  // 추가
     private final EmailVerificationCodeRepository emailVerificationCodeRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final NotificationSender notificationSender;
 
     // 회원가입 (로컬 신규 가입은 미인증 상태로 만들고 6자리 인증코드를 메일로 발송)
@@ -216,14 +225,53 @@ public class UserService {
                 .build();
     }
 
-    // 비밀번호 찾기: 이메일 + 이름 + 전화번호로 본인확인 후 새 비밀번호로 즉시 재설정
+    // 비밀번호 재설정 링크 요청: 계정이 있으면 30분짜리 1회성 토큰을 메일로 발송한다.
+    // 계정 존재 여부를 노출하지 않도록, 없는 이메일이어도 예외 없이 동일하게 처리한다.
     @Transactional
-    public void resetPassword(ResetPasswordRequest request) {
-        User user = userRepository.findByEmailAndNameAndPhone(
-                        request.getEmail(), request.getName(), request.getPhone())
-                .orElseThrow(() -> new RuntimeException("일치하는 회원 정보가 없습니다"));
+    public void requestPasswordReset(PasswordResetLinkRequest request) {
+        userRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+            String token = UUID.randomUUID().toString();
+            LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(RESET_TOKEN_EXPIRY_MINUTES);
+
+            PasswordResetToken entity = passwordResetTokenRepository.findByEmail(user.getEmail())
+                    .map(existing -> {
+                        existing.refresh(token, expiresAt);
+                        return existing;
+                    })
+                    .orElseGet(() -> PasswordResetToken.builder()
+                            .email(user.getEmail())
+                            .token(token)
+                            .expiresAt(expiresAt)
+                            .build());
+            passwordResetTokenRepository.save(entity);
+
+            String link = frontendUrl + "/reset-password?token=" + token;
+            notificationSender.send(
+                    user.getEmail(),
+                    "[alive] 비밀번호 재설정 안내",
+                    String.format("아래 링크에서 비밀번호를 재설정해주세요. (%d분 내 유효)%n%n%s%n%n" +
+                            "본인이 요청하지 않았다면 이 메일을 무시하세요.%n%n- alive",
+                            RESET_TOKEN_EXPIRY_MINUTES, link)
+            );
+        });
+    }
+
+    // 비밀번호 재설정 확인: 링크의 토큰을 검증하고 새 비밀번호로 교체한 뒤 토큰을 폐기한다.
+    @Transactional
+    public void confirmPasswordReset(PasswordResetConfirmRequest request) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(request.getToken())
+                .orElseThrow(() -> new RuntimeException("유효하지 않은 재설정 링크입니다"));
+
+        if (resetToken.isExpired()) {
+            passwordResetTokenRepository.delete(resetToken);
+            throw new RuntimeException("만료된 재설정 링크입니다. 다시 요청해주세요.");
+        }
+
+        User user = userRepository.findByEmail(resetToken.getEmail())
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
 
         user.changePassword(passwordEncoder.encode(request.getNewPassword()));
+        passwordResetTokenRepository.delete(resetToken);
     }
 
     // 소셜 로그인: 이미 연동된 계정이면 그대로, 처음이면 새로 만들어서 반환
