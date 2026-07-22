@@ -44,3 +44,6 @@ application-secret.yml
 **/application-secret.yml
 .env
 .env.local
+
+# 내부 기술 메모 / 이력서·면접용 자료 (대외 공개는 README.md로) — git 추적 제외, 로컬만 유지
+/TECH_STACK.md
