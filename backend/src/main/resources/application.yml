@@ -2,6 +2,11 @@
 
 # 파일 업로드 설정
 spring:
+  # 시크릿은 application-secret.yml(.gitignore) 또는 환경변수로 주입.
+  # optional 이라 파일이 없어도 환경변수만으로 기동 가능(배포 환경 대응).
+  config:
+    import: optional:application-secret.yml
+
   application:
     name: alive
   servlet:
@@ -13,7 +18,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/alive
     username: ojg
-    password: ***REMOVED***
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -42,7 +47,7 @@ spring:
 
 # JWT ??
 jwt:
-  secret: ***REMOVED***
+  secret: ${JWT_SECRET}
   access-token-expiration: 900000      # 15분 (15 * 60 * 1000)
   refresh-token-expiration: 604800000  # 7일 (7 * 24 * 60 * 60 * 1000)
 
@@ -53,24 +58,24 @@ server:
 file:
   upload-dir: D:/alive/uploads
 
-# 토스페이먼츠 (현재 테스트 키 - 문서 공개 테스트 키, 실결제 불가)
+# 토스페이먼츠 (키는 시크릿 파일/환경변수로 주입 — 현재 테스트 키)
 toss:
-  client-key: ***REMOVED***
-  secret-key: ***REMOVED***
+  client-key: ${TOSS_CLIENT_KEY}
+  secret-key: ${TOSS_SECRET_KEY}
   confirm-url: https://api.tosspayments.com/v1/payments/confirm
 
 # 프론트엔드 주소 (소셜 로그인 완료 후 리다이렉트할 곳)
 app:
   frontend-url: http://localhost:3000
 
-# 소셜 로그인 - 카카오/네이버 개발자센터에서 앱 등록 후 발급받은 키로 교체해야 실제로 동작함.
-# client-id/secret이 비어있는 동안은 인가 URL 생성 단계에서 명확한 에러를 던짐.
+# 소셜 로그인 - client-id/secret은 시크릿 파일/환경변수로 주입.
+# 값이 비어있는 동안은 인가 URL 생성 단계에서 명확한 에러를 던짐.
 oauth:
   kakao:
-    client-id: ***REMOVED***
-    client-secret: ***REMOVED***
+    client-id: ${KAKAO_CLIENT_ID}
+    client-secret: ${KAKAO_CLIENT_SECRET}
     redirect-uri: http://localhost:8282/api/auth/oauth/kakao/callback
   naver:
-    client-id: ***REMOVED***
-    client-secret: ***REMOVED***
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
     redirect-uri: http://localhost:8282/api/auth/oauth/naver/callback
