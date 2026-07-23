@@ -16,8 +16,8 @@ spring:
       max-request-size: 50MB
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/alive
-    username: ojg
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/alive}
+    username: ${DATASOURCE_USERNAME:ojg}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
@@ -52,11 +52,11 @@ jwt:
   refresh-token-expiration: 604800000  # 7일 (7 * 24 * 60 * 60 * 1000)
 
 server:
-  port: 8282
+  port: ${PORT:8282}
 
-  # 파일 저장 경로
+  # 파일 저장 경로 (배포 환경에선 UPLOAD_DIR 환경변수로 Linux 경로 지정)
 file:
-  upload-dir: D:/alive/uploads
+  upload-dir: ${UPLOAD_DIR:D:/alive/uploads}
 
 # 토스페이먼츠 (키는 시크릿 파일/환경변수로 주입 — 현재 테스트 키)
 toss:
@@ -66,7 +66,7 @@ toss:
 
 # 프론트엔드 주소 (소셜 로그인 완료 후 리다이렉트할 곳)
 app:
-  frontend-url: http://localhost:3000
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
 
 # 소셜 로그인 - client-id/secret은 시크릿 파일/환경변수로 주입.
 # 값이 비어있는 동안은 인가 URL 생성 단계에서 명확한 에러를 던짐.
@@ -74,8 +74,8 @@ oauth:
   kakao:
     client-id: ${KAKAO_CLIENT_ID}
     client-secret: ${KAKAO_CLIENT_SECRET}
-    redirect-uri: http://localhost:8282/api/auth/oauth/kakao/callback
+    redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:8282/api/auth/oauth/kakao/callback}
   naver:
     client-id: ${NAVER_CLIENT_ID}
     client-secret: ${NAVER_CLIENT_SECRET}
-    redirect-uri: http://localhost:8282/api/auth/oauth/naver/callback
+    redirect-uri: ${NAVER_REDIRECT_URI:http://localhost:8282/api/auth/oauth/naver/callback}
