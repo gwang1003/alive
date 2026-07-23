@@ -60,8 +60,8 @@ file:
 
 # 토스페이먼츠 (키는 시크릿 파일/환경변수로 주입 — 현재 테스트 키)
 toss:
-  client-key: ${TOSS_CLIENT_KEY}
-  secret-key: ${TOSS_SECRET_KEY}
+  client-key: ${TOSS_CLIENT_KEY:}
+  secret-key: ${TOSS_SECRET_KEY:}
   confirm-url: https://api.tosspayments.com/v1/payments/confirm
 
 # 프론트엔드 주소 (소셜 로그인 완료 후 리다이렉트할 곳)
@@ -72,10 +72,10 @@ app:
 # 값이 비어있는 동안은 인가 URL 생성 단계에서 명확한 에러를 던짐.
 oauth:
   kakao:
-    client-id: ${KAKAO_CLIENT_ID}
-    client-secret: ${KAKAO_CLIENT_SECRET}
+    client-id: ${KAKAO_CLIENT_ID:}
+    client-secret: ${KAKAO_CLIENT_SECRET:}
     redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:8282/api/auth/oauth/kakao/callback}
   naver:
-    client-id: ${NAVER_CLIENT_ID}
-    client-secret: ${NAVER_CLIENT_SECRET}
+    client-id: ${NAVER_CLIENT_ID:}
+    client-secret: ${NAVER_CLIENT_SECRET:}
     redirect-uri: ${NAVER_REDIRECT_URI:http://localhost:8282/api/auth/oauth/naver/callback}
