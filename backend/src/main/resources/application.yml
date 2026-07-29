@@ -68,6 +68,9 @@ toss:
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
 
+brevo:
+  api-key: ${BREVO_API_KEY:}
+
 # 소셜 로그인 - client-id/secret은 시크릿 파일/환경변수로 주입.
 # 값이 비어있는 동안은 인가 URL 생성 단계에서 명확한 에러를 던짐.
 oauth:
