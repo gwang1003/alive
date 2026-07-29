@@ -236,7 +236,7 @@ public class AuthController {
         cookie.setPath("/");       // 모든 경로에서 접근 가능
         cookie.setMaxAge((int) (refreshTokenExpiration / 1000)); // 초 단위 (7일)
         // cookie.setDomain("yourdomain.com"); // 도메인 설정 (필요 시)
-        cookie.setAttribute("SameSite", "Lax"); // CSRF 방지
+        cookie.setAttribute("SameSite", "None"); // 크로스 도메인(Vercel↔Railway) 전송 허용
 
         return cookie;
     }
@@ -267,6 +267,7 @@ public class AuthController {
         cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setMaxAge(0); // 즉시 만료
+        cookie.setAttribute("SameSite", "None");
 
         response.addCookie(cookie);
     }
