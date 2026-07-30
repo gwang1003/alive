@@ -11,17 +11,16 @@ export interface PaymentConfirmResult {
 }
 
 interface PaymentState {
-    confirmPayment: (paymentKey: string, orderId: string, amount: number) => Promise<PaymentConfirmResult>;
+    confirmPayment: (paymentKey: string, orderId: string) => Promise<PaymentConfirmResult>;
 }
 
 // 결제 스토어: 토스페이먼츠 결제 승인(confirm) 요청을 담당
 const usePaymentStore = create<PaymentState>(() => ({
-    // 결제창에서 받은 paymentKey/orderId/amount로 서버에 결제 승인을 요청
-    confirmPayment: async (paymentKey, orderId, amount) => {
+    // paymentKey/orderId만 전송 — 금액은 서버에서 주문 DB 값으로 확정
+    confirmPayment: async (paymentKey, orderId) => {
         const response = await api.post<PaymentConfirmResult>('/payments/confirm', {
             paymentKey,
             orderId,
-            amount,
         });
         return response.data;
     },

@@ -56,17 +56,14 @@ public class PaymentService {
         if (order.getStatus() != OrderStatus.PENDING) {
             throw new RuntimeException("결제 대기 중인 주문이 아닙니다");
         }
-        if (order.getFinalAmount().compareTo(request.getAmount()) != 0) {
-            throw new RuntimeException("결제 금액이 주문 금액과 일치하지 않습니다");
-        }
 
-        TossConfirmResponse tossResponse = requestTossConfirm(request);
+        TossConfirmResponse tossResponse = requestTossConfirm(request, order.getFinalAmount());
 
         Payment payment = Payment.builder()
                 .order(order)
                 .paymentKey(tossResponse.getPaymentKey())
                 .method(tossResponse.getMethod())
-                .amount(request.getAmount())
+                .amount(order.getFinalAmount())
                 .status(PaymentStatus.DONE)
                 .receiptUrl(tossResponse.getReceipt() != null ? tossResponse.getReceipt().getUrl() : null)
                 .approvedAt(tossResponse.getApprovedAt() != null
@@ -81,7 +78,7 @@ public class PaymentService {
     }
 
     // 토스페이먼츠 결제 승인 API를 호출하여 결과를 받아온다.
-    private TossConfirmResponse requestTossConfirm(PaymentConfirmRequest request) {
+    private TossConfirmResponse requestTossConfirm(PaymentConfirmRequest request, java.math.BigDecimal amount) {
         String encodedAuth = Base64.getEncoder().encodeToString((tossSecretKey + ":").getBytes(StandardCharsets.UTF_8));
 
         return RestClient.create().post()
@@ -91,7 +88,7 @@ public class PaymentService {
                 .body(Map.of(
                         "paymentKey", request.getPaymentKey(),
                         "orderId", request.getOrderId(),
-                        "amount", request.getAmount()
+                        "amount", amount
                 ))
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, (req, res) -> {

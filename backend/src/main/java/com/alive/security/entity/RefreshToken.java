@@ -43,8 +43,8 @@ public class RefreshToken {
     }
 
     // 토큰값 및 만료일 업데이트
-    public void updateToken(String token) {
+    public void updateToken(String token, LocalDateTime expiresAt) {
         this.token = token;
-        this.expiresAt = LocalDateTime.now().plusDays(7);
+        this.expiresAt = expiresAt;
     }
 }

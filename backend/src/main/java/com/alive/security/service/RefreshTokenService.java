@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,16 +36,17 @@ public class RefreshTokenService {
         String token = jwtUtil.generateRefreshToken(email);
 
         // 삭제 대신 '조회 후 업데이트' 전략 (더 안전함)
+        LocalDateTime expiresAt = LocalDateTime.now().plus(Duration.ofMillis(refreshTokenExpiration));
         RefreshToken refreshToken = refreshTokenRepository.findByEmail(email)
                 .map(existingToken -> {
-                    existingToken.updateToken(token); // 토큰 값과 만료일만 업데이트하는 메서드 작성
+                    existingToken.updateToken(token, expiresAt);
                     return existingToken;
                 })
                 .orElseGet(() -> RefreshToken.builder()
                         .token(token)
                         .email(email)
                         .createdAt(LocalDateTime.now())
-                        .expiresAt(LocalDateTime.now().plusDays(7))
+                        .expiresAt(expiresAt)
                     .build());
 
         refreshTokenRepository.save(refreshToken);

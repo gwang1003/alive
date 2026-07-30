@@ -26,16 +26,15 @@ const PaymentSuccess: React.FC = () => {
 
         const paymentKey = searchParams.get('paymentKey');
         const orderId = searchParams.get('orderId');
-        const amount = searchParams.get('amount');
 
-        if (!paymentKey || !orderId || !amount) {
+        if (!paymentKey || !orderId) {
             setError('결제 정보가 올바르지 않습니다.');
             return;
         }
 
         const confirm = async () => {
             try {
-                const result = await confirmPayment(paymentKey, orderId, Number(amount));
+                const result = await confirmPayment(paymentKey, orderId);
                 navigate(`/orders/${result.orderId}`, { replace: true });
             } catch (err: any) {
                 setError(err.response?.data?.message ?? '결제 승인 중 오류가 발생했습니다.');
