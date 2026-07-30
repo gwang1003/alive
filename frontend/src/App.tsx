@@ -92,10 +92,10 @@ const App: React.FC = () => {
                     <Route path="/product/detail/:productId" element={<ProductDetail />} />
                     <Route path="/new" element={<ProductList title="신상품" defaultSort="createdAt,desc" />} />
                     <Route path="/best" element={<ProductList title="베스트" defaultSort="viewCount,desc" />} />
-                    <Route path="/tops" element={<ProductList title="상의" categoryId={1} />} />
-                    <Route path="/bottoms" element={<ProductList title="하의" categoryId={2} />} />
-                    <Route path="/outer" element={<ProductList title="아우터" categoryId={3} />} />
-                    <Route path="/sets" element={<ProductList title="세트" categoryId={5} />} />
+                    <Route path="/tops" element={<ProductList title="상의" categoryId={2} />} />
+                    <Route path="/bottoms" element={<ProductList title="하의" categoryId={3} />} />
+                    <Route path="/sets" element={<ProductList title="세트" categoryId={4} />} />
+                    <Route path="/outer" element={<ProductList title="아우터" categoryId={5} />} />
                     <Route path="/sale" element={<ProductList title="세일" discountedOnly />} />
                     <Route path="/search" element={<ProductList title="검색결과" />} />
                     {/* 관리자 전용 페이지: AdminRoute로 감싸 ADMIN 권한을 체크 */}
