@@ -2,7 +2,7 @@ import { ANONYMOUS, loadTossPayments } from '@tosspayments/tosspayments-sdk';
 
 // 토스페이먼츠 공식 문서에 공개된 테스트 클라이언트 키입니다. 실결제는 발생하지 않습니다.
 // (가입 전 테스트용으로 누구나 사용 가능. 실서비스 전환 시 발급받은 상용 키로 교체 필요)
-const TOSS_CLIENT_KEY = '***REMOVED***';
+const TOSS_CLIENT_KEY = 'test_ck_kYG57Eba3GjvzyZo515j8pWDOxmA';
 
 // 토스페이먼츠 SDK를 로드해 결제창을 열고 결제를 요청(성공/실패 시 지정 URL로 리다이렉트)
 export async function requestTossPayment(params: {
