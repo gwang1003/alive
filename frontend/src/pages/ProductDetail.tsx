@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Heart, ShoppingBag, ShoppingCart, X, ZoomIn} from 'lucide-react';
+import { getImageUrl } from '../utils/imageUrl';
 import bottomSize from '../assets/products/common/bottomSize.jpg';
 import topSize from '../assets/products/common/topSize.jpg';
 import {useNavigate, useParams} from "react-router-dom";
@@ -307,7 +308,7 @@ const ProductDetail: React.FC = () => {
                             className={`aspect-square w-full rounded-lg overflow-hidden cursor-pointer transition-all border-2
                                 ${mainImage === img ? 'border-coral opacity-100' : 'border-transparent opacity-60'}`}
                         >
-                            <img src={"/api"+img.imageUrl} alt="thumb" className="w-full h-full object-cover" />
+                            <img src={getImageUrl(img.imageUrl)} alt="thumb" className="w-full h-full object-cover" />
                         </div>
                     ))}
                 </div>
@@ -318,7 +319,7 @@ const ProductDetail: React.FC = () => {
                     className="group relative max-h-[688px] flex-1 aspect-square bg-canvas rounded-2xl overflow-hidden border border-line shadow-sm cursor-zoom-in"
                 >
                     <img
-                        src={"/api"+mainImage}
+                        src={getImageUrl(mainImage)}
                         alt="main"
                         className="w-full h-full object-cover transition-opacity duration-300"
                     />
@@ -340,7 +341,7 @@ const ProductDetail: React.FC = () => {
                         <X className="w-6 h-6 text-white" />
                     </button>
                     <img
-                        src={"/api"+zoomImageUrl}
+                        src={getImageUrl(zoomImageUrl)}
                         alt="zoomed"
                         className="max-w-[90vw] max-h-[90vh] object-contain"
                     />
@@ -487,13 +488,13 @@ const ProductDetail: React.FC = () => {
             {/* 1. 모델 착용 컷: 메인 이미지 */}
             <section className="space-y-6">
                 <div className="w-full rounded-2xl overflow-hidden bg-canvas">
-                    <img src={"/api"+productData.images[0].imageUrl} alt="Main Wear" className="w-full object-cover" />
+                    <img src={getImageUrl(productData.images[0].imageUrl)} alt="Main Wear" className="w-full object-cover" />
                 </div>
 
                 {/* 전후좌우 4컷 그리드 */}
                 <div className="grid grid-cols-4 gap-4">
                     {productData.images && productData.images.map((img, i) =>
-                        <img key={i} src={"/api"+img.imageUrl} alt="Front" className="w-full rounded-xl bg-canvas" />
+                        <img key={i} src={getImageUrl(img.imageUrl)} alt="Front" className="w-full rounded-xl bg-canvas" />
                     )}
                 </div>
             </section>
@@ -770,7 +771,7 @@ const ProductDetail: React.FC = () => {
                                         {review.imageUrls.map((url, i) => (
                                             <img
                                                 key={i}
-                                                src={`/api${url}`}
+                                                src={getImageUrl(url)}
                                                 alt="review"
                                                 className="w-20 h-20 rounded-lg object-cover cursor-pointer"
                                                 onClick={() => setZoomImageUrl(url)}
@@ -812,7 +813,7 @@ const ProductDetail: React.FC = () => {
                             className="group cursor-pointer"
                         >
                             <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-4 bg-canvas">
-                                <img src={"/api"+product.images[0]} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                <img src={getImageUrl(product.images[0])} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                             </div>
                             <h4 className="text-sm font-bold text-ink">{product.name}</h4>
                             <p className="text-sm font-black text-ink mt-1">{product.finalPrice.toLocaleString()}원</p>

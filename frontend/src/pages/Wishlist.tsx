@@ -4,9 +4,10 @@ import { X } from 'lucide-react';
 import useWishlistStore from '../store/wishlistStore';
 import useAuthStore from '../assets/authStore';
 
+import { getImageUrl } from '../utils/imageUrl';
 const resolveImageSrc = (img: string | null) => {
     if (!img) return '';
-    return img.startsWith('/products/') ? `/api${img}` : img;
+    return img.startsWith('/products/') ? getImageUrl(img) : img;
 };
 
 // 위시리스트 페이지 — 찜한 상품 그리드 표시, 상품 클릭 시 상세로 이동, X 클릭 시 찜 해제

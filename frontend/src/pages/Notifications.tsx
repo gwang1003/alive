@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import useRestockStore from '../store/restockStore';
 import useAuthStore from '../assets/authStore';
 
-const resolveImageSrc = (img: string | null) => (img ? `/api${img}` : null);
+import { getImageUrl } from '../utils/imageUrl';
+const resolveImageSrc = (img: string | null) => (img ? getImageUrl(img) : null);
 
 // 로그인 회원이 신청한 품절 상품 재입고 알림 목록을 보여주고 취소할 수 있는 페이지
 const Notifications: React.FC = () => {

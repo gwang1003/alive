@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useBannerStore from '../../store/bannerStore';
 import AdminNav from '../../components/AdminNav';
+import { getImageUrl } from '../../utils/imageUrl';
 
 // 관리자 배너 등록/활성화 토글/삭제 목록 페이지
 const AdminBannerList: React.FC = () => {
@@ -112,7 +113,7 @@ const AdminBannerList: React.FC = () => {
                 <div className="space-y-4">
                     {adminBanners.map((banner) => (
                         <div key={banner.bannerId} className="border border-line rounded-2xl p-6 flex gap-6 items-center">
-                            <img src={`/api${banner.imageUrl}`} alt={banner.title} className="w-32 h-20 object-cover rounded-xl bg-canvas" />
+                            <img src={getImageUrl(banner.imageUrl)} alt={banner.title} className="w-32 h-20 object-cover rounded-xl bg-canvas" />
                             <div className="flex-1">
                                 <p className="text-sm font-black text-ink">{banner.title}</p>
                                 <p className="text-xs text-ink-soft">{banner.linkUrl || '링크 없음'} · 순서 {banner.displayOrder}</p>

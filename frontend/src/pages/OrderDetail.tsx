@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { getImageUrl } from '../utils/imageUrl';
 import useOrderStore from '../store/orderStore';
 import { Order } from '../types/order';
 
@@ -97,7 +98,7 @@ const OrderDetail: React.FC = () => {
                             <div className="flex gap-4 items-center">
                                 <div className="w-16 h-16 bg-canvas rounded-2xl overflow-hidden shrink-0">
                                     {item.thumbnailUrl && (
-                                        <img src={`/api${item.thumbnailUrl}`} alt={item.productName} className="w-full h-full object-cover" />
+                                        <img src={getImageUrl(item.thumbnailUrl)} alt={item.productName} className="w-full h-full object-cover" />
                                     )}
                                 </div>
                                 <div>

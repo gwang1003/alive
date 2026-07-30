@@ -7,6 +7,7 @@ import heroFallbackImage from '../assets/products/b/ea082c2b937819a1c6ff9e698830
 import axios from "../api/axios.ts";
 import { getRecentlyViewedIds } from '../utils/recentlyViewed';
 import useBannerStore from '../store/bannerStore';
+import { getImageUrl } from '../utils/imageUrl';
 
 // 홈 화면: 히어로 배너, 신상품/인기상품/최근 본 상품 섹션을 보여준다
 const Home: React.FC = () => {
@@ -86,7 +87,7 @@ const Home: React.FC = () => {
                     </div>
                     <div className="relative h-[70vh]">
                         <img
-                            src={heroBanner ? `/api${heroBanner.imageUrl}` : heroFallbackImage}
+                            src={heroBanner ? getImageUrl(heroBanner.imageUrl) : heroFallbackImage}
                             className="absolute inset-0 w-full h-full object-cover rounded-bl-[100px]"
                             alt={heroBanner ? heroBanner.title : "spring collection"}
                         />

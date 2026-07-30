@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { getImageUrl } from '../utils/imageUrl';
 import { useNavigate } from 'react-router-dom';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import useCartStore from '../store/cartStore';
@@ -118,7 +119,7 @@ const Cart: React.FC = () => {
                                     <div className="w-24 h-24 bg-canvas rounded-2xl overflow-hidden shrink-0">
                                         {item.thumbnailUrl && (
                                             <img
-                                                src={`/api${item.thumbnailUrl}`}
+                                                src={getImageUrl(item.thumbnailUrl)}
                                                 alt={item.productName}
                                                 className="w-full h-full object-cover"
                                             />
