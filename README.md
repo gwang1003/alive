@@ -2,7 +2,7 @@
 
 유아동 패션 이커머스 **풀스택 프로젝트**. 상품·장바구니·주문·결제부터 소셜 로그인, 이메일 인증, 관리자 대시보드까지 실제 쇼핑몰의 핵심 기능을 구현했습니다.
 
-**라이브 데모**: https://alive-public.vercel.app
+**라이브 데모**: https://alive-kids.shop
 
 ---
 
@@ -24,17 +24,17 @@
 
 | 영역 | 기술 |
 |------|------|
-| **Backend** | Java 21, Spring Boot 3.2, Spring Security (JWT), Spring Data JPA / Hibernate, PostgreSQL, Spring Mail |
+| **Backend** | Java 21, Spring Boot 3.2, Spring Security (JWT), Spring Data JPA / Hibernate, PostgreSQL |
 | **Frontend** | React 19, TypeScript, Vite, Zustand, Axios, Tailwind CSS, React Router v7 |
-| **인프라** | Railway (Backend + PostgreSQL), Vercel (Frontend), Docker |
-| **연동** | TossPayments, Kakao · Naver OAuth 2.0, Gmail SMTP |
+| **인프라** | Railway (Backend + PostgreSQL), Vercel (Frontend), 커스텀 도메인 (alive-kids.shop) |
+| **연동** | TossPayments, Kakao · Naver OAuth 2.0, Resend (이메일) |
 
 ---
 
 ## 아키텍처 특징
 
 - **도메인 기반 패키지 구조** — 11개 도메인(user, product, order, cart, payment, review, inquiry, banner, restock, address, wishlist)이 동일한 계층 구조를 따름
-- **JWT 이중 토큰** — AccessToken(15분) + RefreshToken(7일, HttpOnly 쿠키) 회전 방식, 서버 측 무효화 지원
+- **JWT 이중 토큰** — AccessToken(15분) + RefreshToken(7일, HttpOnly 쿠키 · SameSite=None) 회전 방식, 서버 측 무효화 지원
 - **주문 스냅샷** — OrderItem에 상품 정보를 비정규화 저장해 상품 삭제/변경에도 과거 주문 이력을 온전히 보존
 
 ---
@@ -45,6 +45,7 @@
 - **재고 동시성 제어** — 재고 차감/복원에 비관적 락(`SELECT ... FOR UPDATE`)을 적용하고 잠금 순서를 고정(데드락 회피)해, 동시 주문 시 초과 판매·재고 음수를 방지
 - **인증 보안** — JWT 회전 + 회원가입 이메일 인증(6자리 코드) + 비밀번호 재설정 링크(1회성 토큰, 계정 열거 방지)로 계정 보안 강화
 - **비동기 이메일 발송** — `NotificationSender` 인터페이스로 채널을 추상화하고 `@Async`로 주 트랜잭션과 격리 (메일 지연·실패가 주문 처리를 막지 않음)
+- **Railway SMTP 차단 우회** — PaaS 환경의 SMTP 포트 차단을 Resend HTTP API(HTTPS)로 우회, 인프라 제약 없이 이메일 발송
 
 ---
 
