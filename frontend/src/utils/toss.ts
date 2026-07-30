@@ -17,11 +17,12 @@ export async function requestTossPayment(params: {
 
     await payment.requestPayment({
         method: 'CARD',
-        amount: { currency: 'KRW', value: params.amount },
+        amount: { currency: 'KRW', value: Math.floor(params.amount) },
         orderId: params.orderId,
         orderName: params.orderName,
-        customerName: params.customerName,
-        customerEmail: params.customerEmail,
+        customerName: params.customerName || '고객',
+        // 빈 문자열이면 Toss SDK가 이메일 형식 검증 실패로 throw — 없으면 아예 넘기지 않음
+        ...(params.customerEmail ? { customerEmail: params.customerEmail } : {}),
         successUrl: `${window.location.origin}/payment/success`,
         failUrl: `${window.location.origin}/payment/fail`,
     });

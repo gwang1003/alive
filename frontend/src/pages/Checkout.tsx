@@ -168,6 +168,7 @@ const Checkout: React.FC = () => {
                 customerEmail: user?.email ?? '',
             });
         } catch (err: any) {
+            console.error('[Checkout] 주문 에러:', err?.message ?? err);
             setError(err.response?.data?.message ?? '주문 중 오류가 발생했습니다.');
         } finally {
             setSubmitting(false);
